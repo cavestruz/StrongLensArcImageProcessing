@@ -27,7 +27,8 @@
 \submitted{The Astrophysical Journal} 
 \slugcomment{The Astrophysical Journal, submitted}
 
-\title{LensFinder: A Strong Lensing Identification Pipeline}
+\title{MachLLensFinder - I: A Machine Learning Strong Lensing
+  Identification Pipeline}
 
 \author{Camille Avestruz\altaffilmark{1-3}\thanks{E-mail:
     avestruz@uchicago.edu}, Nan Li\altaffilmark{2,3,4}, and Matthew Lightman\altaffilmark{5} }
@@ -39,15 +40,25 @@ $^3${Department of Astronomy \& Astrophysics, The University of Chicago, Chicago
   \href{mailto:avestruz@uchicago.edu}{avestruz@uchicago.edu}\\
 }
 
-\keywords{cosmology: theory --- galaxies: clusters: general ---
-  galaxies: clusters --- methods : numerical }
+\keywords{gravitational lensing --- methods : numerical --- methods: data analysis --- methods: statistical --- galaxies: elliptical --- surveys  }
   
 %-------------------------------------------------%
 \begin{abstract} 
-  Giant arcs trace... cosmology... mass distribution.  Advent of DES,
-  LSST, etc. need an efficient way to identify strong lens images.  We
-  present LensFinder, open source image processing and deep learning.
-  Tests with mock images from ... ...  Image processing improves by....
+  Gravitational lensing offers a direct probe of the underlying mass
+  distribution of lensing systems, a window to the high redshift
+  universe, and a geometric probe of cosmological models.  The advent
+  of large scale surveys such as LSST and Euclid has prompted a need
+  for automatic and efficient identification of strong lensing
+  systems.  In this first paper of a series, we present LensFinderML,
+  a strong lensing identification pipeline that will be publicly
+  released as open source software.
+
+Giant arcs trace... cosmology... mass distribution.  Advent of DES,
+LSST, etc. need an efficient way to identify strong lens images.  We
+present {\sc{MACHLLENSFINDER}} (MACHine Learning LENSFINDER), an open source
+image processing and deep learning.  This first paper focuses on image
+Processing Techniques for Giant Arc Identification Tests with mock
+images from ... ...  Image processing improves by....
 \end{abstract}
 %-------------------------------------------------%
 
@@ -58,22 +69,93 @@ $^3${Department of Astronomy \& Astrophysics, The University of Chicago, Chicago
 % Gravitational lensing as a geometric (?) test of cosmology.  Also
 % probes underlying matter distribution in galaxy clusters, sensitive
 % to things like recent accretion and environment.
+Gravitational lensing deflections due to gravity... \citep[see][for a
+  review]{kneibandnatarajan_11}.  Strong lensing visible ... giant
+arcs, multiple images, and arclets.  Galaxy clusters as strong lens,
+deep gravitational potential well, can see by eye.  Strong lensing
+signatures probe underlying dark matter distribution of galaxy
+clusters, magnify the background galaxy population allowing us to
+probe formation at epochs further back in time, and geometric test of
+cosmology.
 
 % Arc identification can be done visually (e.g. that zooniverse
 % thing).  But, in the advent of optical surveys, DES and LSST, we
 % will be limited by our ability to automatically process the large
-% amounts of data.
+% amounts of data.  Wide field surveys - SPT in millimeter, Herschel
+% in submillimeter; high resolution spectroscopic imaging with ALMA;
+% optical surveys DES, HSC, LSST, and Euclid (Oguri \& Marshall 2010).
+The geometric test of cosmology requires a comparison of predicted arc
+abundances and observed abundances.  In the advent of large surveys,
+such as DES and LSST, we will be limited by our ability to
+automatically process the large amounts of data and select likely
+strong lensing clusters for follow up spectroscopic measurements to
+positively identify background galaxy images.  Image identification
+has had an onslaught of new works (wc).
+
+% Serentipitous discoveries confirmed the theory (cite Einstein)
+% Cite first discoveries of different shapes of strong lensing images
+% While some serendipitous systems found recently (gladders+),
+% Describe the uptick in amount of data
+% End with need to scale with the volume of data
+Early strong lensing images were serendipitous discoveries
+(e.g. multiple quasars \citep{walsh_etal79}, arcs in clusters
+\citep{lyndsandpetrosian_86}, ...).  As the number of images with
+potential lensing systems increased, infrastructure emerged for both
+automated and visual inspection.  
+
+% Image identification works: visual, ``robot'' identification -
+% ArcFinder, RingFinder..., and citizen science (space warps).
+% Many of these rely on some explicit aspect of the image's morphology (give example), filtering, ... ....
+% Specifics of the methodology how the instrument affects the strong lensing signal, and the objects of interest.
+
+Automated lensed image identification has fallen under the term
+``robot'' identification, where images are fed into some kind of image
+processing pipeline that enhances and extracts characteristic features
+as parameters that are fed into some kind of cutoff or pattern
+recognition piece.  ArcFinder
+... .... \citep{seidelandbartelmann_07}. For multiply imaged quasars,
+Ringfinder ... ... ...\citep{gavazzi_etal14}.  Each pipeline
+.... ... and relies on the image morphology where ... ...  Note, that
+the method best applied to ... ... and the objects of interest.  The
+human eye is one of the best discriminators of.... SpaceWarps is an
+example of citizen science... visual identification
+\citep{marshall_etal16,more_etal16}.  However, scalability, training
+....
 
 % Arc finding must optimize for completeness and purity.  Completeness
 % (no false negatives), purity (minimal false positives).  Purity can
 % be double checked in a smaller subsample of the data visually.  And,
-% spectroscopic follow up is expensive.
+% spectroscopic follow up is expensive.  Also, scalability of the
+% strong lens finding method matters - example with the citizen
+% science.
+In general, lensed image finding must optimize for completeness and
+purity.  In the application of arc abundance comparisons with
+cosmological predictions, completeness is important; we must be able
+to understand the reasons and frequency of false negatives.  Since
+spectroscopic confirmation of background lensed images is expensive,
+purity is key; we must minimize false positives that would waste
+follow up telescope time.
 
 % Machine learning to automate.  Previous works (StrongML),
 % More+... Here, we focus on the improvement from preprocessing the
 % images and describe the pipeline, which is publicly available.
+% Depending on the image type, different preprocessing is likely
+% necessary (rings, multiply lensed quasars, etc.) Our goal is to
+% create an open source pipeline that is general enough for the user
+% to select or add appropriate image processing techniques to augment
+% the features of the lensed image, train and test data with different
+% machine learning techniques, and to select the sequence of methods
+% that maximizes completeness with optimal purity.
 
-% Image preprocessing.... same technology to validate watermarks
+
+% No need to explicitly extract morphological parameters to a pattern
+% finding, simply transform the image according to the appropriate
+% image preprocessing function, and directly feed this into the
+% machine learning ... 
+
+% This is the first in a series of LensFinder papers where we present
+% our initial pipeline results with a test... of .... Image
+% preprocessing.... same technology to validate watermarks
 
 
 Our paper is organized as follows.  In Section~\ref{sec:methods} we
