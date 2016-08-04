@@ -173,6 +173,35 @@ Section~\ref{sec:conclusions}.
 %-------------------------------------------------%
 
 %-------------------------------------------------%
+\subsubsection{Histogram Oriented Gradients}
+%-------------------------------------------------%
+Histogram oriented gradients (HOG) is a feature extraction method that
+computes centered horizontal and vertical gradients with no smoothing.
+Originally created for human detection, .... This computes the
+gradient orientation and magnitudes in an image by first dividing the
+image into $n\times n$ blocks of X\% overlap.  The gradient
+orientation is then quantized into m bins. ``(optional) global image
+normalisation computing the gradient image in x and y computing
+gradient histograms normalising across blocks flattening into a
+feature vector''\citep{dalalandtriggs_05}.
+
+% Need to look into edge orientation histograms, scale-invariant
+% feature transform descriptors, shape contexts.
+
+
+% NEED TO FEED THE DESCRIPTORS TO SOMETHING WITH SUPERVISED LEARNING.
+% (e.g. SVM, Neural network).
+
+%-------------------------------------------------%
+\subsection{Logistic Regression}
+%-------------------------------------------------%
+
+
+% Regularization coefficient:
+% http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&doc=exercises/ex5/ex5.html
+
+
+%-------------------------------------------------%
 \subsection{Deep Learning Algorithm}
 %-------------------------------------------------%
 
