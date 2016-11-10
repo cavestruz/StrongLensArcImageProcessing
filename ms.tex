@@ -283,17 +283,34 @@ feature vector''\citep{dalalandtriggs_05}.
   visualization with N$_\text{orient}=5$, (32, 32) pixels per cell,
   and (1, 1) cells per block.  Right: The HOG visualization of the
   same mock image with N$_\text{orient}=9$, (16, 16) pixels per cell,
-  and (1, 1) cells per block.  Note, fewer pixels per cell will better
-  resolve the arc feature.  The brightest lines align with prominent
-  edges.}
+  and (1, 1) cells per block.  The brightest lines align with
+  prominent edges.  Note, while fewer pixels per cell will better
+  resolve the arc feature, the ``edge'' corresponding to the arc is
+  less prominent.  }
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 
 %-------------------------------------------------%
-\subsection{Machine Learning Algorithm: Logistic Regression}
+\subsection{Machine Learning Algorithm: Logistic Regression}\label{sec:logreg}
 %-------------------------------------------------%
+
+Logisitic regression is a linear classifier, which finds the optimal
+hyperplane between two classes of data points.  This hyperplane
+defines the optimal model.  We must regularize the model to prevent
+overfitting.  
+
+In regularization, the goal is to minimize a cost function with
+respect to ....  Larger values of $C_\text{LogReg}$ correspond to
+increasing model complexity.  Figure~\ref{fig:regularization} shows
+the accuracy of a model for selected HOG parameters as a function of
+the regularization parameter, $C_\text{LogReg}$.  We plot the
+regularization dependency for HOG parameterization of
+$N_\text{orient}=9$, $PPC=(16, 16)$, $CPB=(1,1)$.  
+
+The accuracy of a model can be defined as either the score of the
+model on a test set, or the AUC for the ROC curve.
 
 
 % Regularization coefficient:
@@ -394,18 +411,6 @@ training time, \todo{since larger coefficients correspond to a more
 regression coefficient in Section\ref{sec:unregularizedfit}.
 
 %-------------------------------------------------%
-\subsection{Effects of Regularization on Model Performance}\label{sec:unregularizedfit}
-%-------------------------------------------------% 
-
-% Scores vs. regularization on larger train/test set with comparable
-% grid search in parameterization
-
-
-%-------------------------------------------------%
-\subsection{Failed identifications}
-%-------------------------------------------------%
-
-%-------------------------------------------------%
 \subsection{Receiver Operatic Characteristic}
 %-------------------------------------------------%
 
@@ -442,20 +447,64 @@ the area under the curve (AUC).  A perfect model would have an AUC of
 1, with data points along $(x=0, 0\leq y\leq1)$, and $(0\leq x\leq 1,
 y=1)$.
 
-Figure~\ref{fig:ROC} shows the \todo{ROC curve for XYZ(???) models,
-with the AUC value indicated in the legend.}
+Figure~\ref{fig:ROC} shows the ROC curves for three different HOG
+parameterizations for the HST-like dataset in red, green, and blue.
+The parameters and corresponding AUC for each curve are labeled in the
+legend.  The models for the HST-like dataset perform well, and have
+AUCs very close to 1.  On the other hand, the model for our LSST-like
+dataset does not perform well.  The dashed diagonal like corresponds
+to a model that is as good as a random classifier, e.g. a coin-flip
+for each test image.  The LSST-like ROC curve does marginally better,
+and the $AUC=0.527$ is within the statistical noise of the sample.
+
+We train the model corresponding to each curve with the logistic
+regression regularization parameter, $C_\text{LogReg}$, that best
+describes the training dataset without overfitting.  We discuss the
+choice of regularization parameter in
+Section~\ref{sec:regularizedfit}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure}[t]\label{fig:ROC}
 \begin{center}
-\includegraphics[width=\columnwidth]{figures/ROC.pdf}
-\caption{ROC curve for a model trained on the HST-like data with the
-  Logistic Regression algorithm.  Here, we use the parameters: CPB=(1,
-  1), $N_\text{orien}=9$, PPC=(16, 16), $C_\text{reg}=100.$.  The AUC
-  is 0.966.}
+\includegraphics[width=\columnwidth]{figures/ROC_multipleHOG.png}
+\caption{Red, green, blue: ROC curves for a models trained on the
+  HST-like data with the Logistic Regression algorithm.  The magenta
+  shows the ROC curve for the LSST-like data.  The corresponding
+  parameters are labeled, N for number of orientations, ppc for
+  pixels-per-cell, cpb for cells-per-block, and C for best
+  regularization parameter.  }
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+%-------------------------------------------------%
+\subsection{Effects of Regularization on Model Performance}\label{sec:regularizedfit}
+%-------------------------------------------------% 
+
+% Logistic regression and regularization
+As described in Section~\ref{sec:logreg}, logistic regression trains a
+model with complexity determined by the regularization parameter.  The
+regularization parameter ultimately defines the model performance.
+Figure~\ref{fig:regularization} shows the model performance as a function of
+regularization parameter. 
+
+% Scores vs. regularization on larger train/test set with comparable
+% grid search in parameterization
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure}[t]\label{fig:regularization}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/ROC_multipleHOG.png}
+\caption{}
+\end{center}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+
+%-------------------------------------------------%
+\subsection{Failed identifications}\label{sec:failedids}
+%-------------------------------------------------%
+
+
 
 %-------------------------------------------------%
 \subsection{Effects of BCG contamination}
