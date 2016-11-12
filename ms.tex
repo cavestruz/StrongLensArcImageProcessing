@@ -277,7 +277,7 @@ feature vector''\citep{dalalandtriggs_05}.
 \begin{figure*}[t]\label{fig:hogvisual}
 \begin{center}
 \includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or5ppc32cpb1.pdf}\hspace{-20pt}
-\includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or9ppc16cpb1.pdf}\hspace{-20pt}
+\includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or9ppc16cpb1.pdf}
 \caption{Visualized HOG feature vectors of the sample lensed HST-like
   image from Figure~\ref{fig:mockimages}.  Left: The corresponding HOG
   visualization with N$_\text{orient}=5$, (32, 32) pixels per cell,
@@ -483,20 +483,50 @@ Section~\ref{sec:regularizedfit}.
 
 % Logistic regression and regularization
 As described in Section~\ref{sec:logreg}, logistic regression trains a
-model with complexity determined by the regularization parameter.  The
-regularization parameter ultimately defines the model performance.
-Figure~\ref{fig:regularization} shows the model performance as a function of
-regularization parameter. 
+model with complexity determined by the regularization parameter,
+$C_\text{LogReg}$.  Increasing model complexity (larger
+$C_\text{LogReg}$), will better describe features in the training
+set[wc?].  However, an overly complex model will overfit the training
+set at the expense of its performance on any independent test set.
+The regularization parameter ultimately defines the model performance,
+and we must perform a parameter search to identify the optimal value
+for $C_\text{LogReg}$.
+
+Figure~\ref{fig:regularization} shows the model performance as a
+function of regularization parameter.  The left panel shows the
+accuracy, or score, of the model as a function of regularization
+parameter.  The right panel shows the AUC of the model as a function
+of regularization parameter.  The solid and dotted lines respectively
+correspond to the model performance on the test and training set.
+
+For either characterization of the model, the model performance on the
+training set increases and asymptotes with $C_\text{LogReg}$.  With
+increasing model complexity, the model better fits the data set it has
+been trained on.  This is analogous to fitting a seventh order
+polynomial to seven data points, where the fitting function will go
+through every point.  
+
+EDITING HERE
+
 
 % Scores vs. regularization on larger train/test set with comparable
 % grid search in parameterization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:regularization}
+\begin{figure*}[t]\label{fig:regularization}
 \begin{center}
-\includegraphics[width=\columnwidth]{figures/ROC_multipleHOG.png}
-\caption{}
+\includegraphics[width=\columnwidth]{figures/regularized_accuracy.pdf}\hspace{-20pt}
+\includegraphics[width=1\columnwidth]{figures/regularized_AUC.pdf}
+\caption{Left: Accuracy of the model with varying regularization.
+  Each color corresponds to a model trained for features extracted
+  with a different set of HOG parameters.  The dotted (solid) lines
+  show the performance of the model on the training (test) set.
+  Right: AUC of the model with varying regularization.  Linestyles and
+  colors are similar to those in the left panel.  AUC is a better
+  characterization of model performance, since the accuracy is
+  determined for fixed classification threshold [wc?], but peak model
+  performance can occur at a different classification threshold.}
 \end{center}
-\end{figure}
+\end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 
@@ -504,14 +534,39 @@ regularization parameter.
 \subsection{Failed identifications}\label{sec:failedids}
 %-------------------------------------------------%
 
+The best ROC curve, HST:N5ppc32cpb4C100, illustrates that we can lower
+the classification threshold and improve the true positive rate by
+$\sim10\%$ and sacrifice an increase in false positive rate by
+$\lsim5\%$.  In this section, we examine the ``borderline'' images,
+which transition from negative classification to positive calculation
+in the steepest part of the AUC curve.  Borderline images correspond
+to candidates for spectroscopic follow-up.  The model is less
+confident about this subset of images, and these would therefore be
+good candidates for follow-up human classification and/or
+spectroscopic follow-up (CITE HERE???).
+
+\todo{Figure ~\ref{fig:falseids} shows a random sample of 10 borderline
+images.  Common features...????}
 
 
 %-------------------------------------------------%
 \subsection{Effects of BCG contamination}
 %-------------------------------------------------%
 
-Previous works to identify strong lensing systems have often removed
-the BCG from images to better identify lensed galaxies.  Here, we
+Previous works to identify strong lensing systems have often modeled
+out the BCG from images to better identify lensed images (???CITE
+HERE???).  Here, we test the effects of the BCG by training and
+testing models on mock data where the BCG has not been included.  By
+construction, these results show the maximal improvement that can be
+obtained from BCG subtraction.
+
+Figure~\ref{fig:ROCnobcg} shows the \todo{ROC curve for models of HOG
+  feature vectors of mock data with no BCG.  The feature vectors are
+  the same HOG parameters as in Figure~\ref{fig:ROC} }.  \todo{The
+  grid search over parameter space was similar to that for data with
+  the BCG.}
+
+???????
 
 %-------------------------------------------------%
 \section{Summary and Discussions}
