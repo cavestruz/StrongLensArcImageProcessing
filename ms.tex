@@ -13,7 +13,7 @@
 \bibliographystyle{apj_ads}
 \usepackage[usenames,dvipsnames]{xcolor}
 \newcommand{\comment}[1]{{\color{red} #1}}
-\newcommand{\change}[1]{{\color{blue} #1}}
+\newcommand{\change}[1]{{\it\color{purple} #1}}
 \newcommand{\todo}[1]{{\bf\color{blue} #1}}
 %%%%%%%%%% User defined symbol %%%%%%
 \def\gsim{\gtrsim}
@@ -47,22 +47,28 @@ $^5${Digital Intelligence, JPMorgan Chase, Chicago, IL 60603 U.S.A.};\\
   
 %-------------------------------------------------%
 \begin{abstract} 
-  Gravitational lensing offers a direct probe of the underlying mass
-  distribution of lensing systems, a window to the high redshift
-  universe, and a geometric probe of cosmological models.  The advent
-  of large scale surveys such as the Large Synoptic Sky Telescope and
-  Euclid has prompted a need for automatic and efficient
-  identification of strong lensing systems.  In this first paper of a
-  series, we present LensFinderML, a strong lensing identification
-  pipeline that will be publicly released as open source software.
-
-Giant arcs trace... cosmology... mass distribution.  Advent of DES,
-LSST, etc. need an efficient way to identify strong lens images.  We
-present {\sc{MACHLLENSFINDER}} (MACHine Learning LENSFINDER), an open
-source image processing and deep learning.  This first paper focuses
-on image Processing Techniques for Giant Arc Identification Tests with
-mock images from the Hubble Space Telescope and LSST.  Image
-processing improves by....
+Gravitational lensing offers a direct probe of the underlying mass
+distribution of lensing systems, a window to the high redshift
+universe, and a geometric probe of cosmological models.  The advent of
+large scale surveys such as the Large Synoptic Sky Telescope and
+Euclid has prompted a need for automatic and efficient identification
+of strong lensing systems.  We present \change{LensFinderML}, a strong
+lensing identification pipeline that will be publicly released as open
+source software.  In this first application, we employ a fast feature
+extraction method, Histogram of Oriented Gradients (HOG), to capture
+edge features that are characteristic of strong gravitational arcs.
+We use logistic regression to train a supervised classifier model on
+the HOG of \change{HST- and LSST}-like images.  Our best performing
+models reach a completeness rate of \change{XX\%} and purity rate of
+\change{XX\%} for an HST-like sample.  However, for one orbit of LSST,
+our model cannot distinguish between strong lensing systems and
+non-strong lensing systems.  In absence of the brightest cluster
+galaxy in LSST-like data, our trained model reaches a completeness of
+\change{XX\%} and purity of \change{XX\%}.  Our results show one the
+most efficient and effective methods for automated strong lensing
+identification in space-based surveys.  The results also emphasize the
+need for further development and testing of additional tools to
+exploit[wc?]  ground-based surveys.
 \end{abstract}
 %-------------------------------------------------%
 
@@ -171,6 +177,128 @@ Section~\ref{sec:conclusions}.
 \section{Methodology}
 \label{sec:methods}
 %-------------------------------------------------%
+\subsection{Creating Simulated Images for Training Set and Testing Set}
+
+We use mock Hubble Space Telescope (HST) and Large Synoptic Sky
+Telescope (LSST) images generated with PICS (Pipeline for Images of
+Cosmological Strong lensing) (Li et al. 2016) and LensPOP (Thomas
+Colletti 2013) as training set and testing set. In these images, the
+lensed images include the images of lens galaxies, lensed images, and
+galaxies on the line of sight; the unlensed images include the images
+of lens galaxies and the galaxies on the line of sight.
+
+To produce simulated lensed galaxies, we first set mass models of the
+lenses to be the Singular Isothermal Ellipsoid (SIE):
+
+\begin{equation}
+\kappa = \frac{\theta_{\rm E}}{2}\frac{1}{\sqrt{x_1^2/q+x_2^2 q}}.
+\end{equation}
+
+
+Where, $\theta_{\rm E}$ is the Einstein Radius, $q$ is axis
+ratio. Einstein radius can be calculated according to the redshift of
+the lens, the redshift of the source, and the velocity dispersion of
+the lens galaxy.
+\begin{equation}
+\theta_{\rm E} = 4\pi\left(\frac{\sigma_v}{c}\right)\frac{D_{ls}}{D_{s}}, 
+\end{equation}
+where, $c$ is the speed of light, $\sigma_v$ is the velocity
+dispersion of the lens galaxy, $D_{ls}$ and $D_{s}$ are the angular
+diameter distance from the source plane to the lens plane and from the
+source plane to the observer separately.
+
+To rotate the lenses with a random orientation angles, we adopt the
+transformation below:
+
+\begin{eqnarray}
+\label{eq:rotation}
+\begin{bmatrix}
+
+    x_{1}\prime      \\
+    x_{2}\prime 
+\end{bmatrix}
+= 
+\begin{bmatrix}
+    \cos \phi  &  -\sin \phi      \\
+    \sin \phi  &  ~\cos \phi      
+\end{bmatrix} 
+\begin{bmatrix}
+    x_1      \\
+    x_2      
+\end{bmatrix} .
+\end{eqnarray}
+
+$\phi$ is the orientation angle.  According to above equations, we
+need $\sigma_v$, $q$, $\phi$, redshift of the lens $z_l$, and redshift
+of the source $z_s$ to derivative the lensing maps completely.
+Velocity dispersion, ellipticity, and orientation are randomly chosen
+from typical ranges of a galaxy, where $\sigma_v = [200, 320] km/s$,
+$q = [0.5, 1.0]$, and $\phi = [0, 360]$. The redshift of the lens is
+fixed at $z_l = 0.2$, and the redshift of the source is fixed at $z_s
+= 1.0$. The images of source galaxies are extracted from the CANDELS
+survey. We selected 33 bright galaxies, and relocated them to
+projected positions, which are close to the caustic of the lensing
+system, and the projected position of the lens is fixed in the center
+of the field of view of each image. Once we have the lens, source, and
+the parameters of the image simulation, i.e., $300 \times 300 {\rm
+  pixels}^2$ and 0.03 arcsec per pixel per side, settled, the lensed
+images can be produced by performing ray-tracing simulations.
+
+The light distributions of the lens galaxies  are modeled as the elliptical Sersic profile,
+
+\begin{equation}
+I(R) = I_{\rm eff}~{\rm exp} \left\lbrace -b_{n} \left[ \left(
+  \frac{R}{R_{\rm eff}}\right)^{1/n} - 1 \right ] \right\rbrace
+\end{equation}
+
+
+Where, $R = \sqrt[]{x_1^2 /q+x_2^2 q }$, $R_{\rm eff}$ is the
+effective radius in units of arcsecond, $I_{\rm eff}$ is the intensity
+at the effective radius, $n$ is the index of the Sersic profile, $q$
+is the ellipticity, and We perform the similar transformation as
+Eq. \ref{eq:rotation} to orient the sources.  We assume that the
+distribution of light is following that of mass, so ellipticity and
+orientation are the same as the SIE model. Matching the velocity
+dispersion with the COSMOS morphological
+catalog \footnote{\url{https://arxiv.org/pdf/1501.04977v2.pdf}}, we
+assign effective radius, effective luminosity, and index to the light
+profile.  We also assume the light center is on top of the mass
+center, the noiseless images of lenses can be drawn. The galaxies on
+the line of sight are constructed by cutting light-cones from the
+Hubble Ultra Deep Field.  Stacking all these images together and
+collaborating the magnitude of each component, we create primarily
+simulated lensed images.
+
+The final part is mock observing. To produce HST-like images, we do
+not need to do anything further than stacking and magnitude
+calibrating, because noise and PSF are involved when we are extracting
+galaxies on the line of sight. To produce LSST-like images, we perform
+re-binning, convolving with PSF, and adding noise serially; this
+process is implemented in LensPop. We created single-epoch-LSST-like
+images and stacked -LSST-like images for investigating the performance
+and usability of our pipeline in LSST data. Figure 2.1 illustrates a
+sample mock lensed and unlensed images from each telescope. From left
+to right, the top panel images respectively correspond to a mock HST
+lensing and non-lensing system. The mock HST images are 300 × 300 in
+size, and the pixel size is 0.03 arcsecond. For the HST-like data-set,
+many giant arcs are visually obvious. The middle panel images
+respectively correspond to a mock single-epoch LSST lensing and
+non-lensing systems. The bottom panel images respectively correspond
+to a mock stacked LSST lensing and non-lensing systems. These images
+are 45 × 45; the pixel size is 0.2 arcsecond. The ground based noise,
+PSF, and limited resolution of the LSST-like data-set make visual
+giant arc identification difficult. But when in the stacked LSST
+images, the quality is better, because more data improves the signal
+to noise ratio better.
+
+
+In the training sets, we also generate unlensed images, the procedure
+is similar to mock lensed images but getting rid of the part of
+ray-tracing. 10000 lensed images and 10000 unlensed images are merged
+to construct one training set. Furthermore, for investigating the
+influence of BCG galaxies on the performance of our lens
+identification pipeline in LSST data, we build another training sets
+of the images without BCG galaxies.
 
 %-------------------------------------------------%
 \subsection{Mock Images}
@@ -447,32 +575,65 @@ the area under the curve (AUC).  A perfect model would have an AUC of
 1, with data points along $(x=0, 0\leq y\leq1)$, and $(0\leq x\leq 1,
 y=1)$.
 
+% HST model performance
 Figure~\ref{fig:ROC} shows the ROC curves for three different HOG
 parameterizations for the HST-like dataset in red, green, and blue.
 The parameters and corresponding AUC for each curve are labeled in the
 legend.  The models for the HST-like dataset perform well, and have
-AUCs very close to 1.  On the other hand, the model for our LSST-like
-dataset does not perform well.  The dashed diagonal like corresponds
-to a model that is as good as a random classifier, e.g. a coin-flip
-for each test image.  The LSST-like ROC curve does marginally better,
-and the $AUC=0.527$ is within the statistical noise of the sample.
+AUCs very close to 1.  
 
-We train the model corresponding to each curve with the logistic
+% LSST model performance
+On the other hand, the model for our LSST-like dataset (solid magenta)
+does not perform well.  The dashed diagonal like corresponds to a
+model that is as good as a random classifier, e.g. a coin-flip, for
+each test image.  The LSST-like ROC curve does marginally better, and
+the $AUC=0.527$ is within the statistical noise of the sample.  
+
+% No BCG LSST
+One possible method of improving the detection of strong lensing
+systems is to model out the BCG.  The dotted magenta ROC curve
+corresponds to a model trained and tested on LSST-like data where the
+BCG has not been added to the mock image.  This model results in an
+AUC of 0.64, performing better than random.  In other words, if we
+were to perfectly model out the BCG contribution in LSST-like data, we
+could improve the performance by $\sim10\%$.
+
+% Choosing C
+The ROCs correspond to models that have been trained with logistic
 regression regularization parameter, $C_\text{LogReg}$, that best
 describes the training dataset without overfitting.  We discuss the
 choice of regularization parameter in
 Section~\ref{sec:regularizedfit}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:ROC}
+\begin{figure}[t]\label{fig:ROCHST}
 \begin{center}
-\includegraphics[width=\columnwidth]{figures/ROC_multipleHOG.png}
+\includegraphics[width=\columnwidth]{figures/ROC_HST_HOG.png}
 \caption{Red, green, blue: ROC curves for a models trained on the
   HST-like data with the Logistic Regression algorithm.  The magenta
-  shows the ROC curve for the LSST-like data.  The corresponding
-  parameters are labeled, N for number of orientations, ppc for
-  pixels-per-cell, cpb for cells-per-block, and C for best
-  regularization parameter.  }
+  solid (dotted) curve show the ROC curve for the LSST-like data with
+  (without) the BCG.  The corresponding parameters are labeled: N for
+  number of orientations, ppc for pixels-per-cell, cpb for
+  cells-per-block, and C for best regularization parameter.  The AUC
+  for each model is also labeled in the legend, where an AUC close to
+  1 is a near-ideal model, and an AUC close to 0.5 is a model that
+  performs as well as a coin-flip.}
+\end{center}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure}[t]\label{fig:ROCLSST}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/ROC_LSST_HOG.png}
+\caption{Red, green, blue: ROC curves for a models trained on the
+  HST-like data with the Logistic Regression algorithm.  The magenta
+  solid (dotted) curve show the ROC curve for the LSST-like data with
+  (without) the BCG.  The corresponding parameters are labeled: N for
+  number of orientations, ppc for pixels-per-cell, cpb for
+  cells-per-block, and C for best regularization parameter.  The AUC
+  for each model is also labeled in the legend, where an AUC close to
+  1 is a near-ideal model, and an AUC close to 0.5 is a model that
+  performs as well as a coin-flip.}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -492,22 +653,32 @@ The regularization parameter ultimately defines the model performance,
 and we must perform a parameter search to identify the optimal value
 for $C_\text{LogReg}$.
 
+%  Our running over C - score and AUC as characterizations
 Figure~\ref{fig:regularization} shows the model performance as a
 function of regularization parameter.  The left panel shows the
 accuracy, or score, of the model as a function of regularization
-parameter.  The right panel shows the AUC of the model as a function
-of regularization parameter.  The solid and dotted lines respectively
+parameter.  The accuracy is simply the percentage of correct
+predictions, true positives and true negatives, out of a given set.
+The right panel shows the AUC of the model as a function of
+regularization parameter.  The solid and dotted lines respectively
 correspond to the model performance on the test and training set.
 
+% Training behavior with C
 For either characterization of the model, the model performance on the
 training set increases and asymptotes with $C_\text{LogReg}$.  With
 increasing model complexity, the model better fits the data set it has
-been trained on.  This is analogous to fitting a seventh order
+been trained on.  [wc???] This is analogous to fitting a seventh order
 polynomial to seven data points, where the fitting function will go
-through every point.  
+through every point but will not likely predict additional points.
 
-EDITING HERE
-
+% Test behavior with C
+We use the model performance on a test set to determine the best value
+for $C_\text{LogReg}$ that will not overfit the training data.  With
+increasing model complexity, we are able to better able to capture
+features that are generally characteristic of strong lensing systems
+with arcs.  However, past a certain $C_\text{LogReg}$, the model
+performance on the test set decreases, as it has overfit the training
+set.
 
 % Scores vs. regularization on larger train/test set with comparable
 % grid search in parameterization
@@ -578,12 +749,27 @@ We summarize key points below:
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{itemize}
 
-\item 
-    
+\item Publicly released pipeline will be... swap out feature
+  extraction, machine learning algorithm, perform parameter searches,
+  and train a model with best parameters.
+
+\item HOG efficiently extracts features that well-describe strong
+  lensing systems with an arc. Performance of the model... SVM doesn't
+  make a difference.
+
+\item Ground based... noise... Model out BCG. 
+
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 These results indicate that...
+
+% Caveat of the mock data set
+One major caveat ... training and test mock images... LOS galaxies all
+from Hubble Ultra Deep field.  Success measured by performance on the
+small sample of systems observed with HST.
+
+% 
 
 \acknowledgments CA acknowledges support from the Kavli Institute of
 Cosmological Physics, the Enrico Fermi Institute at the University of
