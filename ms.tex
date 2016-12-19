@@ -22,15 +22,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document} 
-\shorttitle{LensFinder}
+\shorttitle{MachLensFinder}
 \shortauthors{Avestruz, Li, Lightman}
 \submitted{The Astrophysical Journal} 
 \slugcomment{The Astrophysical Journal, submitted}
 
-\title{MachLLensFinder - I: A Machine Learning Strong Lensing
+\title{MachLensFinder - I: An automated Strong Lensing
   Identification Pipeline}
 
-\author{Camille Avestruz\altaffilmark{1-3}\thanks{E-mail:
+\author{Camille Avestruz\altaffilmark{1-3,$\dagger$}\thanks{E-mail:
     avestruz@uchicago.edu}, Nan Li\altaffilmark{2-4}, and Matthew Lightman\altaffilmark{5} }
 
 \affil{
@@ -40,6 +40,7 @@ $^3${Department of Astronomy \& Astrophysics, The University of Chicago, Chicago
 $^4${High Energy Physics Division, Argonne National Laboratory,
 Lemont, IL 60439};\\
 $^5${Digital Intelligence, JPMorgan Chase, Chicago, IL 60603 U.S.A.};\\
+$^\dagger${Provost's Postdoctoral Scholar at the University of Chicago}\\
   \href{mailto:avestruz@uchicago.edu}{avestruz@uchicago.edu}\\
 }
 
@@ -52,23 +53,23 @@ distribution of lensing systems, a window to the high redshift
 universe, and a geometric probe of cosmological models.  The advent of
 large scale surveys such as the Large Synoptic Sky Telescope and
 Euclid has prompted a need for automatic and efficient identification
-of strong lensing systems.  We present \change{LensFinderML}, a strong
-lensing identification pipeline that will be publicly released as open
-source software.  In this first application, we employ a fast feature
-extraction method, Histogram of Oriented Gradients (HOG), to capture
-edge features that are characteristic of strong gravitational arcs.
-We use logistic regression to train a supervised classifier model on
-the HOG of \change{HST- and LSST}-like images.  Our best performing
-models reach a completeness rate of \change{XX\%} and purity rate of
-\change{XX\%} for an HST-like sample.  However, for one orbit of LSST,
-our model cannot distinguish between strong lensing systems and
-non-strong lensing systems.  In absence of the brightest cluster
-galaxy in LSST-like data, our trained model reaches a completeness of
-\change{XX\%} and purity of \change{XX\%}.  Our results show one the
-most efficient and effective methods for automated strong lensing
-identification in space-based surveys.  The results also emphasize the
-need for further development and testing of additional tools to
-exploit[wc?]  ground-based surveys.
+of strong lensing systems.  We present {\em MachLensFinder}, a
+strong lensing identification pipeline that will be publicly released
+as open source software.  In this first application, we employ a fast
+feature extraction method, Histogram of Oriented Gradients (HOG), to
+capture edge patterns that are characteristic of strong gravitational
+arcs in galaxy-galaxy lensing.  We use logistic regression to train a
+supervised classifier model on the HOG of \change{HST- and LSST}-like
+images.  Our best performing models reach a completeness rate of
+\change{XX\%} and purity rate of \change{XX\%} for an HST-like sample.
+However, for one orbit of LSST, our model cannot distinguish between
+strong lensing systems and non-strong lensing systems.  In absence of
+the brightest cluster galaxy in LSST-like data, our trained model
+reaches a completeness of \change{XX\%} and purity of \change{XX\%}.
+Our results show one the most efficient and effective methods for
+automated strong lensing identification in space-based surveys.  The
+results also emphasize the need for further development and testing of
+additional tools to maximize use of ground-based surveys.
 \end{abstract}
 %-------------------------------------------------%
 
@@ -79,14 +80,17 @@ exploit[wc?]  ground-based surveys.
 % Gravitational lensing as a geometric (?) test of cosmology.  Also
 % probes underlying matter distribution in galaxy clusters, sensitive
 % to things like recent accretion and environment.
-Gravitational lensing deflections due to gravity... \citep[see][for a
-  review]{kneibandnatarajan_11}.  Strong lensing visible ... giant
-arcs, multiple images, and arclets.  Galaxy clusters as strong lens,
-deep gravitational potential well, can see by eye.  Strong lensing
-signatures probe underlying dark matter distribution of galaxy
-clusters, magnify the background galaxy population allowing us to
-probe formation at epochs further back in time, and geometric test of
-cosmology.
+Gravitational lensing occurs when intermediate fluctuations in the
+matter density field deflect light from background sources
+\citep[see][for a review]{kneibandnatarajan_11}.  In particular, the
+deep gravitational potential wells of galaxy clusters provide a strong
+lens, with lensed images that can be seen by eye.  Strong
+gravitational lensing can manifest as visible giant arcs magnifying
+high redshift galaxies \citep{lyndsandpetrosian_86,gladders_??},
+multiply imaged quasars \citep{walsh_etal79}, and arclets.  Lensing
+signatures probe the underlying dark matter distribution of galaxy
+clusters \citep{warrenanddye_03}, probe high redshift galaxy formation
+\citep{allam_etal07}, and provide a geometric test of cosmology.
 
 % Arc identification can be done visually (e.g. that zooniverse
 % thing).  But, in the advent of optical surveys, DES and LSST, we
@@ -95,83 +99,107 @@ cosmology.
 % in submillimeter; high resolution spectroscopic imaging with ALMA;
 % optical surveys DES, HSC, LSST, and Euclid (Oguri \& Marshall 2010).
 The geometric test of cosmology requires a comparison of predicted arc
-abundances and observed abundances.  In the advent of large surveys,
-such as DES and LSST, we will be limited by our ability to
-automatically process the large amounts of data and select likely
-strong lensing clusters for follow up spectroscopic measurements to
-positively identify background galaxy images.  Image identification
-has had an onslaught of new works (wc).
-
-% Serentipitous discoveries confirmed the theory (cite Einstein)
-% Cite first discoveries of different shapes of strong lensing images
-% While some serendipitous systems found recently (gladders+),
-% Describe the uptick in amount of data
-% End with need to scale with the volume of data
-Early strong lensing images were serendipitous discoveries
-(e.g. multiple quasars \citep{walsh_etal79}, arcs in clusters
-\citep{lyndsandpetrosian_86}, ...).  As the number of images with
-potential lensing systems increased, infrastructure emerged for both
-automated and visual inspection.  
+abundances and observed abundances
+\citep{kochanek_96,chae_02,linder_04}.  Visual arc identification has
+been effective through the use of citizen science platforms
+(e.g. \citet{marshall_etal16,more_etal16}).  However, in the advent of
+large surveys, such as the Dark Energy Survey (DES) and the Large
+Synoptic Sky Telescope (LSST), we will be limited by our ability to
+automatically process large amounts of data and select likely strong
+lensing clusters for follow up visual and spectroscopic confirmation.
+The strong lensing sector of cluster-based cosmology requires an
+exploration of techniques in image processing and classification.
 
 % Image identification works: visual, ``robot'' identification -
-% ArcFinder, RingFinder..., and citizen science (space warps).
-% Many of these rely on some explicit aspect of the image's morphology (give example), filtering, ... ....
-% Specifics of the methodology how the instrument affects the strong lensing signal, and the objects of interest.
+% ArcFinder, RingFinder..., and citizen science (space warps).  Many
+% of these rely on some explicit aspect of the image's morphology
+% (give example), filtering, ... ....  Specifics of the methodology
+% how the instrument affects the strong lensing signal, and the
+% objects of interest.
+Over the last decade, infrastructure has emerged for both large scale
+visual and automated image classification. By nature, the human eye is
+one of the best discriminators for image classification.  {\em
+  SpaceWarps} is an example of citizen science based image
+classification of strong lensing systems in Canada France Hawaii
+Telescope Science (CFHTLS) telescope observations
+\citep{marshall_etal16,more_etal16}.  Visual classification has been
+quite successful for a dataset like CFHTLS, classifying \change{XX in
+  XX time}.  However, future datasets like Euclid and LSST will be
+\change{XX} times this size, challenging the scalability of a citizen
+science approach.  The next step is to find automated methods with
+performance comparable to or better than humans. {\em SpaceWarps} is a
+part of the Zooniverse Project (CITE???), which also includes {\em
+  Galaxy Zoo}, the citizen science based image classification of
+galaxy types (CITE???).  Galaxy classification is a successful example
+of in which machine learning algorithms successfully train models to
+classify images with comparable performance to humans (CITE???).
 
-Automated lensed image identification has fallen under the term
-``robot'' identification, where images are fed into some kind of image
-processing pipeline that enhances and extracts characteristic features
-as parameters that are fed into some kind of cutoff or pattern
-recognition piece.  ArcFinder
-... .... \citep{seidelandbartelmann_07}. For multiply imaged quasars,
-Ringfinder ... ... ...\citep{gavazzi_etal14}.  Each pipeline
+% Describe general robot identification schemes that have been
+% implemented
+General automated, or ``robot'', identification refers to a classifier
+where images are fed into an image processing pipeline that enhances
+and extracts characteristic features as parameters on which a pattern
+recognition piece is applied [wc???].  Examples of this include
+ArcFinder ... .... \citep{seidelandbartelmann_07}. For multiply imaged
+quasars, Ringfinder ... ... ...\citep{gavazzi_etal14}.  Each pipeline
 .... ... and relies on the image morphology where ... ...  Note, that
-the method best applied to ... ... and the objects of interest.  The
-human eye is one of the best discriminators of.... SpaceWarps is an
-example of citizen science... visual identification
-\citep{marshall_etal16,more_etal16}.  However, scalability, training
-....
+the method best applied to ... ... and the objects of interest. 
 
-% Arc finding must optimize for completeness and purity.  Completeness
-% (no false negatives), purity (minimal false positives).  Purity can
-% be double checked in a smaller subsample of the data visually.  And,
-% spectroscopic follow up is expensive.  Also, scalability of the
-% strong lens finding method matters - example with the citizen
-% science.
+% Describe how machine learning is a step up
+With ``machine learning'' algorithms, we can train a model to separate
+a dataset according to some desired classification scheme.  However,
+we still need to reduce the dimensionality of the problem by removing
+information in the images that do not pertain to the classifier.
+Examples of automated classification will...
+
+% Previous works and our goal to make a universal pipeline 
+Machine learning to automate.  Previous works (StrongML),
+More+... Here, we focus on the improvement from preprocessing the
+images and describe the pipeline, which is publicly available.
+Depending on the image type, different preprocessing is likely
+necessary (rings, multiply lensed quasars, etc.) Our goal is to create
+an open source pipeline that is general enough for the user to select
+or add appropriate image processing techniques to augment the features
+of the lensed image, train and test data with different machine
+learning techniques, and to select the sequence of methods that
+maximizes completeness with optimal purity.
+
+% This is the first in MachLensFinder series with initial pipeline
+% results
+This is the first in a series of {\em MachLensFinder} papers.  We
+present our image processing and machine learning classifier pipeline.
+Our image processing procedure parameterizes edges in our image in a
+1-d histogram, enabling fast feature extraction that is similar to
+techniques used to identify humans in security software systems.  We
+train a model with logistic regression to identify features
+corresponding to strong lensing systems.
+
+We show results of the pipeline on mock galaxy-galaxy lens systems
+observed by HST and LSST as respective examples of classifier
+performance on optical space- and ground-based observations.
+\citet{miraldaescudeandlehar_92} first suggested that massive
+ellipticals would be likely frequent strong lensing sources in optical
+surveys.  We train and test our pipeline on subsamples from 10,000
+mock observed brightest cluster galaxy (BCG) strong lensing systems
+and 10,000 BCG non-strong lensing systems.
+
+% Arc finding must optimize for completeness and purity.  
 In general, lensed image finding must optimize for completeness and
 purity.  In the application of arc abundance comparisons with
 cosmological predictions, completeness is important; we must be able
 to understand the reasons and frequency of false negatives.  Since
 spectroscopic confirmation of background lensed images is expensive,
 purity is key; we must minimize false positives that would waste
-follow up telescope time.
+follow up telescope time.  We discuss the performance of our image
+processing and classification pipeline with respect to the
+completeness and purity rates of our trained models and illustrate the
+scalability of training our models [wc???].
 
-% Machine learning to automate.  Previous works (StrongML),
-% More+... Here, we focus on the improvement from preprocessing the
-% images and describe the pipeline, which is publicly available.
-% Depending on the image type, different preprocessing is likely
-% necessary (rings, multiply lensed quasars, etc.) Our goal is to
-% create an open source pipeline that is general enough for the user
-% to select or add appropriate image processing techniques to augment
-% the features of the lensed image, train and test data with different
-% machine learning techniques, and to select the sequence of methods
-% that maximizes completeness with optimal purity.
-
-
-% No need to explicitly extract morphological parameters to a pattern
-% finding, simply transform the image according to the appropriate
-% image preprocessing function, and directly feed this into the
-% machine learning ... 
-
-% This is the first in a series of LensFinder papers where we present
-% our initial pipeline results with a test... of .... Image
-% preprocessing.... same technology to validate watermarks
-
-
-Our paper is organized as follows.  In Section~\ref{sec:methods} we
-briefly describe ...  We present our results in
-Section~\ref{sec:results}, and our summary and discussions in
-Section~\ref{sec:conclusions}.
+Our paper is organized as follows. In Section~\ref{sec:methods} we
+briefly describe the methods to generate the mock HST and LSST data
+and our overall image processing and classification pipeline. We
+present our results in Section~\ref{sec:results}, and our summary and
+discussions in Section~\ref{sec:conclusions}.
 
 %-------------------------------------------------%
 \section{Methodology}
