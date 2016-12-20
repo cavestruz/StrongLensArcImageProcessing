@@ -86,11 +86,13 @@ matter density field deflect light from background sources
 deep gravitational potential wells of galaxy clusters provide a strong
 lens, with lensed images that can be seen by eye.  Strong
 gravitational lensing can manifest as visible giant arcs magnifying
-high redshift galaxies \citep{lyndsandpetrosian_86,gladders_??},
+high redshift galaxies \citep{lyndsandpetrosian_86,gladders_etal03},
 multiply imaged quasars \citep{walsh_etal79}, and arclets.  Lensing
 signatures probe the underlying dark matter distribution of galaxy
 clusters \citep{warrenanddye_03}, probe high redshift galaxy formation
-\citep{allam_etal07}, and provide a geometric test of cosmology.
+\citep{allam_etal07}, and provide a geometric test of cosmology via
+comparison of predicted arc abundances and observed abundances
+\citep{kochanek_96,chae_03,linder_04}.
 
 % Arc identification can be done visually (e.g. that zooniverse
 % thing).  But, in the advent of optical surveys, DES and LSST, we
@@ -98,17 +100,15 @@ clusters \citep{warrenanddye_03}, probe high redshift galaxy formation
 % amounts of data.  Wide field surveys - SPT in millimeter, Herschel
 % in submillimeter; high resolution spectroscopic imaging with ALMA;
 % optical surveys DES, HSC, LSST, and Euclid (Oguri \& Marshall 2010).
-The geometric test of cosmology requires a comparison of predicted arc
-abundances and observed abundances
-\citep{kochanek_96,chae_02,linder_04}.  Visual arc identification has
-been effective through the use of citizen science platforms
-(e.g. \citet{marshall_etal16,more_etal16}).  However, in the advent of
-large surveys, such as the Dark Energy Survey (DES) and the Large
-Synoptic Sky Telescope (LSST), we will be limited by our ability to
-automatically process large amounts of data and select likely strong
-lensing clusters for follow up visual and spectroscopic confirmation.
-The strong lensing sector of cluster-based cosmology requires an
-exploration of techniques in image processing and classification.
+Visual arc identification has been effective through the use of
+citizen science platforms (e.g. \citet{marshall_etal16,more_etal16}).
+However, in the advent of large surveys, such as the Dark Energy
+Survey (DES) and the Large Synoptic Sky Telescope (LSST), we will be
+limited by our ability to automatically process large amounts of data
+and select likely strong lensing clusters for follow up visual and
+spectroscopic confirmation.  The strong lensing sector of
+cluster-based cosmology requires an exploration of techniques in image
+processing and classification.
 
 % Image identification works: visual, ``robot'' identification -
 % ArcFinder, RingFinder..., and citizen science (space warps).  Many
@@ -130,20 +130,21 @@ science approach.  The next step is to find automated methods with
 performance comparable to or better than humans. {\em SpaceWarps} is a
 part of the Zooniverse Project (CITE???), which also includes {\em
   Galaxy Zoo}, the citizen science based image classification of
-galaxy types (CITE???).  Galaxy classification is a successful example
-of in which machine learning algorithms successfully train models to
-classify images with comparable performance to humans (CITE???).
+galaxy types \citep{lintott_etal08}.  Galaxy classification is a
+successful example of in which machine learning algorithms
+successfully train models to classify images with comparable
+performance to humans \citep{dieleman_etal15}.
 
 % Describe general robot identification schemes that have been
 % implemented
 General automated, or ``robot'', identification refers to a classifier
 where images are fed into an image processing pipeline that enhances
 and extracts characteristic features as parameters on which a pattern
-recognition piece is applied [wc???].  Examples of this include
-ArcFinder ... .... \citep{seidelandbartelmann_07}. For multiply imaged
-quasars, Ringfinder ... ... ...\citep{gavazzi_etal14}.  Each pipeline
+recognition piece is applied.  Examples of this include ArcFinder for
+group or cluster scale lens \citep{seidelandbartelmann_07}, Ringfinder
+for multiply imaged quasars\citep{gavazzi_etal14}, .  Each pipeline
 .... ... and relies on the image morphology where ... ...  Note, that
-the method best applied to ... ... and the objects of interest. 
+the method best applied to ... ... and the objects of interest.
 
 % Describe how machine learning is a step up
 With ``machine learning'' algorithms, we can train a model to separate
