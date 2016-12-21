@@ -799,14 +799,32 @@ We summarize key points below:
 \item We have designed our pipeline to easily select and add image
   pre-processing and feature extraction methods, and to select a
   machine learning algorithm for classification.  Additionally, the
-  user can easily perform parameter searches, and train a model with
-  best parameters.
+  user can easily perform parameter searches to train a model with the
+  best parameters for a given problem.
 
-\item HOG efficiently extracts features that well-describe strong
-  lensing systems with an arc. Performance of the model... SVM doesn't
-  make a difference.
+\item We have tested HOG as an efficient and effective feature
+  extractor for galaxy-galaxy strong lensing systems in both a space
+  based (HST-like) and ground based (LSST-like) observation.  
 
-\item Ground based... noise... Model out BCG. 
+\item We have found almost no difference between the Logistic
+  Regression and Support Vector Machine algorithms, with Logistic
+  Regression performing at a factor of $XX$ faster.  This means that
+  features of lens and non-lens images are relatively well separated
+  by hyperplanes in feature space.
+
+\item We find AUC values of ROC curves of optimized classifier models
+  to yield $AUC=0.987$ for the HST-like data, $AUC=0.96$ for the
+  stacked LSST-like data with the lensing BCG included, and $AUC=0.86$
+  for the stacked LSST-like data with the lensing BCG perfectly
+  removed.  This suggests that we will be able to use our method to
+  detect strong galaxy-galaxy lensing systems in future space-based
+  missions (e.g. {\em Euclid}) with high purity and completeness.
+  However, for future ground-based missions like LSST, we will need to
+  perform additional image pre-processing, such as subtracting the
+  image component corresponding to the lens.
+
+\item Images that were difficult for our model to classify typically
+  fell in the ..... ....
 
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
