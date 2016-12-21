@@ -346,17 +346,21 @@ modeled detector artifacts for bright stars.  See \cite{li_etal16} for
 more details.
 
 Figure ~\ref{fig:mockimages} illustrates a sample mock lensed and
-unlensed images from each telescope.  From left to right, the top
-panel images respectively correspond to a mock HST lensing and
-non-lensing system. The mock HST images are $n_\text{pix}\times
+unlensed images from each telescope.  The top left and right panel
+images respectively correspond to a mock HST lensing and non-lensing
+system. The mock HST images are $n_\text{pix}\times
 n_\text{pix}=300\times300$ in size.  For the HST-like dataset, many
 giant arcs are visually obvious.
 
-The bottom panel images respectively correspond to a mock LSST lensing
-and non-lensing system.  These images are $n_\text{pix}\times
+The middle row corresponds to the same simulated systems, as observed
+with a single epoch of LSST.  These images are $n_\text{pix}\times
 n_\text{pix}=45\times45$.  The ground based noise and limited
 resolution of the LSST-like dataset make visual giant arc
-identification difficult.
+identification difficult.  However, by stacking observations over the
+course of the LSST survey, we recover the arc feature, albeit at a
+much lower resolution than with the HST-like image. The bottom row
+shows the mock stacked observation, where the lensed background galaxy
+is now visible.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure*}[t]\label{fig:mockimages}
@@ -441,18 +445,23 @@ feature vector''\citep{dalalandtriggs_05}.
 \includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or5ppc32cpb1.pdf}\hspace{-20pt}
 \includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or9ppc16cpb1.pdf}\\
 \includegraphics[width=1\columnwidth]{figures/lsst_105_lensed_imgs_1or4ppc3cpb3.pdf}\hspace{-20pt}
-\includegraphics[width=1\columnwidth]{figures/lsst_105_unlensed_imgs_1or4ppc3cpb3.pdf}\\
-\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_lensed_imgs_1or4ppc3cpb3.pdf}\hspace{-20pt}
-\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_unlensed_imgs_1or4ppc3cpb3.pdf}
-\caption{Visualized HOG feature vectors of the sample lensed HST-like
-  image from Figure~\ref{fig:mockimages}.  Left: The corresponding HOG
-  visualization with N$_\text{orient}=5$, (32, 32) pixels per cell,
-  and (1, 1) cells per block.  Right: The HOG visualization of the
-  same mock image with N$_\text{orient}=9$, (16, 16) pixels per cell,
-  and (1, 1) cells per block.  The brightest lines align with
-  prominent edges.  Note, while fewer pixels per cell will better
-  resolve the arc feature, the ``edge'' corresponding to the arc is
-  less prominent.  }
+%\includegraphics[width=1\columnwidth]{figures/lsst_105_unlensed_imgs_1or4ppc3cpb3.pdf}\\
+\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_lensed_imgs_1or4ppc3cpb3.pdf}
+%\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_unlensed_imgs_1or4ppc3cpb3.pdf}
+\caption{Top row: Visualized HOG feature vectors of the sample lensed
+  HST-like image from Figure~\ref{fig:mockimages}.  Left: The
+  corresponding HOG visualization with N$_\text{orient}=5$, (32, 32)
+  pixels per cell, and (1, 1) cells per block.  Right: The HOG
+  visualization of the same mock image with N$_\text{orient}=9$, (16,
+  16) pixels per cell, and (1, 1) cells per block.  The brightest
+  lines align with prominent edges.  Note, while fewer pixels per cell
+  will better resolve the arc feature, the ``edge'' corresponding to
+  the arc is less prominent.  Bottom row: Visualized HOG feature
+  vectors for the LSST-like single epoch and stacked images with the
+  best scoring HOG parameterization of N$_\text{orient}=4$, (3, 3)
+  pixels per cell, and (3, 3) cells per block.  The single epoch image
+  (left) does not have significant enough edge features to emerge in
+  the HOG, but the stacked image (right) does.}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -787,9 +796,11 @@ We summarize key points below:
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{itemize}
 
-\item Publicly released pipeline will be... swap out feature
-  extraction, machine learning algorithm, perform parameter searches,
-  and train a model with best parameters.
+\item We have designed our pipeline to easily select and add image
+  pre-processing and feature extraction methods, and to select a
+  machine learning algorithm for classification.  Additionally, the
+  user can easily perform parameter searches, and train a model with
+  best parameters.
 
 \item HOG efficiently extracts features that well-describe strong
   lensing systems with an arc. Performance of the model... SVM doesn't
