@@ -749,23 +749,145 @@ set.
 
 
 %-------------------------------------------------%
-\subsection{Failed identifications}\label{sec:failedids}
+\subsection{Image classification performance}\label{sec:performance}
 %-------------------------------------------------%
 
-The best ROC curve, HST:N5ppc32cpb4C100, illustrates that we can lower
-the classification threshold and improve the true positive rate by
-$\sim10\%$ and sacrifice an increase in false positive rate by
-$\lsim5\%$.  In this section, we examine the ``borderline'' images,
-which transition from negative classification to positive calculation
-in the steepest part of the AUC curve.  Borderline images correspond
-to candidates for spectroscopic follow-up.  The model is less
-confident about this subset of images, and these would therefore be
-good candidates for follow-up human classification and/or
-spectroscopic follow-up (CITE HERE???).
+% Defining the 6 paradigms of classification
+In this section, we discuss the different image types that our model
+is most and least able to successfully classify.  We have six
+paradigms of model performance on the mock images, and include a
+larger compilation of each of the six image classification paradigms
+in the Appendix for the various models we have trained.
 
-\todo{Figure ~\ref{fig:falseids} shows a random sample of 10 borderline
-images.  Common features...????}
+% TP and TN
+Figure ~\ref{fig:HSTclassificationtile} shows a tile of representative
+HST-like images classified with the model, HST:N5ppc32cpb4C100.  The
+left column show lensing systems, and right column non-lensing
+systems.  From top to bottom, the images are ordered from highest
+scoring to lowest scoring with the classification model.  The top left
+is what we would call a ``true positive'', a lensing system that will
+always classified as positive because of its high score.  Most of the
+highest scoring lensing systems exhibit similar extended arcs
+\todo{corresponding to a large magnification.}  The bottom right is a
+``true negative'', a non-lensing system that will likely be classified
+as negative because of its low score.  Many of the lowest scoring
+non-lensing systems have \todo{fairly small BCGs, which are non likely
+  to lens a background galaxy.}
 
+% FN and FP
+The bottom left corresponds to a likely ``false negative,'' or a
+lensing system that is likely to be mis-classified as a negative.  The
+lowest scoring lensing systems tend to have images with smaller
+magnification that are minorly distorted, mimicking the shape of
+line-of-sight galaxies that the model has learned to ignore.  The top
+right corresponds to a likely ``false positive,'' or a non-lensing
+system that is likely to be mis-classified as a positive.  False
+positives tend to have ``fuzzy'' along the line of sight galaxies that
+mimic lensing arcs.
+
+% BP and BN
+The middle row are images whose classification will be most sensitive
+to the classification threshold.  We call these borderline images,
+with the left corresponding to a ``borderline positive'', and the
+right corresponding to a ``borderline negative''.  They sit around the
+knee of the ROC curve, the optimal threshold for purity and
+completeness.  Note that the ROC curve for HST:N5ppc32cpb4C100
+illustrates that we can lower the classification threshold and improve
+the true positive rate by $\sim10\%$ and sacrifice an increase in
+false positive rate by $\lsim5\%$.  However, small perturbations
+around the knee will either include or disinclude the middle row
+images.  These are the systems that would make good candidates for
+visual and/or spectroscopic follow-up.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure*}[t]
+  \centering \mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/HST/1787_lensed_imgs_1.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/HST/1354_unlensed_imgs_1.pdf}} } \mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/HST/1052_lensed_imgs_1.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/HST/1994_unlensed_imgs_1.pdf}} } \mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/HST/1862_lensed_imgs_1.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/HST/1723_unlensed_imgs_1.pdf}} }
+\caption{HST-like images. The left column corresponds to typical
+  lensing systems in our sample from highest scoring (top) to lowest
+  scoring, or false negatives (bottom).  The right column corresponds
+  to typical non-lensing systems in our sample from highest scoring,
+  or false positives (top), to lowest scoring (bottom).  The middle
+  row can be considered ``borderline'' classified images, where the
+  scores of the lensing and non-lensing system are very close to one
+  another.  These are systems that will be most sensitive to the
+  classification threshold.}
+\label{fig:HSTclassificationtile}
+\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure*}[t]
+  \centering 
+
+\mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/BCG/lsst_stack_1204_lensed_imgs_1.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/BCG/lsst_stack_1534_unlensed_imgs_1.pdf}}
+} 
+
+\mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/BCG/lsst_stack_1384_lensed_imgs_1.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/BCG/lsst_stack_1703_unlensed_imgs_1.pdf}} 
+} 
+
+\mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/BCG/lsst_stack_1641_lensed_imgs_1.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/BCG/lsst_stack_1518_unlensed_imgs_1.pdf}} 
+}
+
+\caption{LSST-like images with a BCG. These illustrate the same image
+  classification paradigms as Figure~\ref{fig:HSTclassificationtile}.}
+\label{fig:LSSTBCGclassificationtile}
+\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure*}[t]
+  \centering 
+
+\mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/noBCG/lsst_stack_1957_lensed_imgs_0.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/noBCG/lsst_stack_stamps_1098.pdf}}
+} 
+
+\mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/noBCG/lsst_stack_1634_lensed_imgs_0.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/noBCG/lsst_stack_stamps_1664.pdf}} 
+} 
+
+\mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/noBCG/lsst_stack_1629_lensed_imgs_0.pdf}}\hfill
+    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+        clip]{figures/LSST/noBCG/lsst_stack_stamps_1399.pdf}} 
+}
+
+\caption{LSST-like images with no BCG. These illustrate the same image
+  classification paradigms as Figure~\ref{fig:HSTclassificationtile}.}
+\label{fig:LSSTnoBCGclassificationtile}
+\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 %-------------------------------------------------%
 \subsection{Effects of BCG contamination}
@@ -836,7 +958,17 @@ One major caveat ... training and test mock images... LOS galaxies all
 from Hubble Ultra Deep field.  Success measured by performance on the
 small sample of systems observed with HST.
 
-% 
+% Interpreting TP and FP rates
+Note that while our training and test set split of $50\%$ lensed and
+$50\%$ unlensed images is not realistic, our true positive and false
+positive rates in the ROC curves would stay the same for alternative
+lensed and unlensed sample splittings.  
+
+On the other hand, the ROC curves show a representative rate for lens
+and source distributions that are evenly sampled.  The sampling is
+{\it not} representative of what we might expect from a an
+observational survey.
+
 
 \acknowledgments CA acknowledges support from the Kavli Institute of
 Cosmological Physics, the Enrico Fermi Institute at the University of
