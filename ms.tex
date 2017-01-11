@@ -82,14 +82,12 @@ additional tools to maximize use of ground-based surveys.
 % to things like recent accretion and environment.
 Gravitational lensing occurs when intermediate fluctuations in the
 matter density field deflect light from background sources
-\citep[see][for a review]{kneibandnatarajan_11}.  In particular, the
-deep gravitational potential wells of galaxy clusters provide a strong
-lens, with lensed images that can be seen by eye.  Strong
-gravitational lensing can manifest as visible giant arcs magnifying
-high redshift galaxies \citep{lyndsandpetrosian_86,gladders_etal03},
-multiply imaged quasars \citep{walsh_etal79}, and arclets.  Lensing
-signatures probe the underlying dark matter distribution of galaxy
-clusters \citep{warrenanddye_03}, probe high redshift galaxy formation
+\citep[see][for a review]{kneibandnatarajan_11}.  Strong gravitational
+lensing can manifest as visible giant arcs magnifying high redshift
+galaxies \citep{lyndsandpetrosian_86,gladders_etal03}, multiply imaged
+quasars \citep{walsh_etal79}, and arclets.  Lensing signatures probe
+the underlying dark matter distribution of the lens
+\citep{warrenanddye_03}, high redshift galaxy formation
 \citep{allam_etal07}, and provide a geometric test of cosmology via
 comparison of predicted arc abundances and observed abundances
 \citep{kochanek_96,chae_03,linder_04}.
@@ -105,10 +103,9 @@ citizen science platforms (e.g. \citet{marshall_etal16,more_etal16}).
 However, in the advent of large surveys, such as the Dark Energy
 Survey (DES) and the Large Synoptic Sky Telescope (LSST), we will be
 limited by our ability to automatically process large amounts of data
-and select likely strong lensing clusters for follow up visual and
-spectroscopic confirmation.  The strong lensing sector of
-cluster-based cosmology requires an exploration of techniques in image
-processing and classification.
+and select likely strong lensing candidates for follow up visual and
+spectroscopic confirmation.  The strong lensing sector requires an
+exploration of techniques in image processing and classification.
 
 % Image identification works: visual, ``robot'' identification -
 % ArcFinder, RingFinder..., and citizen science (space warps).  Many
@@ -116,8 +113,8 @@ processing and classification.
 % (give example), filtering, ... ....  Specifics of the methodology
 % how the instrument affects the strong lensing signal, and the
 % objects of interest.
-Over the last decade, infrastructure has emerged for both large scale
-visual and automated image classification. By nature, the human eye is
+Over the last decade, infrastructure for both large scale visual and
+automated image classification emerged. By nature, the human eye is
 one of the best discriminators for image classification.  {\em
   SpaceWarps} is an example of citizen science based image
 classification of strong lensing systems in Canada France Hawaii
@@ -142,9 +139,10 @@ where images are fed into an image processing pipeline that enhances
 and extracts characteristic features as parameters on which a pattern
 recognition piece is applied.  Examples of this include ArcFinder for
 group or cluster scale lens \citep{seidelandbartelmann_07}, Ringfinder
-for multiply imaged quasars\citep{gavazzi_etal14}, .  Each pipeline
-.... ... and relies on the image morphology where ... ...  Note, that
-the method best applied to ... ... and the objects of interest.
+for multiply imaged quasars\citep{gavazzi_etal14}, and ???.  Each
+pipeline .... ... and relies on the image morphology where ... ...
+Note, that the method best applied to ... ... and the objects of
+interest.
 
 % Describe how machine learning is a step up
 With ``machine learning'' algorithms, we can train a model to separate
@@ -175,6 +173,7 @@ techniques used to identify humans in security software systems.  We
 train a model with logistic regression to identify features
 corresponding to strong lensing systems.
 
+% Summary of results
 We show results of the pipeline on mock galaxy-galaxy lens systems
 observed by HST and LSST as respective examples of classifier
 performance on optical space- and ground-based observations.
@@ -184,17 +183,23 @@ surveys.  We train and test our pipeline on subsamples from 10,000
 mock observed brightest cluster galaxy (BCG) strong lensing systems
 and 10,000 BCG non-strong lensing systems.
 
-% Arc finding must optimize for completeness and purity.  
+% Need to optimize for completeness and purity.  Arc counts and mass
+% reconstruction.
 In general, lensed image finding must optimize for completeness and
 purity.  In the application of arc abundance comparisons with
 cosmological predictions, completeness is important; we must be able
-to understand the reasons and frequency of false negatives.  Since
-spectroscopic confirmation of background lensed images is expensive,
-purity is key; we must minimize false positives that would waste
-follow up telescope time.  We discuss the performance of our image
-processing and classification pipeline with respect to the
+to understand the reasons and frequency of false negatives.  In the
+application of mass reconstruction of the lensing object, completeness
+in strong lensing system identifications will allow us to constrain
+the mass-to-light ratio for a large number of objects.  
+
+% Purity issues
+Since spectroscopic confirmation of background lensed images is
+expensive, purity is key; we must minimize false positives that would
+waste follow up telescope time.  We discuss the performance of our
+image processing and classification pipeline with respect to the
 completeness and purity rates of our trained models and illustrate the
-scalability of training our models [wc???].
+scalability of training our models [wc???].  
 
 Our paper is organized as follows. In Section~\ref{sec:methods} we
 briefly describe the methods to generate the mock HST and LSST data
@@ -751,6 +756,8 @@ set.
 %-------------------------------------------------%
 \subsection{Image classification performance}\label{sec:performance}
 %-------------------------------------------------%
+**Redshift makes sense, but only because of the redshift distribution.
+--> Zahid+15 quiescent.... this is where redshifts are from.
 
 % Defining the 6 paradigms of classification
 In this section, we discuss the different image types that our model
@@ -768,9 +775,10 @@ scoring to lowest scoring with the classification model.  The top left
 is what we would call a ``true positive'', a lensing system that will
 always classified as positive because of its high score.  Most of the
 highest scoring lensing systems exhibit similar extended arcs
-\todo{corresponding to a large magnification.}  The bottom right is a
-``true negative'', a non-lensing system that will likely be classified
-as negative because of its low score.  Many of the lowest scoring
+corresponding to a large magnification (see
+Section~\ref{sec:peformance_lensmodel}).  The bottom right is a ``true
+negative'', a non-lensing system that will likely be classified as
+negative because of its low score.  Many of the lowest scoring
 non-lensing systems have \todo{fairly small BCGs, which are non likely
   to lens a background galaxy.}
 
@@ -783,7 +791,12 @@ line-of-sight galaxies that the model has learned to ignore.  The top
 right corresponds to a likely ``false positive,'' or a non-lensing
 system that is likely to be mis-classified as a positive.  False
 positives tend to have ``fuzzy'' along the line of sight galaxies that
-mimic lensing arcs.
+mimic lensing arcs.  The false positives should be from bright
+galaxies along the line of sight.  \todo{The highest scoring
+  non-lensing systems often have fairly bright disk shaped galaxies
+  along the line of sight.  Visually, these are also virtually
+  indistinguishable from a lensed image and would require
+  spectroscopic follow-up.}
 
 % BP and BN
 The middle row are images whose classification will be most sensitive
@@ -860,7 +873,7 @@ visual and/or spectroscopic follow-up.
 \label{fig:LSSTBCGclassificationtile}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-
+\subsection{BCG removed}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure*}[t]
   \centering 
@@ -893,6 +906,85 @@ visual and/or spectroscopic follow-up.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 %-------------------------------------------------%
+\subsubsection{Performance dependence on lens-model parameters}
+\label{sec:peformance_lensmodel}
+%-------------------------------------------------%
+
+% Summary of subsection
+Here, we examine lens-model parameters that affect how well our
+pipeline can classify the system.  The lens-model parameters we
+examined are the redshift, ellipticity, orientation angle, and
+velocity dispersion of the lensing BCG, and also the magnification of
+the lensed image compared with its original size.  The magnification
+of the lensed image is the most correlated lens-model parameter with
+our trained model performance.  The more strongly lensed an image is,
+the larger its magnification, and the easier it is for our trained
+model to classify.
+
+% Discuss figure
+In Figure~\ref{fig:scorevslensparams}, we show the classification
+score as a function of image magnification for our HST-like sample.
+The left-hand side shows the relation color-coded by the redshift of
+the lensing galaxy, and the right-hand side shows the relation
+color-coded by the velocity dispersion of the lensing galaxy.  Lensing
+systems with images that have magnification $\gsim7$ will almost
+certainly be classified as positive with threshold scores above
+$\gsim0.5$.  These systems are also those that are most easily
+classified by eye.  However, our trained model has varying performance
+for systems with lower magnifications.
+
+% Some dependence on redshift and velocity dispersion, which is folded
+% into magnitude
+Almost \todo{X\%} of lensing systems with magnifications $\lsim7$ will
+be falsely identified as non-lenses for classification threshold
+scores $\gsim0.5$.  These systems typically have lenses that are at
+higher redshifts of $z\gsim0.5$ (lighter colors in left figure) and/or
+velocity dispersions lower than $\sigma_v\lsim230.$~km/s (darker
+colors in right figure).  Note that lensing galaxies with smaller
+velocity dispersions are less massive and therefore have a smaller
+efficiency of lensing cross section.  The smaller efficiency means
+that a background galaxy is less likely to be strongly lensed with
+high magnification.  Also, due to hierarchical structure formation,
+galaxies are less massive at higher redshifts, so the trends of model
+performance with these three parameters are somewhat degenerate with
+one another.  
+
+The relationship between our model performance and these lens
+parameters indicates that the magnification of lensed images is the
+most relevant, and the distribution of image magnification in a data
+set will impact trained model performance.  We did not find
+correlations in model performance with other lens parameters.  It is
+also useful to keep in mind that lensed galaxy images with
+magnification $\lsim5$ (e.g. slightly stretched spherical galaxies)
+are often visually indistinguishable from elliptical galaxies along
+the line of sight.  \todo{We will discuss how differences between the
+  lens-model parameter distributions in the training and test sets
+  affect performance in a forthcoming paper.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure*}[t]
+  \centering 
+
+\mbox{
+    \subfigure{\includegraphics[width=\columnwidth,trim=0 0 0 0,
+        clip]{figures/HST/or5ppc32cpb4/magnitude_d_colorcodedby_z.pdf}}\hfill
+    \subfigure{\includegraphics[width=\columnwidth,trim=0 0 0 0,
+        clip]{figures/HST/or5ppc32cpb4/magnitude_d_colorcodedby_velocity_dispersion.pdf}}
+} 
+\caption{Image classification score as a function of lensed image
+  magnification.  Left color-coded by redshift, right is color coded
+  by the lens velocity_dispersion.}
+\label{fig:scorevslensparams}
+\end{figure*}
+
+%-------------------------------------------------%
+\subsubsection{Performance sensitivity to line-of-sight galaxies}
+\label{sec:peformance_lensmodel}
+%-------------------------------------------------%
+
+
+
+%-------------------------------------------------%
 \subsection{Effects of BCG contamination}
 %-------------------------------------------------%
 
@@ -915,6 +1007,11 @@ Figure~\ref{fig:ROCnobcg} shows the \todo{ROC curve for models of HOG
 \section{Summary and Discussions}
 \label{sec:conclusions}
 %-------------------------------------------------%
+
+machine learning -> pipeline, and training set.  
+
+Future work with training set tests.
+
 
 We summarize key points below:
 
@@ -948,8 +1045,9 @@ We summarize key points below:
   perform additional image pre-processing, such as subtracting the
   image component corresponding to the lens.
 
-\item Images that were difficult for our model to classify typically
-  fell in the ..... ....
+\item Images that were easiest for our model to classify typically
+  were lens systems that had high magnification and a BCG with large
+  velocity dispersion.  
 
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -973,11 +1071,23 @@ and source distributions that are evenly sampled.  The sampling is
 observational survey.
 
 
-\acknowledgments CA acknowledges support from the Kavli Institute of
-Cosmological Physics, the Enrico Fermi Institute at the University of
-Chicago, and the University of Chicago Provost's Office.
+\acknowledgments CA acknowledges support from the Enrico Fermi
+Institute at the University of Chicago, and the University of Chicago
+Provost's Office. This work was also supported in part by the Kavli
+Institute for Cosmological Physics at the University of Chicago
+through grant NSF PHY-1125897 and an endowment from the Kavli
+Foundation and its founder Fred Kavli.
 \lastpagefootnotes
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\section{Sample stacked mock LSST images}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\subsection{BCG included}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 
 \bibliography{ms}
 
