@@ -22,12 +22,12 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document} 
-\shorttitle{MachLensFinder}
+\shorttitle{Automated Lensing Learner}
 \shortauthors{Avestruz, Li, Lightman}
 \submitted{The Astrophysical Journal} 
 \slugcomment{The Astrophysical Journal, submitted}
 
-\title{MachLensFinder - I: An automated Strong Lensing
+\title{Automated Lensing Learner - I: An automated Strong Lensing
   Identification Pipeline}
 
 \author{Camille Avestruz\altaffilmark{1-3,$\dagger$}\thanks{E-mail:
@@ -53,21 +53,24 @@ distribution of lensing systems, a window to the high redshift
 universe, and a geometric probe of cosmological models.  The advent of
 large scale surveys such as the Large Synoptic Sky Telescope and
 Euclid has prompted a need for automatic and efficient identification
-of strong lensing systems.  We present {\em MachLensFinder}, a
-strong lensing identification pipeline that will be publicly released
-as open source software.  In this first application, we employ a fast
-feature extraction method, Histogram of Oriented Gradients (HOG), to
-capture edge patterns that are characteristic of strong gravitational
-arcs in galaxy-galaxy lensing.  We use logistic regression to train a
-supervised classifier model on the HOG of \change{HST- and LSST}-like
-images.  Our best performing models reach a completeness rate of
-\change{XX\%} and purity rate of \change{XX\%} for an HST-like sample.
-However, for one orbit of LSST, our model cannot distinguish between
-strong lensing systems and non-strong lensing systems.  In absence of
-the brightest cluster galaxy in LSST-like data, our trained model
-reaches a completeness of \change{XX\%} and purity of \change{XX\%}.
-Our results show one the most efficient and effective methods for
-automated strong lensing identification in space-based surveys.  The
+of strong lensing systems.  We present {\em (ALL) Automated Lensing
+  Learner}, a strong lensing identification pipeline that will be
+publicly released as open source software.  In this first application,
+we employ a fast feature extraction method, Histogram of Oriented
+Gradients (HOG), to capture edge patterns that are characteristic of
+strong gravitational arcs in galaxy-galaxy lensing.  We use logistic
+regression to train a supervised classifier model on the HOG of HST-
+and LSST-like images.  We use an area under the curve (AUC) of a
+Receiver Operating Characteristic curve to assess model performance;
+$AUC=1.0$ is an ideal trained classifier, and $AUC=0.5$ does not
+provide any classification information.  Our best performing models
+exhibit an AUC of \change{XX} for an HST-like sample.  However, for
+one orbit of LSST, our model only reaches an AUC of \change{XX}.  In
+absence of the lens galaxy in one orbit of LSST-like data, the AUC
+improves to \change{XX}.  For 10-year mock LSST observations, the
+respective AUC with and without the lens galaxy improves to
+\change{XX} and \change{XX}.  Our results show an efficient and
+effective methods for automated strong lensing identification.  The
 results also emphasize the need for further development and testing of
 additional tools to maximize use of ground-based surveys.
 \end{abstract}
@@ -90,7 +93,16 @@ the underlying dark matter distribution of the lens
 \citep{warrenanddye_03}, high redshift galaxy formation
 \citep{allam_etal07}, and provide a geometric test of cosmology via
 comparison of predicted arc abundances and observed abundances
-\citep{kochanek_96,chae_03,linder_04}.
+\citep{kochanek_96,chae_03,linder_04} and time-delay signals from
+multiply imaged quasars ???\citep{}.
+
+% Application of constraining mass profiles - large numbers needed.
+The application of strong gravitational lensing to constrain the mass
+distribution of \todo{early-type galaxies (ETGs)} necessitates large
+samples of galaxy-galaxy lensing systems.  The strong lensing
+signature... EDITING HERE These systems exhibit a background source
+galaxy that the ETG deflects into a partial of full arc shaped
+Einstein ring.
 
 % Arc identification can be done visually (e.g. that zooniverse
 % thing).  But, in the advent of optical surveys, DES and LSST, we
@@ -370,24 +382,16 @@ is now visible.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure*}[t]\label{fig:mockimages}
 \begin{center}
-\includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1_color.pdf}\hspace{-20pt}
-\includegraphics[width=1\columnwidth]{figures/105_unlensed_imgs_1_color.pdf}\\
-\includegraphics[width=1\columnwidth]{figures/lsst_105_lensed_imgs_1.pdf}\hspace{-20pt}
-\includegraphics[width=1\columnwidth]{figures/lsst_105_unlensed_imgs_1.pdf}\\
-\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_lensed_imgs_1.pdf}\hspace{-20pt}
-\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_unlensed_imgs_1.pdf}
-\caption{Top row: Example mock HST images, with $n_\text{pix}\times
-  n_\text{pix}=300\times300$.  The left corresponds to a strong
-  gravitational lensing system with a visibly obvious giant arc.  The
-  right corresponds to a non-lensing system.  Middle row: Example mock
-  LSST images for a single epoch, with $n_\text{pix}\times
-  n_\text{pix}=45\times45$.  The resolution and noise of a ground
-  based telescope is noticeably worse.  The left and right images
-  correspond to the same systems as the top row.  However, visual
-  identification of giant arcs in the LSST images is very difficult.
-  Bottom row: Example mock LSST images for stacked data over the 10
-  year run.  Here, the arc is more visible, but not as well resolved
-  as in the HST case.}
+\includegraphics[width=2\columnwidth]{figures/tiles/compilations/telescope_compilation.pdf}
+\caption{Left to right show example mock HST, LSST 10 year, and LSST 1
+  year images.  The top row corresponds to a lensing system with a
+  very visible arc signature, and the bottom row to a lensing system
+  that is less obvious.  Example mock HST images have
+  $n_\text{pix}\times n_\text{pix}=300\times300$.  Example mock LSST
+  images have $n_\text{pix}\times n_\text{pix}=45\times45$.  The
+  resolution and noise of a ground based telescope is noticeably
+  worse. Visual identification of giant arcs in the LSST images in the
+  bottom row is very difficult.}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -404,7 +408,7 @@ feature vector is a {\em histogram of oriented gradients}
 \citep{dalalandtriggs_05}.  We describe the method in
 Section~\ref{sec:hog}.  We then use a machine learning algorithm to
 train a classifier model on a subset of our images.  We have explored
-both {\em Logistic Regression} (LR) and {\em Support Vector Machine}
+both {\em Logistic Regression} (LogReg) and {\em Support Vector Machine}
 (SVM) machine learning algorithms.  We test our trained model on an
 independent subset of the images to assess the model performance.
 
@@ -445,31 +449,43 @@ feature vector''\citep{dalalandtriggs_05}.
 % (e.g. SVM, Neural network).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure*}[t]\label{fig:hogvisual}
+\begin{figure*}[t]\label{fig:mockimages}
 \begin{center}
-\includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or5ppc32cpb1.pdf}\hspace{-20pt}
-\includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or9ppc16cpb1.pdf}\\
-\includegraphics[width=1\columnwidth]{figures/lsst_105_lensed_imgs_1or4ppc3cpb3.pdf}\hspace{-20pt}
-%\includegraphics[width=1\columnwidth]{figures/lsst_105_unlensed_imgs_1or4ppc3cpb3.pdf}\\
-\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_lensed_imgs_1or4ppc3cpb3.pdf}
-%\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_unlensed_imgs_1or4ppc3cpb3.pdf}
-\caption{Top row: Visualized HOG feature vectors of the sample lensed
-  HST-like image from Figure~\ref{fig:mockimages}.  Left: The
-  corresponding HOG visualization with N$_\text{orient}=5$, (32, 32)
-  pixels per cell, and (1, 1) cells per block.  Right: The HOG
-  visualization of the same mock image with N$_\text{orient}=9$, (16,
-  16) pixels per cell, and (1, 1) cells per block.  The brightest
-  lines align with prominent edges.  Note, while fewer pixels per cell
-  will better resolve the arc feature, the ``edge'' corresponding to
-  the arc is less prominent.  Bottom row: Visualized HOG feature
-  vectors for the LSST-like single epoch and stacked images with the
-  best scoring HOG parameterization of N$_\text{orient}=4$, (3, 3)
-  pixels per cell, and (3, 3) cells per block.  The single epoch image
-  (left) does not have significant enough edge features to emerge in
-  the HOG, but the stacked image (right) does.}
+\includegraphics[width=2\columnwidth]{figures/tiles/compilations/hog_telescope_compilation.pdf}
+\caption{Left to right show example image transforms of mock images
+  from Figure~\ref{fig:mockimages} with a visualized histogram of
+  oriented gradients.  The image transform picks up edge features,
+  with arc features showing up as edges across radial orientations.}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+%% \begin{figure*}[t]\label{fig:hogvisual}
+%% \begin{center}
+%% \includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or5ppc32cpb1.pdf}\hspace{-20pt}
+%% \includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or9ppc16cpb1.pdf}\\
+%% \includegraphics[width=1\columnwidth]{figures/lsst_105_lensed_imgs_1or4ppc3cpb3.pdf}\hspace{-20pt}
+%% %\includegraphics[width=1\columnwidth]{figures/lsst_105_unlensed_imgs_1or4ppc3cpb3.pdf}\\
+%% \includegraphics[width=1\columnwidth]{figures/lsst_stack_105_lensed_imgs_1or4ppc3cpb3.pdf}
+%% %\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_unlensed_imgs_1or4ppc3cpb3.pdf}
+%% \caption{Top row: Visualized HOG feature vectors of the sample lensed
+%%   HST-like image from Figure~\ref{fig:mockimages}.  Left: The
+%%   corresponding HOG visualization with N$_\text{orient}=5$, (32, 32)
+%%   pixels per cell, and (1, 1) cells per block.  Right: The HOG
+%%   visualization of the same mock image with N$_\text{orient}=9$, (16,
+%%   16) pixels per cell, and (1, 1) cells per block.  The brightest
+%%   lines align with prominent edges.  Note, while fewer pixels per cell
+%%   will better resolve the arc feature, the ``edge'' corresponding to
+%%   the arc is less prominent.  Bottom row: Visualized HOG feature
+%%   vectors for the LSST-like single epoch and stacked images with the
+%%   best scoring HOG parameterization of N$_\text{orient}=4$, (3, 3)
+%%   pixels per cell, and (3, 3) cells per block.  The single epoch image
+%%   (left) does not have significant enough edge features to emerge in
+%%   the HOG, but the stacked image (right) does.}
+%% \end{center}
+%% \end{figure*}
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 
 %-------------------------------------------------%
@@ -588,33 +604,33 @@ between the length of the feature vector and the size of the training
 set.  The logistic regression coefficient will also increase the
 training time, \todo{since larger coefficients correspond to a more
   singular matrix}.  We discuss the score dependence on logistic
-regression coefficient in Section\ref{sec:unregularizedfit}.
+regression coefficient in Section\ref{sec:regularization}.
 
 %-------------------------------------------------%
-\subsection{Receiver Operatic Characteristic}
+\subsection{Receiver Operating Characteristic}
 %-------------------------------------------------%
 
 In this section, we discuss the Receiver Operating Characteristic
-(ROC) curve, which shows the true positive rate as a function of false
-positive rate for a given model and test set.  The true positive rate
-is defined as the number of true positives divided by the total number
-of positives (completeness of the positive identifications).  The
-false positive rate is defined as the number of false positives
-divided by the total number of negatives (impurity of the
-identifications).  The ROC curve illustrates the performance of our
-trained model as we vary the discrimination threshold.
+(ROC) curve, which shows the true positive rate (tpr) as a function of
+false positive rate (fpr) for a given model and test set.  The true
+positive rate is defined as the number of true positives divided by
+the total number of positives (completeness of the positive
+identifications).  The false positive rate is defined as the number of
+false positives divided by the total number of negatives (impurity of
+the identifications).  The ROC curve illustrates the performance of
+our trained model as we vary the discrimination threshold.
 
 The classifier model assigns a score to each test image, which is a
 probability that the image is a strong lensing system.  To construct
-the ROC curve, the test images are ranked by probability and the
-discrimination threshold varied.  
+the ROC curve, we rank the test images by probability, and calculate
+the tpr and fpr for decreasing discrimination threshold.
 
 For very high discrimination threshold, we have maximal purity, but a
-low completeness (bottom left region of the ROC).  FOr a very low
+low completeness (bottom left region of the ROC).  For a very low
 discrimination threshold, we have maximal completeness, but minimal
-purity (top right region of the ROC).  The ideal model would have a
-data point on the ROC curve that sits on the top left corner,
-i.e. $(x, y) = (0, 1)$.
+purity (top right region of the ROC).  The ideal model would have an
+ROC curve with data points that go from $(x, y) = (0, 0)$ to $(x, y) =
+(0, 1)$ to $(x, y) = (1, 1)$.
 
 In the context of strong lensing systems, we wish to maximize the true
 positive rate so we have a representative count of the fraction of
@@ -623,9 +639,9 @@ want to minimize the false positive rate.  Positively identified
 strong lensing systems will require expensive spectroscopic follow-up
 for validation.  The steepness of the ROC curve indicates how well the
 model will optimize the two, and we can characterize the steepness by
-the area under the curve (AUC).  A perfect model would have an AUC of
-1, with data points along $(x=0, 0\leq y\leq1)$, and $(0\leq x\leq 1,
-y=1)$.
+the area under the curve (AUC).  The ideal model would have an AUC of
+1.  We show the ROC curves of our best performing models in each
+dataset.
 
 % HST model performance
 Figure~\ref{fig:ROC} shows the ROC curves for three different HOG
@@ -657,46 +673,46 @@ describes the training dataset without overfitting.  We discuss the
 choice of regularization parameter in
 Section~\ref{sec:regularizedfit}.
 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+%% \begin{figure}[t]\label{fig:ROCHST}
+%% \begin{center}
+%% \includegraphics[width=\columnwidth]{figures/ROC_HST_HOG.png}
+%% \caption{Red, green, blue: ROC curves for a models trained on the
+%%   HST-like data with the Logistic Regression algorithm.  The magenta
+%%   solid (dotted) curve show the ROC curve for the LSST-like data with
+%%   (without) the BCG.  The corresponding parameters are labeled: N for
+%%   number of orientations, ppc for pixels-per-cell, cpb for
+%%   cells-per-block, and C for best regularization parameter.  The AUC
+%%   for each model is also labeled in the legend, where an AUC close to
+%%   1 is a near-ideal model, and an AUC close to 0.5 is a model that
+%%   performs as well as a coin-flip.}
+%% \end{center}
+%% \end{figure}
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:ROCHST}
+\begin{figure}[t]\label{fig:ROCcompilation}
 \begin{center}
-\includegraphics[width=\columnwidth]{figures/ROC_HST_HOG.png}
-\caption{Red, green, blue: ROC curves for a models trained on the
-  HST-like data with the Logistic Regression algorithm.  The magenta
-  solid (dotted) curve show the ROC curve for the LSST-like data with
-  (without) the BCG.  The corresponding parameters are labeled: N for
-  number of orientations, ppc for pixels-per-cell, cpb for
-  cells-per-block, and C for best regularization parameter.  The AUC
-  for each model is also labeled in the legend, where an AUC close to
-  1 is a near-ideal model, and an AUC close to 0.5 is a model that
-  performs as well as a coin-flip.}
-\end{center}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:ROCLSST}
-\begin{center}
-\includegraphics[width=\columnwidth]{figures/ROC_LSST_HOG.png}
-\caption{Red, green, blue: ROC curves for a models trained on the
-  HST-like data with the Logistic Regression algorithm.  The magenta
-  solid (dotted) curve show the ROC curve for the LSST-like data with
-  (without) the BCG.  The corresponding parameters are labeled: N for
-  number of orientations, ppc for pixels-per-cell, cpb for
-  cells-per-block, and C for best regularization parameter.  The AUC
-  for each model is also labeled in the legend, where an AUC close to
-  1 is a near-ideal model, and an AUC close to 0.5 is a model that
-  performs as well as a coin-flip.}
+\includegraphics[width=\columnwidth]{figures/metrics/ROC/ROC_compilation.pdf}
+\caption{Red, blue, green: ROC curves for models trained on our whole
+  10,000 training set and tested on our holdout set of 1,000.  These
+  respectively correspond to the HST, LSST 1 year, and LSST 10 year
+  data.  The solid lines are for data that include the lensing central
+  galaxy, and the dashed lines for the data where there is no lensing
+  galaxy, mimicking an ideal removal of the lens.  Model performance
+  can be summarized by the area under the curve (AUC), labeled in the
+  legend. $AUC=1$ is a perfect model, and $AUC=0.5$ is a useless
+  model.}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 %-------------------------------------------------%
-\subsection{Effects of Regularization on Model Performance}\label{sec:regularizedfit}
+\subsection{Effects of Regularization on Model Performance}\label{sec:regularization}
 %-------------------------------------------------% 
 
 % Logistic regression and regularization
-As described in Section~\ref{sec:logreg}, logistic regression trains a
-model with complexity determined by the regularization parameter,
+As described in Section~\ref{sec:logreg}, LogReg trains a model with
+complexity determined by the regularization parameter coefficient,
 $C_\text{LogReg}$.  Increasing model complexity (larger
 $C_\text{LogReg}$), will better describe features in the training
 set[wc?].  However, an overly complex model will overfit the training
@@ -719,7 +735,7 @@ correspond to the model performance on the test and training set.
 For either characterization of the model, the model performance on the
 training set increases and asymptotes with $C_\text{LogReg}$.  With
 increasing model complexity, the model better fits the data set it has
-been trained on.  [wc???] This is analogous to fitting a seventh order
+been trained on.  This is analogous to fitting a seventh order
 polynomial to seven data points, where the fitting function will go
 through every point but will not likely predict additional points.
 
@@ -729,33 +745,144 @@ for $C_\text{LogReg}$ that will not overfit the training data.  With
 increasing model complexity, we are able to better able to capture
 features that are generally characteristic of strong lensing systems
 with arcs.  However, past a certain $C_\text{LogReg}$, the model
-performance on the test set decreases, as it has overfit the training
-set.
+performance on the test set decreases or asymptotes, as it has overfit
+the training set.
+
+% Train time with Creg
+Lower Creg, more regularized, smaller volume to search for the
+solution (best fit coefficients), so faster on average.  But, still
+has some randomness associated with the path it takes to convergence
+(not purely monotonic).
 
 % Scores vs. regularization on larger train/test set with comparable
 % grid search in parameterization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure*}[t]\label{fig:regularization}
 \begin{center}
-\includegraphics[width=\columnwidth]{figures/regularized_accuracy.pdf}\hspace{-20pt}
-\includegraphics[width=1\columnwidth]{figures/regularized_AUC.pdf}
-\caption{Left: Accuracy of the model with varying regularization.
-  Each color corresponds to a model trained for features extracted
-  with a different set of HOG parameters.  The dotted (solid) lines
-  show the performance of the model on the training (test) set.
-  Right: AUC of the model with varying regularization.  Linestyles and
-  colors are similar to those in the left panel.  AUC is a better
-  characterization of model performance, since the accuracy is
-  determined for fixed classification threshold [wc?], but peak model
-  performance can occur at a different classification threshold.}
+\includegraphics[width=.66\columnwidth]{figures/Creg/HST.pdf}
+\includegraphics[width=.66\columnwidth]{figures/Creg/LSST1.pdf}
+\includegraphics[width=.66\columnwidth]{figures/Creg/LSST10.pdf}
+\caption{AUC of the model with varying LR regularization coefficient
+  parameter, $C_{reg}$, used when training the model classifier.  We
+  use a subset of the the 10,000 training images to search over the LR
+  $C_{reg}$ parameter, training on 8,000 and testing on 1,000.  Each
+  panel corresponds to a different mock observation.  From left to
+  right: HST, LSST for one year, and LSST for 10 years.  The xsolid
+  blue lines correspond to the AUC of the training set, and the dotted
+  blue lines to the AUC of the test set.  To avoid overfitting, we
+  choose the smallest parameter for which the AUC of the test set is
+  maximal: 5000, 10, and 5000, respectively.  In thin red solid lines,
+  we show the train time of the model, which roughly increases in a
+  log-log scaling with logistic regression coefficient parameter.}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+%-------------------------------------------------%
+\subsection{Effects of Dataset Size on Model Performance}\label{sec:datasize}
+%-------------------------------------------------% 
+%-------------------------------------------------% 
+\subsubsection{Effects of Training Set Size}
+%-------------------------------------------------% 
+In this section, we show the effects of training set size on model
+performance.  Figure~\ref{fig:trainsize} shows the AUC and the train
+time depend on the log of the size of the training set.  In solid blue
+lines, we see that the AUC improves almost linearly with the log of
+the training size set.  In dotted red, we see that the train time
+roughly scales logarithmically with the log of the train size, with an
+exception of the data point corresponding to train size of 2000.
+
+Each model was trained with the same HOG parameterization from the
+grid search and the optimal regularization parameter for that subset
+train data.  The train time of a given model generally increases for
+increasing regularization parameter.  For the subset of train size
+2000, the optimal regularization parameter happened to be
+$C_{LR}=100$, whereas it was $C_{LR}=500$ for the subset of trainsize
+1000, and $C_{LR}=1000$ for the subset of trainsize 4000.
+
+% Scores vs. regularization on larger train/test set with comparable
+% grid search in parameterization
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure}[t]\label{fig:trainsize}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/trainsize/LSST10.pdf}
+\caption{Solid blue line: AUC for models with varying size of the
+  training set for LSST10.  Dotted red line: Train time for that
+  model.  The improvement of AUC scales linearly with the log of the
+  training set size, but train time roughly scales logarithmically.}
+\end{center}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+
+%-------------------------------------------------% 
+\subsubsection{Effects of Rotation on AUC}
+%-------------------------------------------------% 
+To augment our training set, we rotated each image in the set by
+multiples of $90^o$.  The augmentation (factor of four) naturally
+optimizes the use of available training data, since our feature
+extraction method of HOG is not rotationally invariant.  
+
+We also tested the effects of testing our model on all four rotations
+of the test set.  In Figure~\ref{fig:rotation_test}, we show the AUC
+for different orientations of the datasets.  The x-axis corresponds to
+each of our three datasets, \todo{with and without the lens galaxy}.
+The y-axis shows the AUC.  The filled blue circles correspond to the
+four AUCs calculated from test scores assigned to images at one
+rotation.  The filled red stars correspond to the AUC calculated from
+the average of all four test scores, which are systematically higher
+than any one rotation.  The average score across all rotations for
+each image is likely to be less noisy for the whole test sample,
+giving an improved AUC.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure}[t]\label{fig:rotation_test}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/rotated_aucs/rotated_aucs.pdf}
+\caption{The AUCs of models trained on the full 10,000 and tested on
+  the holdout 1,000.  Blue circles: AUC calculated from scores of
+  images at a given rotation (e.g. 0, 90, 180, and 270 degrees).  Red
+  stars: AUC calculated from the average score of all rotations of
+  each image.  The average score produces an improved AUC in all data
+  sets.}
+\end{center}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
 
 
 %-------------------------------------------------%
 \subsection{Image classification performance}\label{sec:performance}
 %-------------------------------------------------%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure*}[t]\label{fig:ROCsamplesLSST10}
+\begin{center}
+\includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/tp.pdf}\hspace{5pt}
+\includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/fp.pdf}\\\vspace{5pt}
+\includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/bp.pdf}\hspace{5pt}
+\includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/bn.pdf}\\\vspace{5pt}
+\includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/fn.pdf}\hspace{5pt}
+\includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/tn.pdf}\\
+\caption{LSST mock images over 10 years. Left two columns: Lens
+  containing images, annotated with the image score assigned by our
+  trained classifier.  Right two columns: Non-lens containing images,
+  annotated with the image score.  The top two rows show
+  characteristic images that will be accepted with a high threshold
+  for classification, contributing to the bottom left of the ROC
+  curve.  The middle two rows show characteristic images that will be
+  accepted with a moderate threshold, contributing to the knee of the
+  ROC curve.  The bottom two rows show characteristic images that will
+  only be accepted with an extremely lenient threshold, contributing
+  to the top right area of the ROC curve.}
+\end{center}
+\end{figure*}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
+
+
+
 **Redshift makes sense, but only because of the redshift distribution.
 --> Zahid+15 quiescent.... this is where redshifts are from.
 
@@ -812,97 +939,97 @@ around the knee will either include or disinclude the middle row
 images.  These are the systems that would make good candidates for
 visual and/or spectroscopic follow-up.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure*}[t]
-  \centering \mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/HST/1787_lensed_imgs_1.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/HST/1354_unlensed_imgs_1.pdf}} } \mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/HST/1052_lensed_imgs_1.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/HST/1994_unlensed_imgs_1.pdf}} } \mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/HST/1862_lensed_imgs_1.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/HST/1723_unlensed_imgs_1.pdf}} }
-\caption{HST-like images. The left column corresponds to typical
-  lensing systems in our sample from highest scoring (top) to lowest
-  scoring, or false negatives (bottom).  The right column corresponds
-  to typical non-lensing systems in our sample from highest scoring,
-  or false positives (top), to lowest scoring (bottom).  The middle
-  row can be considered ``borderline'' classified images, where the
-  scores of the lensing and non-lensing system are very close to one
-  another.  These are systems that will be most sensitive to the
-  classification threshold.}
-\label{fig:HSTclassificationtile}
-\end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+%% \begin{figure*}[t]
+%%   \centering \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/HST/1787_lensed_imgs_1.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/HST/1354_unlensed_imgs_1.pdf}} } \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/HST/1052_lensed_imgs_1.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/HST/1994_unlensed_imgs_1.pdf}} } \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/HST/1862_lensed_imgs_1.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/HST/1723_unlensed_imgs_1.pdf}} }
+%% \caption{HST-like images. The left column corresponds to typical
+%%   lensing systems in our sample from highest scoring (top) to lowest
+%%   scoring, or false negatives (bottom).  The right column corresponds
+%%   to typical non-lensing systems in our sample from highest scoring,
+%%   or false positives (top), to lowest scoring (bottom).  The middle
+%%   row can be considered ``borderline'' classified images, where the
+%%   scores of the lensing and non-lensing system are very close to one
+%%   another.  These are systems that will be most sensitive to the
+%%   classification threshold.}
+%% \label{fig:HSTclassificationtile}
+%% \end{figure*}
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure*}[t]
-  \centering 
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+%% \begin{figure*}[t]
+%%   \centering 
 
-\mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/BCG/lsst_stack_1204_lensed_imgs_1.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/BCG/lsst_stack_1534_unlensed_imgs_1.pdf}}
-} 
+%% \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/BCG/lsst_stack_1204_lensed_imgs_1.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/BCG/lsst_stack_1534_unlensed_imgs_1.pdf}}
+%% } 
 
-\mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/BCG/lsst_stack_1384_lensed_imgs_1.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/BCG/lsst_stack_1703_unlensed_imgs_1.pdf}} 
-} 
+%% \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/BCG/lsst_stack_1384_lensed_imgs_1.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/BCG/lsst_stack_1703_unlensed_imgs_1.pdf}} 
+%% } 
 
-\mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/BCG/lsst_stack_1641_lensed_imgs_1.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/BCG/lsst_stack_1518_unlensed_imgs_1.pdf}} 
-}
+%% \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/BCG/lsst_stack_1641_lensed_imgs_1.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/BCG/lsst_stack_1518_unlensed_imgs_1.pdf}} 
+%% }
 
-\caption{LSST-like images with a BCG. These illustrate the same image
-  classification paradigms as Figure~\ref{fig:HSTclassificationtile}.
-  Note, the larger PSF of LSST reduces the resolution of images,
-  making the arc-like morphology of faint images less significant and
-  increases the appearance of image-BCG blending.}
-\label{fig:LSSTBCGclassificationtile}
-\end{figure*}
+%% \caption{LSST-like images with a BCG. These illustrate the same image
+%%   classification paradigms as Figure~\ref{fig:HSTclassificationtile}.
+%%   Note, the larger PSF of LSST reduces the resolution of images,
+%%   making the arc-like morphology of faint images less significant and
+%%   increases the appearance of image-BCG blending.}
+%% \label{fig:LSSTBCGclassificationtile}
+%% \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 \subsection{BCG removed}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure*}[t]
-  \centering 
+%% \begin{figure*}[t]
+%%   \centering 
 
-\mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/noBCG/lsst_stack_1957_lensed_imgs_0.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/noBCG/lsst_stack_stamps_1098.pdf}}
-} 
+%% \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/noBCG/lsst_stack_1957_lensed_imgs_0.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/noBCG/lsst_stack_stamps_1098.pdf}}
+%% } 
 
-\mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/noBCG/lsst_stack_1634_lensed_imgs_0.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/noBCG/lsst_stack_stamps_1664.pdf}} 
-} 
+%% \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/noBCG/lsst_stack_1634_lensed_imgs_0.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/noBCG/lsst_stack_stamps_1664.pdf}} 
+%% } 
 
-\mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/noBCG/lsst_stack_1629_lensed_imgs_0.pdf}}\hfill
-    \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-        clip]{figures/LSST/noBCG/lsst_stack_stamps_1399.pdf}} 
-}
+%% \mbox{
+%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/noBCG/lsst_stack_1629_lensed_imgs_0.pdf}}\hfill
+%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
+%%         clip]{figures/LSST/noBCG/lsst_stack_stamps_1399.pdf}} 
+%% }
 
-\caption{LSST-like images with no BCG. These illustrate the same image
-  classification paradigms as Figure~\ref{fig:HSTclassificationtile}.}
-\label{fig:LSSTnoBCGclassificationtile}
-\end{figure*}
+%% \caption{LSST-like images with no BCG. These illustrate the same image
+%%   classification paradigms as Figure~\ref{fig:HSTclassificationtile}.}
+%% \label{fig:LSSTnoBCGclassificationtile}
+%% \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 %-------------------------------------------------%
