@@ -13,7 +13,7 @@
 \bibliographystyle{apj_ads}
 \usepackage[usenames,dvipsnames]{xcolor}
 \newcommand{\comment}[1]{{\color{red} #1}}
-\newcommand{\change}[1]{{\it\color{purple} #1}}
+\newcommand{\wording}[1]{{\it\color{purple} #1}}
 \newcommand{\todo}[1]{{\bf\color{blue} #1}}
 %%%%%%%%%% User defined symbol %%%%%%
 \def\gsim{\gtrsim}
@@ -64,15 +64,14 @@ and LSST-like images.  We use an area under the curve (AUC) of a
 Receiver Operating Characteristic curve to assess model performance;
 $AUC=1.0$ is an ideal trained classifier, and $AUC=0.5$ does not
 provide any classification information.  Our best performing models
-exhibit an AUC of \change{XX} for an HST-like sample.  However, for
-one orbit of LSST, our model only reaches an AUC of \change{XX}.  In
-absence of the lens galaxy in one orbit of LSST-like data, the AUC
-improves to \change{XX}.  For 10-year mock LSST observations, the
-respective AUC with and without the lens galaxy improves to
-\change{XX} and \change{XX}.  Our results show an efficient and
-effective methods for automated strong lensing identification.  The
-results also emphasize the need for further development and testing of
-additional tools to maximize use of ground-based surveys.
+exhibit an AUC of \todo{XX} for an HST-like sample.  However, for one
+orbit of LSST, our model only reaches an AUC of \todo{XX}.  In absence
+of the lens galaxy in one orbit of LSST-like data, the AUC improves to
+\todo{XX}.  For 10-year mock LSST observations, the respective AUC
+with and without the lens galaxy improves to \todo{XX} and \todo{XX}.
+Our results show efficient and effective methods for automated strong
+lensing identification with \wording{scalable linear methods that are
+  easy to parallelize with existing open source tools.}
 \end{abstract}
 %-------------------------------------------------%
 
@@ -353,14 +352,14 @@ of the images without BCG galaxies.
 % Summary of HST and LSST images
 We use mock {\em Hubble Space Telescope} (HST) and {\em Large Synoptic
   Sky Telescope} (LSST) images generated with PICS (Pipeline for
-Images of Cosmological Strong lensing) \citep{li_etal16}.  These
-images include cluster-member galaxies and foreground stars.  Half of
-the images used are strong lensing systems.  Here, lensed galaxy
-images are ray-traced images of actual galaxies extracted from deep
-Hubble Space Telescope observations.  The final mock images are
-``observed'' with a realistic point spread function corresponding to
-modeled detector artifacts for bright stars.  See \cite{li_etal16} for
-more details.
+Images of Cosmological Strong lensing) \citep{li_etal16} and
+LensPop\citep{collett_etal15}.  These images include cluster-member
+galaxies and foreground stars.  Half of the images used are strong
+lensing systems.  Here, lensed galaxy images are ray-traced images of
+actual galaxies extracted from deep Hubble Space Telescope
+observations.  The final mock images are ``observed'' with a realistic
+point spread function corresponding to modeled detector artifacts for
+bright stars.  See \cite{li_etal16} for more details.
 
 Figure ~\ref{fig:mockimages} illustrates a sample mock lensed and
 unlensed images from each telescope.  The top left and right panel
@@ -400,30 +399,47 @@ is now visible.
 \subsection{Strong Arc Lensing Identification Pipeline}
 %-------------------------------------------------%
 
-To perform our analysis, we have used a variety of tools from {\em
-  Scikit-learn} \citep{pedregosa_etal12}.  We outline the
-identification pipeline in Figure~\ref{fig:pipeline}.  The first step
-of our pipeline consists of a feature extraction stage, where our
-feature vector is a {\em histogram of oriented gradients}
-\citep{dalalandtriggs_05}.  We describe the method in
-Section~\ref{sec:hog}.  We then use a machine learning algorithm to
-train a classifier model on a subset of our images.  We have explored
-both {\em Logistic Regression} (LogReg) and {\em Support Vector Machine}
-(SVM) machine learning algorithms.  We test our trained model on an
-independent subset of the images to assess the model performance.
+To perform our analysis, we have used tools from {\em Scikit-learn}
+\citep{pedregosa_etal12}.  We outline the identification pipeline in
+Figure~\ref{fig:pipeline}, which is a general description of
+supervised classification.  Supervised classification is a class of
+machine learning where the labels of classification in the training
+set are known.  In our case, the labels are lens and non-lens
+containing images.
 
-Both the feature extrator, HOG, and the classifier contain a range of
+The first step of our pipeline consists of a feature extraction stage,
+where our feature vector is a {\em histogram of oriented gradients}
+\citep{dalalandtriggs_05} that quantifies edges in the image.  We
+describe the method and parameter search in Section~\ref{sec:hog}.  We
+then use {\em Logistic Regression} (LR), a machine learning algorithm
+described in Section~\ref{sec:LR}, to train a classifier model on a
+subset of our images.  LR requires a parameter search over the
+regression coefficient, $C_{LogReg}$, which we explore in
+Section~\ref{sec:regularization}.  We briefly comment that tests with
+\todo{{\em Support Vector Machine} (SVM) as an alternative machine
+  learning algorithm yielded negligible performance improvement, and
+  increased computation cost.  We do not include SVM in our final
+  analysis and comparisons.}
+
+Both the feature extrator, HOG, and the linear classifier, LR, contain
 parameters, which must be tested and optimized for peak model
 performance.  We use {\em GridSearchCV} from {\em Scikit-learn} to
-select appropriate parameters, and discuss these results in
-Section~\ref{sec:gridsearch}.
+select cross-validated parameters, and discuss this step of our
+methodology in Section~\ref{sec:gridsearch}.
+
+The second step of our analysis is to test our trained model on an
+independent subset of the images to assess the model performance.
+Here, we evaluate the model on each test image, predicting a
+likelihood (``score'') between 0 and 1 that this is a lens containing
+system.  This ``holdout set'' is not used in any of our parameter
+searches to keep our test metric independent of tuning.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure}[t]\label{fig:pipeline}
 \begin{center}
 \includegraphics[scale=0.55]{figures/supervised_classification_workflow.png}
-\caption{** Cartoon of pipeline ** Mention that median filtering generates
-visual artifacts that confuse the model. http://www.nltk.org/book/ch06.html}
+\caption{** Cartoon of pipeline ** from
+  http://www.nltk.org/book/ch06.html}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -431,25 +447,127 @@ visual artifacts that confuse the model. http://www.nltk.org/book/ch06.html}
 %-------------------------------------------------%
 \subsection{Feature Extractor: Histogram Oriented Gradients}\label{sec:hog}
 %-------------------------------------------------%
-Histogram oriented gradients (HOG) is a feature extraction method that
-computes centered horizontal and vertical gradients with no smoothing.
-Originally created for human detection, .... This computes the
-gradient orientation and magnitudes in an image by first dividing the
-image into $n\times n$ blocks of X\% overlap.  The gradient
-orientation is then quantized into m bins. ``(optional) global image
-normalisation computing the gradient image in x and y computing
-gradient histograms normalising across blocks flattening into a
-feature vector''\citep{dalalandtriggs_05}.
+% HOG intro - 
+Originally created for human detection in computer vision, histogram
+oriented gradients (HOG) is a feature extraction method that computes
+centered horizontal and vertical gradients. HOG is relatively robust
+to noise in the image, and is a fairly fast transform that describes
+edges.  Details can be found in \citet{dalalandtriggs_05}, but we
+describe the procedure here.  The end result of HOG is a one
+dimensional histogram computed as follows.
 
-% Need to look into edge orientation histograms, scale-invariant
-% feature transform descriptors, shape contexts.
+% Division of the image  
+HOG first divides the image into blocks of \wording{50\% overlap}.
+Each block contains $m\times m$ cells-per-block that each contain
+$n_{pix}\times n_{pix}$ pixels-per-cell.  The computed gradient
+orientation is quantized into $N_{orient}$ bins.
 
+% Initial binning
+The orientation gradient of all pixels within each cell are binned
+into the quantized orientations, providing a net gradient description
+within that cell.  As an example, for $N_{orient}=3$, our bins are
+centered at $\theta=0, 2\pi/3, 4\pi/3$ in radians.  If a cell has no
+gradient in the vertical direction, and only a gradient across the
+horizontal direction, say in the positive x-direction with
+$\theta=\pi/2$, it will contribute 75\% of its magnitude to the
+$\theta=2\pi/3$ bin, and 25\% of its magnitude to the $\theta=0$ bin.
+The bins in all cells are then concatenated to make a larger feature
+vector that is $N_{orient}$\times$N_{cells}$.
 
-% NEED TO FEED THE DESCRIPTORS TO SOMETHING WITH SUPERVISED LEARNING.
-% (e.g. SVM, Neural network).
+% Normalization
+The last step is a normalization procedure to control for illumination
+effects.  Here, the sub-histograms of each cell within the same block
+are normalized with respect to one another before the transformation
+returns the final feature vector.  The division of the image and the
+quantization of orientations provide a total of 3 parameters in HOG:
+$N_{orient}$, cells-per-block, and pixels-per-cell.  We discuss how we
+select parameters using cross-validation in
+Section~\ref{sec:gridsearch}
+
+%-------------------------------------------------%
+\subsubsection{Optimized Pipeline Parameters with a Grid Search}\label{sec:gridsearch}
+%-------------------------------------------------%
+
+\begin{table}
+\caption{Grid Search of Pipeline Parameters}
+\begin{center}
+\begin{tabular}{cccccc}
+\hline \\ [-0.2cm]
+N$_{orient}$ & Pixels/Cell & Cells/Block & C$_{reg}$ & HOG size & Score \\ [0.2cm]
+\hline \\ [-0.2cm]
+\multicolumn{6}{c}{(a) HST-like data} \\ [0.2cm]
+\hline \\ [-0.2cm]
+9 & (4, 4) & (3, 3) & 50. & &$0.76181\pm0.00491$\\ [0.2cm]
+9 & (4, 4) & (1, 1) & 50. & &$0.83403\pm0.00547$\\ [0.2cm]
+9 & (8, 8) & (3, 3) & 50. & &$0.85417\pm0.00851$\\ [0.2cm] 
+9 & (8, 8) & (1, 1) & 50. & &$0.86389\pm0.00687$\\ [0.2cm] 
+9 & (16, 16) & (1, 1) & 50. & & $0.88542\pm0.00680$ \\ [0.2cm]
+9 & (16, 16) & (3, 3) & 10. & &$0.89306\pm0.00687$ \\ [0.2cm]
+8 & (16, 16) & (3, 3) & 50. & &$0.90000\pm0.00170$ \\ [0.2cm]
+9 & (16, 16) & (3, 3) & 50. & &$0.90139\pm0.00804$ \\ [0.2cm]
+\hline \\ [-0.2cm]
+\multicolumn{6}{c}{(b) LSST-like data} \\ [0.2cm]
+\hline \\ [-0.2cm]
+& & & & &\\
+& & & & &\\ [0.2cm]
+\hline
+\end{tabular}
+\end{center}
+\label{tab:gridsearch}
+\tablecomments{Panel (a) shows the results of a grid search across a
+  range of HOG parameters and regression coefficient \wording{with
+    training and test sets of size 1440 with the HST-like mock
+    dataset.}  Panel (b) shows the corresponding results for training
+  and test sets of \wording{size 5760 with the LSST mock dataset.}  We
+  explore different HOG parameters in each dataset due to resolution
+  and image size differences.}
+\end{table}
+
+We run a grid search across parameters that should reasonably sample
+the arc edges in either the HST- or LSST-like mock observations, and
+illustrate the results in Table~\ref{tab:gridsearch}.  Recall, the
+HST-like images are $300\times300$ pixels per image, while the
+LSST-like mock observations are $45\times45$ pixels per image.
+
+We first estimate the size of a cell that will contain a coherent arc
+feature.  To first order approximation, subdivisions of cells that are
+1/100th the area of the entire image should contain coherent arc edges
+that span an elongated shape within arc-containing cells.  Therefore,
+\wording{we perturb the pixels per cell parameter about (30, 30) for
+  the HST-like images, and (4, 4) for the LSST-like images.}
+
+Next, the cells per block parameter determines the normalization of
+each cell with respect to the neighboring cell.  In general, this will
+downweight arc-like edges in cells that neighbor very bright cells,
+such as cells that cover the central lens galaxy.  \wording{We therefore
+  vary the cells per block parameter between (1, 1) and (3, 3).}
+
+The number of orientations will determine the sampling of rounded
+edges.  For example, if we only have two orientations, an arc-like
+feature in a cell directly north of the lensing galaxy will appear in
+our HOG visualization as a strong horizontal line (e.g. see top left
+in Figure~\ref{fig:hogimages}), and an arc-like feature north-east of
+the lensing galaxy will appear as an L-shape.  However, contributions
+from a cluster or line-of-sight galaxy in the same cell will tend to
+contribute edges in all orientations of the histogram (e.g. bottom
+right in Figure~\ref{fig:hogimages}).  
+
+Finally, the resolution of the overall image will also limit the
+additional information that an increase in $N_\text{orient}$ will
+provide.  \wording{For the LSST-like data, the optimal orientation is
+  $N_\text{orient}=?$ compared with $N_\text{orient}=?$ only results
+  in a $???\%$ improvement.}
+
+% Impact on image performance
+The image size affects the length of the HOG feature vector, which has
+a monotonically increasing relationship with the time required to
+train the model.  Additionally, for fixed memory restrictions, there
+is a tradeoff between the length of the feature vector and the size of
+the training set.  We will discuss how the training set size affects
+the train time for each data set in Section~\ref{sec:trainsetsize}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure*}[t]\label{fig:mockimages}
+\begin{figure*}[t]\label{fig:hogimages}
 \begin{center}
 \includegraphics[width=2\columnwidth]{figures/tiles/compilations/hog_telescope_compilation.pdf}
 \caption{Left to right show example image transforms of mock images
@@ -489,125 +607,44 @@ feature vector''\citep{dalalandtriggs_05}.
 
 
 %-------------------------------------------------%
-\subsection{Machine Learning Algorithm: Logistic Regression}\label{sec:logreg}
+\subsection{Machine Learning Algorithm: Logistic Regression}\label{sec:LR}
 %-------------------------------------------------%
+\todo{ Logisitic regression (LR) is a linear classifier, which finds
+  the optimal hyperplane between two classes of data points.  In our
+  case, the two classes are lens and non-lens containing images.  The
+  data points are the HOG feature vectors transformed from the
+  training set data.  Each point occupies an N-dimensional space,
+  where N is the length of the HOG vector.  In fitting for the best
+  hyperplane, we must regularize the model to prevent overfitting,
+  adding an additional parameter in our parameter search,
+  regularization parameter $C_\text{LogReg}$.
 
-Logisitic regression is a linear classifier, which finds the optimal
-hyperplane between two classes of data points.  This hyperplane
-defines the optimal model.  We must regularize the model to prevent
-overfitting.  
+Regularization minimizes the a cost function with respect to ....
+Larger values of $C_\text{LogReg}$ correspond to increasing model
+complexity.  Figure~\ref{fig:regularization} shows the accuracy of a
+model for selected HOG parameters as a function of the regularization
+parameter, $C_\text{LogReg}$.
 
-In regularization, the goal is to minimize a cost function with
-respect to ....  Larger values of $C_\text{LogReg}$ correspond to
-increasing model complexity.  Figure~\ref{fig:regularization} shows
-the accuracy of a model for selected HOG parameters as a function of
-the regularization parameter, $C_\text{LogReg}$.  We plot the
-regularization dependency for HOG parameterization of
-$N_\text{orient}=9$, $PPC=(16, 16)$, $CPB=(1,1)$.  
+The performance of a model can be measured as either the score of the
+model on a test set, or some other metric, such as the area under the
+Receiver Operating Characteristic curve (see Section~\ref{sec:ROC}).
 
-The accuracy of a model can be defined as either the score of the
-model on a test set, or the AUC for the ROC curve.
-
-
+The $C_{LogReg}$ will also increase the training time, \todo{since
+  larger coefficients correspond to a more singular matrix}.  We
+discuss the score and train time dependence on logistic regression
+coefficient in Section\ref{sec:regularization}.
+}
 % Regularization coefficient:
 % http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&doc=exercises/ex5/ex5.html
 
-%-------------------------------------------------%
-\subsection{Machine Learning Algorithm: Support Vector Machine}
-%-------------------------------------------------%
-
-
-%-------------------------------------------------%
-%\subsection{Deep Learning Algorithm}
-%-------------------------------------------------%
 
 %-------------------------------------------------%
 \section{Results}
 \label{sec:results}
 %-------------------------------------------------%
-%-------------------------------------------------%
-\subsection{Optimized pipeline parameters}\label{sec:gridsearch}
-%-------------------------------------------------%
-
-\begin{table}
-\caption{Grid Search of Pipeline Parameters}
-\begin{center}
-\begin{tabular}{cccccc}
-\hline \\ [-0.2cm]
-N$_{orient}$ & Pixels/Cell & Cells/Block & C$_{reg}$ & HOG size & Score \\ [0.2cm]
-\hline \\ [-0.2cm]
-\multicolumn{6}{c}{(a) HST-like data} \\ [0.2cm]
-\hline \\ [-0.2cm]
-9 & (4, 4) & (3, 3) & 50. & &$0.76181\pm0.00491$\\ [0.2cm]
-9 & (4, 4) & (1, 1) & 50. & &$0.83403\pm0.00547$\\ [0.2cm]
-9 & (8, 8) & (3, 3) & 50. & &$0.85417\pm0.00851$\\ [0.2cm] 
-9 & (8, 8) & (1, 1) & 50. & &$0.86389\pm0.00687$\\ [0.2cm] 
-9 & (16, 16) & (1, 1) & 50. & & $0.88542\pm0.00680$ \\ [0.2cm]
-9 & (16, 16) & (3, 3) & 10. & &$0.89306\pm0.00687$ \\ [0.2cm]
-8 & (16, 16) & (3, 3) & 50. & &$0.90000\pm0.00170$ \\ [0.2cm]
-9 & (16, 16) & (3, 3) & 50. & &$0.90139\pm0.00804$ \\ [0.2cm]
-\hline \\ [-0.2cm]
-\multicolumn{6}{c}{(b) LSST-like data} \\ [0.2cm]
-\hline \\ [-0.2cm]
-& & & & &\\
-& & & & &\\ [0.2cm]
-\hline
-\end{tabular}
-\end{center}
-\label{tab:gridsearch}
-\tablecomments{Panel (a) shows the results of a grid search across a
-  range of HOG parameters and regression coefficient with training and
-  test sets of size 1440 with the HST-like mock dataset.  Panel (b)
-  shows the corresponding results for training and test sets of size
-  5760 with the LSST mock dataset.  We explore different HOG
-  parameters in each dataset due to resolution and image size
-  differences.}
-\end{table}
-
-We run a grid search across parameters that should reasonably sample
-the arc edges in either the HST- or LSST-like mock observations.
-Recall, the HST-like images are $300\times300$ pixels per image, while
-the LSST-like mock observations are $45\times45$ pixels per image.  In
-general, must run a grid search in order to best optimize the pipeline
-parameters.
-
-We must first estimate the size of a cell that will contain a coherent
-arc feature.  To first order approximation, subdivisions of cells that
-are 1/100th the area of the entire image should contain coherent arc
-edges that span an elongated shape within arc-containing cells.
-Therefore, we perturb the pixels per cell parameter about (30, 30) for
-the HST-like images, and (4, 4) for the LSST-like images.
-
-Next, the cells per block parameter determines the normalization of
-each cell with respect to the neighboring cell.  In general, this will
-downweight arc-like edges in cells that neighbor very bright cells,
-such as cells that cover the BCG.  We therefore vary the cells per
-block parameter between (1, 1) and (3, 3).
-
-The number of orientations will determine the sampling of rounded
-edges.  For example, if we only have two orientations, an arc-like
-feature in a cell will appear as .... However, contributions from a
-cluster or line-of-sight galaxy in the same cell will ... the
-normalizations in the histogram.  The resolution of the overall image
-will also limit the additional information that an increase in
-$N_\text{orient}$ will provide.  For the LSST-like data,
-$N_\text{orient}=9$ compared with $N_\text{orient}=5$ only
-results in a $???\%$ improvement.  In the case of the HST-like data,
-$N_\text{orient}=9$ compared with $N_\text{orient}=5$
-results in a $???\%$ improvement.
-
-Note, we also include the size of the extracted features, e.g. the
-length of the HOG feature vector.  A longer feature vector will
-increase the amount of time required to train the model.
-Additionally, for fixed memory restrictions, there is a tradeoff
-between the length of the feature vector and the size of the training
-set.  The logistic regression coefficient will also increase the
-training time, \todo{since larger coefficients correspond to a more
-  singular matrix}.  We discuss the score dependence on logistic
-regression coefficient in Section\ref{sec:regularization}.
 
 %-------------------------------------------------%
-\subsection{Receiver Operating Characteristic}
+\subsection{Receiver Operating Characteristic}\label{sec:ROC}
 %-------------------------------------------------%
 
 In this section, we discuss the Receiver Operating Characteristic
@@ -705,13 +742,27 @@ Section~\ref{sec:regularizedfit}.
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure}[t]\label{fig:PRcompilation}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/metrics/PR/PR_compilation.pdf}
+\caption{Red, blue, green: Precision-recall (PR) curves for models
+  trained on our whole 10,000 training set and tested on our holdout
+  set of 1,000.  These respectively correspond to the same models and
+  data shown in Figure~\ref{fig:ROCcompilation}.  An ideal model would
+  reach both a precision (purity) and recall (completeness) that equal
+  1.  Note, that this performance describes a data set with a 50-50
+  split between lens and non-lens containing images.}
+\end{center}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 %-------------------------------------------------%
 \subsection{Effects of Regularization on Model Performance}\label{sec:regularization}
 %-------------------------------------------------% 
 
 % Logistic regression and regularization
-As described in Section~\ref{sec:logreg}, LogReg trains a model with
+As described in Section~\ref{sec:LR}, LR trains a model with
 complexity determined by the regularization parameter coefficient,
 $C_\text{LogReg}$.  Increasing model complexity (larger
 $C_\text{LogReg}$), will better describe features in the training
@@ -782,7 +833,7 @@ has some randomness associated with the path it takes to convergence
 \subsection{Effects of Dataset Size on Model Performance}\label{sec:datasize}
 %-------------------------------------------------% 
 %-------------------------------------------------% 
-\subsubsection{Effects of Training Set Size}
+\subsubsection{Effects of Training Set Size}\label{sec:trainsetsize}
 %-------------------------------------------------% 
 In this section, we show the effects of training set size on model
 performance.  Figure~\ref{fig:trainsize} shows the AUC and the train
@@ -999,9 +1050,7 @@ visual and/or spectroscopic follow-up.
 %%   increases the appearance of image-BCG blending.}
 %% \label{fig:LSSTBCGclassificationtile}
 %% \end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-\subsection{BCG removed}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+
 %% \begin{figure*}[t]
 %%   \centering 
 
@@ -1032,8 +1081,11 @@ visual and/or spectroscopic follow-up.
 %% \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+\subsection{Performance dependence on lens-model parameters}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 %-------------------------------------------------%
-\subsubsection{Performance dependence on lens-model parameters}
+\subsubsection{Effects of Image Magnification on Scoring}
 \label{sec:peformance_lensmodel}
 %-------------------------------------------------%
 
