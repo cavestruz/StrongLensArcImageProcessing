@@ -533,14 +533,17 @@ We first estimate the size of a cell that will contain a coherent arc
 feature.  To first order approximation, subdivisions of cells that are
 1/100th the area of the entire image should contain coherent arc edges
 that span an elongated shape within arc-containing cells.  Therefore,
-\wording{we perturb the pixels per cell parameter about (30, 30) for
-  the HST-like images, and (4, 4) for the LSST-like images.}
+we sample the pixels per cell parameter from (8, 8) to (32, 32) for
+the HST-like images, and (3, 3) to (5, 5) for the LSST-like images in
+our grid search.
 
 Next, the cells per block parameter determines the normalization of
 each cell with respect to the neighboring cell.  In general, this will
 downweight arc-like edges in cells that neighbor very bright cells,
-such as cells that cover the central lens galaxy.  \wording{We therefore
-  vary the cells per block parameter between (1, 1) and (3, 3).}
+such as cells that cover the central lens galaxy.  We therefore vary
+the cells per block parameter between (2, 2) and (4, 4) for the
+LSST-like images and between (1, 1) and (4, 4) for the HST-like
+images.
 
 The number of orientations will determine the sampling of rounded
 edges.  For example, if we only have two orientations, an arc-like
@@ -854,13 +857,22 @@ $C_{LR}=100$, whereas it was $C_{LR}=500$ for the subset of trainsize
 % Scores vs. regularization on larger train/test set with comparable
 % grid search in parameterization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:trainsize}
+\begin{figure}[t]\label{fig:trainsizeLSST10}
 \begin{center}
 \includegraphics[width=\columnwidth]{figures/trainsize/LSST10.pdf}
 \caption{Solid blue line: AUC for models with varying size of the
   training set for LSST10.  Dotted red line: Train time for that
   model.  The improvement of AUC scales linearly with the log of the
   training set size, but train time roughly scales logarithmically.}
+\end{center}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure}[t]\label{fig:trainsizenLSST10}
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/trainsize/nLSST10.pdf}
+\caption{Same as Figure~\ref{fig:trainsizeLSST10} for nLSST10.  For
+  small trainsize, the nLSST10 performs better than LSST10. }
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
