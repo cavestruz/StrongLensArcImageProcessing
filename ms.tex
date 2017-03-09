@@ -1226,18 +1226,18 @@ method to correct for this.
 % Summarize paper
 We have presented a supervised classification pipeline to
 automatically identify galaxy-galaxy strong lensing systems using a
-histogram of oriented gradients as a feature extractor, and logistic
-regression as a machine learning algorithm.  Our pipeline can easily
-be extended to identify other strong lensing features, such as
-multiply imaged quasars, and to test alternative features and/or
-machine learning algorithms.
+histogram of oriented gradients (HOG) as a feature extractor, and
+logistic regression (LR) as a machine learning algorithm.  Our
+pipeline can easily be extended to identify other strong lensing
+features, such as multiply imaged quasars, and to test alternative
+features and/or machine learning algorithms.
 
 
 % Training set
 We have also made use of a new sophisticated set of mock observations,
 which will also be made publicly available.  The lensing systems have
 lens galaxies generated with a realistic redshift distribution and
-along the line of sight galaxies drawn from ultra-deep Hubble
+along the line of sight galaxies drawn from Hubble Ultra-Deep field
 observations.  We have explored results from mock HST, one year LSST,
 and ten year LSST observations.
 
@@ -1253,29 +1253,27 @@ We summarize key points below:
   user can easily perform parameter searches to train a model with the
   best parameters for a given problem.
 
-\item We have tested HOG as an efficient and effective feature
-  extractor for galaxy-galaxy strong lensing systems in both a space
-  based (HST-like) and ground based (LSST-like) observation.  
-
-\item We have found almost no difference between the Logistic
-  Regression and Support Vector Machine algorithms, with Logistic
-  Regression performing at a factor of $XX$ faster.  
+\item We have tested and run parameter tests for a histogram of
+  oriented gradients as an efficient and effective feature extractor
+  for galaxy-galaxy strong lensing systems in both a space based
+  (HST-like) and ground based (LSST-like) observation.  We have also
+  tested and run parameter tests for logistic regression as a
+  scalable, cheap, and effective machine learning algorithm.
 
 \item We find AUC values of ROC curves of optimized classifier models
-  to yield $AUC=0.987$ for the HST-like data, $AUC=0.96$ for the
-  stacked LSST-like data with the lensing BCG included, and $AUC=0.86$
-  for the stacked LSST-like data with the lensing BCG perfectly
-  removed.  This suggests that we will be able to use our method to
-  detect strong galaxy-galaxy lensing systems in future space-based
-  missions (e.g. {\em Euclid}) with high purity and completeness.
-  However, for future ground-based missions like LSST, we will need to
-  perform additional image pre-processing, such as subtracting the
-  image component corresponding to the lens.
+  to yield $AUC=0.975$ for the HST-like data, $AUC=0.809$ for the
+  stacked LSST-like data.  Model performance exhibits continual
+  increase with the training size.
+
+\item While removal of the lens galaxy improves model performance for
+  smaller size training samples, features from the lens galaxy improve
+  model performance for larger training data sets.
 
 \item Images that were easiest for our model to classify typically
-  were lens systems that had high magnification and a BCG with large
-  velocity dispersion.  
-
+  were lens systems that had high lensed image magnification and a
+  lens galaxy with large velocity dispersion or non-lens systems with
+  lens galaxies with smaller velocity dispersion and non-elongated
+  along the line of sight galaxies.
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1287,23 +1285,33 @@ features are well separated enough for a linear classifier algorithm.
 Reproducible results do not require supercomputing resources.
 
 % Impact of work
-These results indicate that...
+These results indicate that effective image classification of
+galaxy-galaxy strong lensing systems do not require large scale
+computing resources.
 
 % Caveat of the mock data set
-One major caveat ... training and test mock images... LOS galaxies all
-from Hubble Ultra Deep field.  Success measured by performance on the
-small sample of systems observed with HST.
+One major caveat of our resuls is the fact that our mock data likely
+does not describe the full range of lens and non-lens images that will
+be observed.  For example, the along the line of sight galaxies in our
+training and test images all come from the Hubble Ultra Deep field,
+sampling a smaller range of potential systems that are not associated
+with a lensed image.  We will address these shortcomings in subsequent
+work.  
 
 % Interpreting TP and FP rates
-Note that while our training and test set split of $50\%$ lensed and
-$50\%$ unlensed images is not realistic, our true positive and false
-positive rates in the ROC curves would stay the same for alternative
-lensed and unlensed sample splittings.  
-
-On the other hand, the ROC curves show a representative rate for lens
-and source distributions that are evenly sampled.  The sampling is
-{\it not} representative of what we might expect from a an
-observational survey.
+Finally, we must take the class balance, or relative number of lens to
+non-lens systems, into account when assessing a metric.  The
+Purity-Recall (purity-completeness) metric is sensitive to the ratio
+of lens and non-lens systems in the data.  Both of our training and
+test data sets have $50\%$ lensed and $50\%$ unlensed images, which is
+not expected in observations.  The ROC curve metric is insensitive to
+the ratio, but is sensitive to the sampling.  Given alternative lens
+and non-lens sample splittings, our true positive and false positive
+rates in the ROC curves would stay the same, making the ROC curve a
+more standard metric in the literature.  On the other hand, the ROC
+curves show a representative rate for lens and source distributions
+that are evenly sampled.  We do {\it not} expect this sampling to be
+representative of what we might expect from a an observational survey.
 
 
 \acknowledgments CA acknowledges support from the Enrico Fermi
