@@ -73,7 +73,7 @@ training set.  Models trained on fewer images perform better in
 absence of the lens galaxy, which can decrease the false positive rate
 by blending with light from a lensed galaxy image near the central
 lensing galaxy.  However, with larger training data sets, information
-from the lensing galaxy improves model performance.  \wordchoice{Our
+from the lensing galaxy improves model performance.  \wording{Our
   results show efficient and effective methods for automated strong
   lensing identification with scalable linear methods that are easy to
   parallelize with existing open source tools and are reproducible on
@@ -588,37 +588,32 @@ the train time for each data set in Section~\ref{sec:trainsetsize}.
 \caption{Left to right show example image transforms of mock images
   from Figure~\ref{fig:mockimages} with a visualized histogram of
   oriented gradients.  The image transform picks up edge features,
-  with arc features showing up as edges across radial orientations.}
+  with arc features showing up as edges across radial orientations.
+  \wording{Each of the oriented gradients within a cell is
+    color-coded by magnitude, and represented as a line in the
+    direction perpendicular to that gradient.}  The actual extracted
+  features fill a one-dimensional feature vector comprised of the
+  magnitudes of each of the oriented edges within the visualized
+  cells.}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-%% \begin{figure*}[t]\label{fig:hogvisual}
-%% \begin{center}
-%% \includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or5ppc32cpb1.pdf}\hspace{-20pt}
-%% \includegraphics[width=1\columnwidth]{figures/105_lensed_imgs_1or9ppc16cpb1.pdf}\\
-%% \includegraphics[width=1\columnwidth]{figures/lsst_105_lensed_imgs_1or4ppc3cpb3.pdf}\hspace{-20pt}
-%% %\includegraphics[width=1\columnwidth]{figures/lsst_105_unlensed_imgs_1or4ppc3cpb3.pdf}\\
-%% \includegraphics[width=1\columnwidth]{figures/lsst_stack_105_lensed_imgs_1or4ppc3cpb3.pdf}
-%% %\includegraphics[width=1\columnwidth]{figures/lsst_stack_105_unlensed_imgs_1or4ppc3cpb3.pdf}
-%% \caption{Top row: Visualized HOG feature vectors of the sample lensed
-%%   HST-like image from Figure~\ref{fig:mockimages}.  Left: The
-%%   corresponding HOG visualization with N$_\text{orient}=5$, (32, 32)
-%%   pixels per cell, and (1, 1) cells per block.  Right: The HOG
-%%   visualization of the same mock image with N$_\text{orient}=9$, (16,
-%%   16) pixels per cell, and (1, 1) cells per block.  The brightest
-%%   lines align with prominent edges.  Note, while fewer pixels per cell
-%%   will better resolve the arc feature, the ``edge'' corresponding to
-%%   the arc is less prominent.  Bottom row: Visualized HOG feature
-%%   vectors for the LSST-like single epoch and stacked images with the
-%%   best scoring HOG parameterization of N$_\text{orient}=4$, (3, 3)
-%%   pixels per cell, and (3, 3) cells per block.  The single epoch image
-%%   (left) does not have significant enough edge features to emerge in
-%%   the HOG, but the stacked image (right) does.}
-%% \end{center}
-%% \end{figure*}
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+%% \caption{Top row: Visualized HOG feature vectors of the sample
+%%   lensed HST-like image from Figure~\ref{fig:mockimages}.  Left:
+%%   The corresponding HOG visualization with N$_\text{orient}=5$,
+%%   (32, 32) pixels per cell, and (1, 1) cells per block.  Right: The
+%%   HOG visualization of the same mock image with
+%%   N$_\text{orient}=9$, (16, 16) pixels per cell, and (1, 1) cells
+%%   per block.  The brightest lines align with prominent edges.
+%%   Note, while fewer pixels per cell will better resolve the arc
+%%   feature, the ``edge'' corresponding to the arc is less prominent.
+%%   Bottom row: Visualized HOG feature vectors for the LSST-like
+%%   single epoch and stacked images with the best scoring HOG
+%%   parameterization of N$_\text{orient}=4$, (3, 3) pixels per cell,
+%%   and (3, 3) cells per block.  The single epoch image (left) does
+%%   not have significant enough edge features to emerge in the HOG,
+%%   but the stacked image (right) does.}  \end{center} \end{figure*}
+%%   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %-------------------------------------------------%
@@ -904,16 +899,16 @@ it takes to convergence.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 %-------------------------------------------------%
-\subsection{Effects of Dataset Size on Model Performance}\label{sec:datasize}
+\subsection{Dataset Size Dependence}\label{sec:datasize}
 %-------------------------------------------------% 
 %-------------------------------------------------% 
-\subsubsection{Effects of Training Set Size}\label{sec:trainsetsize}
+\subsubsection{Effects of Training Set Size on Performance and Train Time}\label{sec:trainsetsize}
 %-------------------------------------------------% 
 
 In this section, we show the effects of training set size on model
 performance on the holdout test set of 1,000 images.  We also compare
 the improvement between images that include the lens galaxy and images
-with no lens galaxy.  
+with no lens galaxy.
 
 Figure~\ref{fig:trainsizeLSST10} shows how the AUC and the optimal
 logistic regression coefficient depend on the log of the size of the
@@ -1018,26 +1013,38 @@ with number of training images with log-log slope of approximately 1.
 %-------------------------------------------------% 
 \subsubsection{Effects of Rotation on AUC}
 %-------------------------------------------------% 
+
+% Augmenting dataset
 To augment our training set, we rotated each image in the set by
 multiples of $90^o$.  Augmenting our data by a factor of four
 naturally optimizes the use of available training data, since our
-feature extraction method of HOG is not rotationally invariant.
+feature extraction method of HOG is not rotationally invariant.  This
+has an equivalent improvement to the study illustrated in
+Figure~\ref{fig:trainsizeLSST10}.
 
-We also tested the effects of testing our model on all four rotations
-of the test set.  In Figure~\ref{fig:rotation_test}, we show the AUC
-for different orientations of the datasets.  The x-axis corresponds to
-each of our three datasets, \todo{with and without the lens galaxy}.
-The y-axis shows the AUC.  The filled blue circles correspond to the
-four AUCs calculated from test scores assigned to images at one
-rotation.  The filled red stars correspond to the AUC calculated from
-the average of all four test scores, which are systematically higher
-than any one rotation.  The average score across all rotations for
-each image is likely to be less noisy for the whole test sample,
-giving an improved AUC.
+% Rotations of the test set
+We also tested the effects of evaluating our model on all four
+rotations of the test set, and using the average score of each test
+image to calculate the AUC.  In Figure~\ref{fig:rotation_test}, we
+show the AUC for different orientations of the datasets.  The x-axis
+corresponds to each of our three datasets, with and without the lens
+galaxy.  The y-axis shows the AUC.  The filled blue circles correspond
+to the four AUCs calculated when the model evaluated images at each of
+the four rotations.  The filled red stars correspond to the AUC
+calculated from the average of all four test scores, which are
+systematically higher than any one rotation.  The average score across
+all rotations for each image is likely to be less noisy for the whole
+test sample, giving an improved AUC.
 
+% Summary figure
+Figure~\ref{fig:rotation_test} also summarizes the best-case results
+of our models trained on our entire 10,000 training sets, and tested
+on our holdout 1,000 test set.  Recall, however, that we expect model
+performance on images containing the lens galaxy to improve further
+with larger training sets (see Figure~\ref{fig:trainsizeLSST10}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:rotation_test}
+\begin{figure}[t]
 \begin{center}
 \includegraphics[width=\columnwidth]{figures/rotated_aucs/rotated_aucs.pdf}
 \caption{Our summary figure: The AUCs of models trained on the full
@@ -1045,7 +1052,8 @@ giving an improved AUC.
   calculated from scores of images at a given rotation (e.g. 0, 90,
   180, and 270 degrees).  Red stars: AUC calculated from the average
   score of all rotations of each image.  The average score produces an
-  improved AUC in all data sets.}
+  improved AUC in all data sets.  We expect the AUC to further improve
+  with increased train size.}\label{fig:rotation_test}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
