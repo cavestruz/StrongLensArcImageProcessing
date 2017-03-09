@@ -421,11 +421,14 @@ then use {\em Logistic Regression} (LR), a machine learning algorithm
 described in Section~\ref{sec:LR}, to train a classifier model on a
 subset of our images.  LR requires a parameter search over the
 regression coefficient, $C_{LogReg}$, which we explore in
-Section~\ref{sec:regularization}.  We briefly comment that tests with
-\todo{{\em Support Vector Machine} (SVM) as an alternative machine
-  learning algorithm yielded negligible performance improvement, and
-  increased computation cost.  We do not include SVM in our final
-  analysis and comparisons.}
+Section~\ref{sec:regularization}.  We briefly comment that our initial
+tests with {\em Support Vector Machine} (SVM) as an alternative
+machine learning algorithm yielded negligible performance improvement,
+and significantly increased computation cost.  This indicated that the
+features of lens and non-lens images are relatively well separated by
+hyperplanes in feature space.  For these reasons, we do not include
+SVM in our final analysis and comparisons and continue all discussions
+with a linear classifier.
 
 Both the feature extrator, HOG, and the linear classifier, LR, contain
 parameters, which must be tested and optimized for peak model
@@ -569,17 +572,18 @@ right in Figure~\ref{fig:hogimages}).
 
 Finally, the resolution of the overall image will also limit the
 additional information that an increase in $N_\text{orient}$ will
-provide.  \wording{For the LSST-like data, the optimal orientation is
-  $N_\text{orient}=?$ compared with $N_\text{orient}=?$ only results
-  in a $???\%$ improvement.}
+provide.  The best case number of orientations for each dataset is
+$N_\text{orient,HST}=9$, $N_\text{orient,LSST10}=3$, \todo{and
+  $N_\text{orient,LSST1}=$.}
 
 % Impact on image performance
-The image size affects the length of the HOG feature vector, which has
-a monotonically increasing relationship with the time required to
-train the model.  Additionally, for fixed memory restrictions, there
-is a tradeoff between the length of the feature vector and the size of
-the training set.  We will discuss how the training set size affects
-the train time for each data set in Section~\ref{sec:trainsetsize}.
+The image resolution affects the length of the HOG feature vector,
+which has a monotonically increasing relationship with the time
+required to train the model.  Additionally, for fixed memory
+restrictions, there is a tradeoff between the length of the feature
+vector and the size of the training set.  We will discuss how the
+training set size affects the train time for each data set in
+Section~\ref{sec:trainsetsize}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure*}[t]\label{fig:hogimages}
@@ -973,11 +977,11 @@ log-log slope of approximately 2.
 
 % Train time behavior for nLSST10
 Since nLSST10 does not contain the lens galaxies, fewer of the
-extracted features describe the lensing system, requiring decreased
-model complexity.  The increase in train time for nLSST10 as a
-function of train size is mostly due to only having more data to fit
-in the regression, leading to a steady and slow increase of train time
-with number of training images with log-log slope of approximately 1.
+extracted features describe the lens system, requiring decreased model
+complexity.  The increase in train time for nLSST10 as a function of
+train size is mostly due to only having more data to fit in the
+regression, leading to a steady and slow increase of train time with
+number of training images with log-log slope of approximately 1.
 
 % AUC vs. regularization on larger train/test set with comparable
 % grid search in parameterization
@@ -1061,11 +1065,11 @@ with larger training sets (see Figure~\ref{fig:trainsizeLSST10}).
 
 
 %-------------------------------------------------%
-\subsection{Image classification performance}\label{sec:performance}
+\subsection{Image Classification Performance}\label{sec:performance}
 %-------------------------------------------------%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure*}[t]\label{fig:ROCsamplesLSST10}
+\begin{figure*}[t]
 \begin{center}
 \includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/tp.pdf}\hspace{5pt}
 \includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/fp.pdf}\\\vspace{5pt}
@@ -1086,191 +1090,87 @@ with larger training sets (see Figure~\ref{fig:trainsizeLSST10}).
   $fpr\approx0.2$, respectively.  The bottom two rows show
   characteristic images that will only be accepted with an extremely
   lenient threshold, contributing to the top right area of the ROC
-  curve.}
+  curve.}\label{fig:ROCsamplesLSST10}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
-
-
-
-**Redshift makes sense, but only because of the redshift distribution.
---> Zahid+15 quiescent.... this is where redshifts are from.
-
+\subsubsection{Populating the ROC Curve}
 % Defining the 6 paradigms of classification
 In this section, we discuss the different image types that our model
 is most and least able to successfully classify.  We have six
-paradigms of model performance on the mock images, \todo{and include a
-larger compilation of each of the six image classification paradigms
-in the Appendix for the various models we have trained}.
+paradigms of model performance on the mock images based on the score
+an image receives when evaluated by the trained model, and its true
+label.  From highest scoring to lowest scoring: True Positives (tp),
+False Positives (fp), Borderline Positives (bp), Borderline Negatives
+(bn), False Negatives (fn), and True Negatives (tn).
 
-% TP and TN
-Figure ~\ref{fig:HSTclassificationtile} shows a tile of representative
-HST-like images classified with the model, HST:N5ppc32cpb4C100.  The
-left column show lensing systems, and right column non-lensing
-systems.  From top to bottom, the images are ordered from highest
-scoring to lowest scoring with the classification model.  The top left
-is what we would call a ``true positive'', a lensing system that will
-always classified as positive because of its high score.  Most of the
-highest scoring lensing systems exhibit similar extended arcs
-corresponding to a large magnification (see
-Section~\ref{sec:peformance_lensmodel}).  The bottom right is a ``true
-negative'', a non-lensing system that will likely be classified as
-negative because of its low score.  Many of the lowest scoring
-non-lensing systems have \todo{fairly small BCGs, which are non likely
-  to lens a background galaxy.}
+Figure~\ref{fig:ROCsamplesLSST10} illustrates four images from each
+paradigm for the holdout test set of LSST10.  The trained model used
+the entire 10,000 training set.  The left two columns show lens
+systems, and the right two columns show non-lens systems.  The
+annotation in the top left corner of each images shows the score,
+\todo{and the letters in the bottom right label the paradigm of
+  performance.}
 
-% FN and FP
-The bottom left corresponds to a likely ``false negative,'' or a
-lensing system that is likely to be mis-classified as a negative.  The
-lowest scoring lensing systems tend to have images with smaller
-magnification that are minorly distorted, mimicking the shape of
-line-of-sight galaxies that the model has learned to ignore.  The top
-right corresponds to a likely ``false positive,'' or a non-lensing
-system that is likely to be mis-classified as a positive.  False
-positives tend to have ``fuzzy'' along the line of sight galaxies that
-mimic lensing arcs.  The false positives should be from bright
-galaxies along the line of sight.  \todo{The highest scoring
-  non-lensing systems often have fairly bright disk shaped galaxies
-  along the line of sight.  Visually, these are also virtually
-  indistinguishable from a lensed image and would require
-  spectroscopic follow-up.}
+% tp, tn description
+In general, the true positives (the highest scoring lens systems) have
+lensed images with large magnification.  The the true negatives (the
+lowest scoring non-lens systems) have small lens galaxies with
+galaxies along the line of sight that are rounded.  The successful
+classification of these two paradigms are least sensitive to the
+threshold.  On the other hand the failed classification of the false
+negatives (the highest scoring non-lens systems) and the false
+positives (the lowest scoring lens systems) are also least sensitive
+to the threshold.  False negatives are typically lens systems with
+lensed images of smaller magnification and minor distortions that
+mimic along the line of sight galaxies that the model has learned to
+ignore.  False positives are often non-lens systems with elongated,
+elliptical, or ``fuzzy'', galaxies along the line of sight whose signal
+blends with the lens galaxy contributing to the false positive rate
+even for conservative thresholds.  Visually, these false positives are
+virtually indistinguishable from true arcs, and would require
+spectroscopic follow-up.
 
-% BP and BN
-The middle row are images whose classification will be most sensitive
-to the classification threshold.  We call these borderline images,
-with the left corresponding to a ``borderline positive'', and the
-right corresponding to a ``borderline negative''.  They sit around the
-knee of the ROC curve, the optimal threshold for purity and
-completeness.  Note that the ROC curve for HST:N5ppc32cpb4C100
-illustrates that we can lower the classification threshold and improve
-the true positive rate by $\sim10\%$ and sacrifice an increase in
-false positive rate by $\lsim5\%$.  However, small perturbations
-around the knee will either include or disinclude the middle row
-images.  These are the systems that would make good candidates for
-visual and/or spectroscopic follow-up.
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-%% \begin{figure*}[t]
-%%   \centering \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/HST/1787_lensed_imgs_1.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/HST/1354_unlensed_imgs_1.pdf}} } \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/HST/1052_lensed_imgs_1.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/HST/1994_unlensed_imgs_1.pdf}} } \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/HST/1862_lensed_imgs_1.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/HST/1723_unlensed_imgs_1.pdf}} }
-%% \caption{HST-like images. The left column corresponds to typical
-%%   lensing systems in our sample from highest scoring (top) to lowest
-%%   scoring, or false negatives (bottom).  The right column corresponds
-%%   to typical non-lensing systems in our sample from highest scoring,
-%%   or false positives (top), to lowest scoring (bottom).  The middle
-%%   row can be considered ``borderline'' classified images, where the
-%%   scores of the lensing and non-lensing system are very close to one
-%%   another.  These are systems that will be most sensitive to the
-%%   classification threshold.}
-%% \label{fig:HSTclassificationtile}
-%% \end{figure*}
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-%% \begin{figure*}[t]
-%%   \centering 
-
-%% \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/BCG/lsst_stack_1204_lensed_imgs_1.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/BCG/lsst_stack_1534_unlensed_imgs_1.pdf}}
-%% } 
-
-%% \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/BCG/lsst_stack_1384_lensed_imgs_1.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/BCG/lsst_stack_1703_unlensed_imgs_1.pdf}} 
-%% } 
-
-%% \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/BCG/lsst_stack_1641_lensed_imgs_1.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/BCG/lsst_stack_1518_unlensed_imgs_1.pdf}} 
-%% }
-
-%% \caption{LSST-like images with a BCG. These illustrate the same image
-%%   classification paradigms as Figure~\ref{fig:HSTclassificationtile}.
-%%   Note, the larger PSF of LSST reduces the resolution of images,
-%%   making the arc-like morphology of faint images less significant and
-%%   increases the appearance of image-BCG blending.}
-%% \label{fig:LSSTBCGclassificationtile}
-%% \end{figure*}
-
-%% \begin{figure*}[t]
-%%   \centering 
-
-%% \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/noBCG/lsst_stack_1957_lensed_imgs_0.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/noBCG/lsst_stack_stamps_1098.pdf}}
-%% } 
-
-%% \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/noBCG/lsst_stack_1634_lensed_imgs_0.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/noBCG/lsst_stack_stamps_1664.pdf}} 
-%% } 
-
-%% \mbox{
-%%     \subfigure{\includegraphics[width=\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/noBCG/lsst_stack_1629_lensed_imgs_0.pdf}}\hfill
-%%     \subfigure{\includegraphics[width=1\columnwidth,trim=120 50 0 0,
-%%         clip]{figures/LSST/noBCG/lsst_stack_stamps_1399.pdf}} 
-%% }
-
-%% \caption{LSST-like images with no BCG. These illustrate the same image
-%%   classification paradigms as Figure~\ref{fig:HSTclassificationtile}.}
-%% \label{fig:LSSTnoBCGclassificationtile}
-%% \end{figure*}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+% Borderlines
+The middle two rows of Figure~\ref{fig:ROCsamplesLSST10} illustrate
+the borderline positives and borderline negatives. The successful
+classification of the borderline positives and negatives are most
+sensitive to the threshold, and would be the first candidates for
+alternative classification methods, such as visual follow-up.
+Thresholds set around these scores yield a true positive rate and
+false positive rate of $tpr\approx0.8$ and $fpr\approx0.2$,
+respectively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-\subsection{Performance dependence on lens-model parameters}
+\subsubsection{Dependence on Lens-Model Parameters}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-%-------------------------------------------------%
-\subsubsection{Effects of Image Magnification on Scoring}
-\label{sec:peformance_lensmodel}
-%-------------------------------------------------%
 
 % Summary of subsection
 Here, we examine lens-model parameters that affect how well our
 pipeline can classify the system.  The lens-model parameters we
 examined are the redshift, ellipticity, orientation angle, and
-velocity dispersion of the lensing BCG, and also the magnification of
-the lensed image compared with its original size.  The magnification
-of the lensed image is the most correlated lens-model parameter with
-our trained model performance.  The more strongly lensed an image is,
-the larger its magnification, and the easier it is for our trained
-model to classify.
+velocity dispersion of the lensing galaxy, and also the magnification
+of the lensed image compared with its original size.  We found that
+the magnification of the lensed image is the most correlated
+lens-model parameter with our trained model performance, with a
+secondary and related correlation with lens galaxy velocity
+dispersion.  The more strongly lensed an image is, the larger its
+magnification, and the easier it is for our trained model to classify.
 
 % Discuss figure
 In Figure~\ref{fig:scorevslensparams}, we show the classification
-score as a function of image magnification for our HST-like sample.
-The left-hand side shows the relation color-coded by the redshift of
-the lensing galaxy, and the right-hand side shows the relation
-color-coded by the velocity dispersion of the lensing galaxy.  Lensing
-systems with images that have magnification $\gsim7$ will almost
-certainly be classified as positive with threshold scores above
+score as a function of image magnification for lens images in our
+HST-like sample.  The left-hand side shows the relation color-coded by
+the redshift of the lensing galaxy, and the right-hand side shows the
+relation color-coded by the velocity dispersion of the lensing galaxy.
+Lensing systems with images that have magnification $\gsim7$ will
+almost certainly be classified as positive with threshold scores above
 $\gsim0.5$.  These systems are also those that are most easily
 classified by eye.  However, our trained model has varying performance
 for systems with lower magnifications.
+
+
 
 % Some dependence on redshift and velocity dispersion, which is folded
 % into magnitude
@@ -1296,60 +1196,50 @@ correlations in model performance with other lens parameters.  It is
 also useful to keep in mind that lensed galaxy images with
 magnification $\lsim5$ (e.g. slightly stretched spherical galaxies)
 are often visually indistinguishable from elliptical galaxies along
-the line of sight.  \todo{We will discuss how differences between the
-  lens-model parameter distributions in the training and test sets
-  affect performance in a forthcoming paper.}
+the line of sight.  
 
+In a forthcoming paper, we will discuss how class imbalance, or
+differences between the lens-model parameter distributions in the
+training and test sets affect model performance and will explore a
+method to correct for this.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure*}[t]
   \centering 
-
-\mbox{
+  \mbox{
     \subfigure{\includegraphics[width=\columnwidth,trim=0 0 0 0,
         clip]{figures/HST/or5ppc32cpb4/magnitude_d_colorcodedby_z.pdf}}\hfill
     \subfigure{\includegraphics[width=\columnwidth,trim=0 0 0 0,
         clip]{figures/HST/or5ppc32cpb4/magnitude_d_colorcodedby_velocity_dispersion.pdf}}
-} 
-\caption{Image classification score as a function of lensed image
-  magnification.  Left color-coded by redshift, right is color coded
-  by the lens velocity_dispersion.}
+  } 
+\caption{Image classification score on HST mock data as a function of
+  lensed image magnification.  Left color-coded by redshift, right is
+  color coded by the lens velocity dispersion.}
 \label{fig:scorevslensparams}
 \end{figure*}
-
-%-------------------------------------------------%
-\subsubsection{Performance sensitivity to line-of-sight galaxies}
-\label{sec:peformance_lensmodel}
-%-------------------------------------------------%
-
-
-
-%-------------------------------------------------%
-\subsection{Effects of BCG contamination}
-%-------------------------------------------------%
-
-Previous works to identify strong lensing systems have often modeled
-out the BCG from images to better identify lensed images (???CITE
-HERE???).  Here, we test the effects of the BCG by training and
-testing models on mock data where the BCG has not been included.  By
-construction, these results show the maximal improvement that can be
-obtained from BCG subtraction.
-
-Figure~\ref{fig:ROCnobcg} shows the \todo{ROC curve for models of HOG
-  feature vectors of mock data with no BCG.  The feature vectors are
-  the same HOG parameters as in Figure~\ref{fig:ROC} }.  \todo{The
-  grid search over parameter space was similar to that for data with
-  the BCG.}
-
-???????
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 
 %-------------------------------------------------%
 \section{Summary and Discussions}
 \label{sec:conclusions}
 %-------------------------------------------------%
 
-machine learning -> pipeline, and training set.  
+% Summarize paper
+We have presented a supervised classification pipeline to
+automatically identify galaxy-galaxy strong lensing systems using a
+histogram of oriented gradients as a feature extractor, and logistic
+regression as a machine learning algorithm.  Our pipeline can easily
+be extended to identify other strong lensing features, such as
+multiply imaged quasars, and to test alternative features and/or
+machine learning algorithms.
 
-Future work with training set tests.
+
+% Training set
+We have also made use of a new sophisticated set of mock observations,
+which will also be made publicly available.  The lensing systems have
+lens galaxies generated with a realistic redshift distribution and
+along the line of sight galaxies drawn from ultra-deep Hubble
+observations.  We have explored results from mock HST, one year LSST,
+and ten year LSST observations.
 
 
 We summarize key points below:
@@ -1369,9 +1259,7 @@ We summarize key points below:
 
 \item We have found almost no difference between the Logistic
   Regression and Support Vector Machine algorithms, with Logistic
-  Regression performing at a factor of $XX$ faster.  This means that
-  features of lens and non-lens images are relatively well separated
-  by hyperplanes in feature space.
+  Regression performing at a factor of $XX$ faster.  
 
 \item We find AUC values of ROC curves of optimized classifier models
   to yield $AUC=0.987$ for the HST-like data, $AUC=0.96$ for the
@@ -1391,6 +1279,14 @@ We summarize key points below:
 \end{itemize}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Benefits of our method
+We emphasize that classical linear classifiers, such as logistic
+regression, is scalable and relatively easy to parallelize with open
+source tools such as {\em Spark}.  Initial checks indicated that HOG
+features are well separated enough for a linear classifier algorithm.
+Reproducible results do not require supercomputing resources.
+
+% Impact of work
 These results indicate that...
 
 % Caveat of the mock data set
@@ -1421,11 +1317,11 @@ Foundation and its founder Fred Kavli.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\appendix
+%\appendix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\section{Sample stacked mock LSST images}
+%\section{Sample stacked mock LSST images}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\subsection{BCG included}
+%\subsection{BCG included}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 
 \bibliography{ms}
