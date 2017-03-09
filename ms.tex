@@ -103,11 +103,11 @@ multiply imaged quasars ???\citep{}.
 
 % Application of constraining mass profiles - large numbers needed.
 The application of strong gravitational lensing to constrain the mass
-distribution of \todo{early-type galaxies (ETGs)} necessitates large
-samples of galaxy-galaxy lensing systems.  The strong lensing
-signature... EDITING HERE These systems exhibit a background source
-galaxy that the ETG deflects into a partial of full arc shaped
-Einstein ring.
+distribution of strong lenses, such as early-type galaxies (ETGs),
+necessitates large samples of galaxy-galaxy lensing systems.  The
+strong lensing signature directly probes the underlying matter. These
+systems exhibit a background source galaxy that the lens galaxy
+deflects into a partial of full arc shaped Einstein ring.
 
 % Arc identification can be done visually (e.g. that zooniverse
 % thing).  But, in the advent of optical surveys, DES and LSST, we
@@ -217,6 +217,15 @@ waste follow up telescope time.  We discuss the performance of our
 image processing and classification pipeline with respect to the
 completeness and purity rates of our trained models and illustrate the
 scalability of training our models [wc???].  
+
+%  Relevance of our work
+While there has been a recent surge in the use of neural networks
+applied to image classification problems, these implementations are
+not easily scalable, nor easily accessible to the entire scientific
+community.  We present a supervised classification pipeline built with
+open source tools, tested on mock HST and LSST data.  Results are
+reproducible on personal computers, as both the pipeline and the data
+will be publicly distributed.
 
 Our paper is organized as follows. In Section~\ref{sec:methods} we
 briefly describe the methods to generate the mock HST and LSST data
