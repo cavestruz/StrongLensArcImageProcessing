@@ -63,15 +63,21 @@ regression to train a supervised classifier model on the HOG of HST-
 and LSST-like images.  We use an area under the curve (AUC) of a
 Receiver Operating Characteristic curve to assess model performance;
 $AUC=1.0$ is an ideal trained classifier, and $AUC=0.5$ does not
-provide any classification information.  Our best performing models
-exhibit an AUC of \todo{XX} for an HST-like sample.  However, for one
-orbit of LSST, our model only reaches an AUC of \todo{XX}.  In absence
-of the lens galaxy in one orbit of LSST-like data, the AUC improves to
-\todo{XX}.  For 10-year mock LSST observations, the respective AUC
-with and without the lens galaxy improves to \todo{XX} and \todo{XX}.
-Our results show efficient and effective methods for automated strong
-lensing identification with \wording{scalable linear methods that are
-  easy to parallelize with existing open source tools.}
+provide any classification information.  Our best performing models on
+a training set of 10,000 lens containing images and 10,000 non-lens
+containing images exhibit an AUC of 0.975 for an HST-like sample.
+However, for one orbit of LSST, our model only reaches an AUC of
+0.625.  For 10-year mock LSST observations, the AUC improves to 0.809.
+Model performance appears to continually improve with the size of the
+training set.  Models trained on fewer images perform better in
+absence of the lens galaxy, which can decrease the false positive rate
+by blending with light from a lensed galaxy image near the central
+lensing galaxy.  However, with larger training data sets, information
+from the lensing galaxy improves model performance.  \wordchoice{Our
+  results show efficient and effective methods for automated strong
+  lensing identification with scalable linear methods that are easy to
+  parallelize with existing open source tools and are reproducible on
+  personal laptop computers.}
 \end{abstract}
 %-------------------------------------------------%
 
@@ -790,7 +796,7 @@ discuss relative model performance and complexity for images with and
 without the lens galaxy in Section~\ref{sec:trainsetsize}.  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:ROCcompilation}
+\begin{figure}[t]
 \begin{center}
 \includegraphics[width=\columnwidth]{figures/metrics/ROC/ROC_compilation.pdf}
 \caption{Red, blue, green: ROC curves for models trained on our whole
@@ -801,12 +807,12 @@ without the lens galaxy in Section~\ref{sec:trainsetsize}.
   galaxy, mimicking an ideal removal of the lens.  Model performance
   can be summarized by the area under the curve (AUC), labeled in the
   legend. $AUC=1$ is a perfect model, and $AUC=0.5$ is a useless
-  model.}
+  model.}\label{fig:ROCcompilation}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:PRcompilation}
+\begin{figure}[t]
 \begin{center}
 \includegraphics[width=\columnwidth]{figures/metrics/PR/PR_compilation.pdf}
 \caption{Red, blue, green: Precision-recall (PR) curves for models
@@ -815,7 +821,8 @@ without the lens galaxy in Section~\ref{sec:trainsetsize}.
   data shown in Figure~\ref{fig:ROCcompilation}.  An ideal model would
   reach both a precision (purity) and recall (completeness) that equal
   1.  Note, that this performance describes a data set with a 50-50
-  split between lens and non-lens containing images.}
+  split between lens and non-lens containing
+  images.}\label{fig:PRcompilation}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -902,24 +909,82 @@ it takes to convergence.
 %-------------------------------------------------% 
 \subsubsection{Effects of Training Set Size}\label{sec:trainsetsize}
 %-------------------------------------------------% 
-In this section, we show the effects of training set size on model
-performance.  Figure~\ref{fig:trainsizeLSST10} shows how the AUC and
-the logistic regression coefficient depend on the log of the size of
-the training set.  In solid blue lines, we see that the AUC improves
-almost linearly with the log of the training size set.  In dotted red,
-we see that the train time roughly scales logarithmically with the log
-of the train size, with an exception of the data point corresponding
-to train size of 2000.
 
-Each model was trained with the same HOG parameterization from the
+In this section, we show the effects of training set size on model
+performance on the holdout test set of 1,000 images.  We also compare
+the improvement between images that include the lens galaxy and images
+with no lens galaxy.  
+
+Figure~\ref{fig:trainsizeLSST10} shows how the AUC and the optimal
+logistic regression coefficient depend on the log of the size of the
+training set for both the LSST10 data in solid blue lines, and the
+nLSST10 data in dashed blue lines.  The AUC for models trained on the
+LSST10 data improves almost linearly with the log of the training set
+size, increasing from AUC=0.705 to AUC=0.788 when the train size is
+increased from 500 lens/non-lens images to 8000 lens/non-lens images.
+However, for the nLSST10 data, where the lens galaxy has been removed
+from the images, the improvement is less dramatic.  With the same
+increase in training size, the AUC for nLSST10 changes from just below
+0.77 to just below 0.78.
+
+In solid red, we see that the optimal value for $C_\text{LogReg}$ for
+LSST10 roughly scales logarithmically with the log of the train size,
+with an exception of the data point corresponding to train size of
+2000.  Generally, a larger training set will require an increase in
+model complexity to capture additional information.  This is also true
+for the optimal $C_\text{LogReg}$ dependence on the number of training
+images in the nLSST10 data.  But, the required complexity is
+systematically less than for the LSST10 images.  
+
+% Comparison of the two LSST10 vs. nLSST10
+In the LSST10 case, the trained model can incorporate the additional
+information of the edges from the lens galaxy, which is correlated
+with the lensing cross-section and likelihood of the image being a
+lensing system.  The nLSST10 images do not contain this information,
+but provide cleaner signals of the lensed image for lensed images that
+occur close to the lens galaxy.  The cleaner signal in nLSST10 allows
+for better model performance for smaller training data set sizes
+($N_\text{train}\sim5,000$).  However, models trained on LSST10
+improve more rapidly with train size, since the additional information
+from the lens galaxy better describes the lens containing images.  For
+$N_\text{train}\gsim 5,000$, the models trained on LSST10 outperform
+  those trained on nLSST10.
+
+%M Model complexity, train time, and performance
+Since the models that contain information from the lens galaxy edges
+in LSST10 are more complex, the models require a larger training set
+size for a better fit.  While model performance for LSST10 appears to
+steadily increase, this comes at the cost of increased train time,
+which is two-fold.  The train time will increase due to both an
+increase in data to fit, and also an increase in optimal
+$C_\text{LogReg}$ where the volume of hyperparameter space for allowed
+solutions is larger (see red lines in
+Figure~\ref{fig:regularization}).
+
+% Train time
+Figure~\ref{fig:traintimeLSST10} shows the train time for LSST10 and
+nLSST10 as a function of the size of the training set for the optimal
+regularization parameter for that subset training data.  Each model
+uses features extracted with the same HOG parameterization from the
 grid search and the optimal regularization parameter for that subset
 train data.  The train time of a given model generally increases for
 increasing regularization parameter.  For the subset of train size
-2000, the optimal regularization parameter happened to be
-$C_{LogReg}=100$, whereas it was $C_{LogReg}=500$ for the subset of trainsize
-1000, and $C_{LogReg}=1000$ for the subset of trainsize 4000.
+$N_\text{train}=2000$ in LSST10, the optimal regularization parameter
+happened to be $C_{LogReg}=100$, whereas it was $C_{LogReg}=500$ for
+the subset of trainsize 1000, and $C_{LogReg}=1000$ for the subset of
+trainsize 4000.  This makes the train time increase at train size
+$N_\text{train}=2000$ for LSST10 less dramatic than the average
+log-log slope of approximately 2.
 
-% Scores vs. regularization on larger train/test set with comparable
+% Train time behavior for nLSST10
+Since nLSST10 does not contain the lens galaxies, fewer of the
+extracted features describe the lensing system, requiring decreased
+model complexity.  The increase in train time for nLSST10 as a
+function of train size is mostly due to only having more data to fit
+in the regression, leading to a steady and slow increase of train time
+with number of training images with log-log slope of approximately 1.
+
+% AUC vs. regularization on larger train/test set with comparable
 % grid search in parameterization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure}[t]
@@ -936,13 +1001,27 @@ $C_{LogReg}=100$, whereas it was $C_{LogReg}=500$ for the subset of trainsize
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure}[t]
+\begin{center}
+\includegraphics[width=\columnwidth]{figures/traintime/LSST10.pdf}
+\caption{Solid (dotted) blue line: Train time for models with varying
+  size of the training set for LSST10 (nLSST10).  Train time roughly
+  scales logarithmically.  Note, LSST10 requires more model complexity
+  to exceed the performance of nLSST10, and therefore requires more
+  training time for continual increase in
+  performance.}\label{fig:traintimeLSST10}
+\end{center}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+
 %-------------------------------------------------% 
 \subsubsection{Effects of Rotation on AUC}
 %-------------------------------------------------% 
 To augment our training set, we rotated each image in the set by
-multiples of $90^o$.  The augmentation (factor of four) naturally
-optimizes the use of available training data, since our feature
-extraction method of HOG is not rotationally invariant.  
+multiples of $90^o$.  Augmenting our data by a factor of four
+naturally optimizes the use of available training data, since our
+feature extraction method of HOG is not rotationally invariant.
 
 We also tested the effects of testing our model on all four rotations
 of the test set.  In Figure~\ref{fig:rotation_test}, we show the AUC
@@ -961,12 +1040,12 @@ giving an improved AUC.
 \begin{figure}[t]\label{fig:rotation_test}
 \begin{center}
 \includegraphics[width=\columnwidth]{figures/rotated_aucs/rotated_aucs.pdf}
-\caption{The AUCs of models trained on the full 10,000 and tested on
-  the holdout 1,000.  Blue circles: AUC calculated from scores of
-  images at a given rotation (e.g. 0, 90, 180, and 270 degrees).  Red
-  stars: AUC calculated from the average score of all rotations of
-  each image.  The average score produces an improved AUC in all data
-  sets.}
+\caption{Our summary figure: The AUCs of models trained on the full
+  10,000 and tested on the holdout 1,000.  Blue circles: AUC
+  calculated from scores of images at a given rotation (e.g. 0, 90,
+  180, and 270 degrees).  Red stars: AUC calculated from the average
+  score of all rotations of each image.  The average score produces an
+  improved AUC in all data sets.}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -986,17 +1065,20 @@ giving an improved AUC.
 \includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/bn.pdf}\\\vspace{5pt}
 \includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/fn.pdf}\hspace{5pt}
 \includegraphics[width=.8\columnwidth]{figures/tiles/compilations/LSST10/tn.pdf}\\
-\caption{LSST mock images over 10 years. Left two columns: Lens
-  containing images, annotated with the image score assigned by our
-  trained classifier.  Right two columns: Non-lens containing images,
+\caption{LSST 10 year mock images. Left two columns: Lens containing
+  images, annotated with the image score assigned by our trained
+  classifier.  Right two columns: Non-lens containing images,
   annotated with the image score.  The top two rows show
   characteristic images that will be accepted with a high threshold
-  for classification, contributing to the bottom left of the ROC
-  curve.  The middle two rows show characteristic images that will be
-  accepted with a moderate threshold, contributing to the knee of the
-  ROC curve.  The bottom two rows show characteristic images that will
-  only be accepted with an extremely lenient threshold, contributing
-  to the top right area of the ROC curve.}
+  for classification, contributing to the bottom left of the ROC curve
+  in Figure~\ref{fig:ROCcompilation}.  The middle two rows show
+  characteristic images that will be accepted with a moderate
+  threshold, contributing to the knee of the ROC curve, with true
+  positive rates and false positive rates of $tpr\approx0.8$ and
+  $fpr\approx0.2$, respectively.  The bottom two rows show
+  characteristic images that will only be accepted with an extremely
+  lenient threshold, contributing to the top right area of the ROC
+  curve.}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
