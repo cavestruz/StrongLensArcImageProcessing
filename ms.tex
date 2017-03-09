@@ -618,34 +618,94 @@ the train time for each data set in Section~\ref{sec:trainsetsize}.
 %-------------------------------------------------%
 \subsection{Machine Learning Algorithm: Logistic Regression}\label{sec:LR}
 %-------------------------------------------------%
-\todo{ Logisitic regression (LR) is a linear classifier, which finds
-  the optimal hyperplane between two classes of data points.  In our
-  case, the two classes are lens and non-lens containing images.  The
-  data points are the HOG feature vectors transformed from the
-  training set data.  Each point occupies an N-dimensional space,
-  where N is the length of the HOG vector.  In fitting for the best
-  hyperplane, we must regularize the model to prevent overfitting,
-  adding an additional parameter in our parameter search,
-  regularization parameter $C_\text{LogReg}$.
+The problem of detecting gravitational lenses in images falls
+under the general category of \em{classification} in machine
+learning. In general the task is to find a function that
+assigns data points $x$ to one of two or more classes, denoted
+by the class label $y$.  This is
+equivalent to specifying a decision boundary, or decision
+boundaries between the classes in the space of the data points.
+(Compare this to
+\em{regression} in which the task is to find a function 
+$y=f(x)$, where $y$ is a continuous, rather than discrete,
+variable.) In our case, we have two classes: lens and
+non-lens containing images, and the data points $x$ are the
+HOG feature vectors transformed from the training set data.
+In this paper we use the Logisitic Regression (LR)
+algorithm, for which the decision boundary is a hyperplane .
+(The equivalent in the regression setting would be linear
+regression.) In LR we determine the optimal hyperplane by
+minimizing the objective function
+\begin{equation}
+\label{log_reg_objective}
+L(A,b) = \sum_i \log \left[1 + \exp \left(-y_i (A \cdot x_i + b) \right) \right]
+\end{equation}
+where $x_i$ is a data point (HOG feature vector), $y_i$ is the
+known label for that data point ($1$ for a lens containing
+image, $-1$ for a non-lens containing), and $A$ and $b$ are
+the parameters of the hyperplane. Eq. \ref{log_reg_objective}
+is to be minimized with respect to $A$ and $b$.
+Other more complicated machine learning algorithms exist which
+do not necessarily produce a linear decision boundary, such as
+Support Vector Machines (SVM), Random Forests, and Neural Networks.
+training set data \citep{hastie_09}.
 
-Regularization minimizes the a cost function with respect to ....
-Larger values of $C_\text{LogReg}$ correspond to increasing model
-complexity.  Figure~\ref{fig:regularization} shows the accuracy of a
+The HOG feature vectors in this paper can be very high-dimensional.
+When dealing with high-dimensional data, where the number of
+dimensions becomes comparable to the number of data points,
+overfitting can become an issue. (An example of an extreme case
+of overfitting would be if you fit a degree $n$ polynomial to $n$
+points.  The polynomial would simply wiggle so that it goes
+through every point, and would have no predictive power if you
+tried to interpolate or extrapolate.) In machine learning,
+overfitting is avoided using different \em{regularization}
+techniques. A common choice for logistic regression is to
+add a penalty term to Eq. \ref{log_reg_objective}
+\begin{equation}\ref{log_reg_regularized}
+L_\text{Reg}(A,b,C_\text{LogReg}) = L(A,b) + \frac{1}{2C_\text{LogReg}} \|A\|
+\end{equation}
+where the norm $\|A\|$ is typically taken as either the
+sum of squares of the coefficients ($L_2$ norm) or the sum
+of absolute values of the coefficients ($L_1$ norm).  In this
+paper we use the former.
+
+The amount of regularization is
+controlled by the parameter $C_\text{LogReg}$:
+larger values of $C_\text{LogReg}$ correspond to increasing model
+complexity.  If $C_\text{LogReg}$ is too large then the model will
+overfit, and if it is too small the model will underfit.
+To determine whether a model is overfit or underfit, the model is
+trained, (i.e. Eq. \ref{log_reg_regularized} is minimized), on a
+subset of the data called the \em{training set} and its performance
+(goodness of fit) is evaluated both on the the training set and
+a set of hold-out data called the \em{test set} that was not used
+in constructing the model.
+Figure~\ref{fig:regularization} shows the performance of a
 model for selected HOG parameters as a function of the regularization
-parameter, $C_\text{LogReg}$.
+parameter, $C_\text{LogReg}$, for both the training and the test set.
+(The performance can be measured by the accuracy, i.e. percent of
+images correctly classified, or by some other metric,
+such as the area under the
+Receiver Operating Characteristic curve (see Section~\ref{sec:ROC}).)
 
-The performance of a model can be measured as either the score of the
-model on a test set, or some other metric, such as the area under the
-Receiver Operating Characteristic curve (see Section~\ref{sec:ROC}).
+When $C_\text{LogReg}$ is small, the performance of the model improves
+with increasing $C_\text{LogReg}$ on both the training and test set,
+meaning that $C_\text{LogReg}$ is
+still in the underfitting regime. Eventually the performance on the
+test set reaches a maximum and starts to decrease, even while the
+performance on the training set continues to increase.  This means
+that the model is no longer generalizing well and is starting to
+overfit. The optimal $C_\text{LogReg}$ occurs when the performance
+of the test set is at its maximum; this is the value of $C_\text{LogReg}$
+that should be used in the final model.
 
-The $C_{LogReg}$ will also increase the training time, \todo{since
-  larger coefficients correspond to a more singular matrix}.  We
-discuss the score and train time dependence on logistic regression
-coefficient in Section\ref{sec:regularization}.
-}
-% Regularization coefficient:
-% http://openclassroom.stanford.edu/MainFolder/DocumentPage.php?course=MachineLearning&doc=exercises/ex5/ex5.html
-
+In practice, there is something of a trade-off between accuracy and
+computational resources because a larger value of $C_\text{LogReg}$
+will also increase the training time, since a larger $C_\text{LogReg}$
+corresponds to a less constrained parameter space being searched
+\todo{(citation needed)}.
+We discuss the performance and training time dependence on $C_\text{LogReg}$
+in Section\ref{sec:regularization}.
 
 %-------------------------------------------------%
 \section{Results}
