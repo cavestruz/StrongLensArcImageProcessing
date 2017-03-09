@@ -438,8 +438,14 @@ searches to keep our test metric independent of tuning.
 \begin{figure}[t]\label{fig:pipeline}
 \begin{center}
 \includegraphics[scale=0.55]{figures/supervised_classification_workflow.png}
-\caption{** Cartoon of pipeline ** from
-  http://www.nltk.org/book/ch06.html}
+\caption{Cartoon of pipeline \footnote{from
+    http://www.nltk.org/book/ch06.html} for supervised classification.
+  In our case, the labels are either lens or non-lens containing
+  images.  Our input is the set of mock HST- or LSST-like
+  observations.  The feature extractor is the histogram of oriented
+  gradients, producing an N-dimensional feature vector that quantify
+  edges in our images.  Our machine learning algorithm is logistic
+  regression.}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -651,14 +657,15 @@ coefficient in Section\ref{sec:regularization}.
 %-------------------------------------------------%
 
 In this section, we discuss the Receiver Operating Characteristic
-(ROC) curve, which shows the true positive rate (tpr) as a function of
-false positive rate (fpr) for a given model and test set.  The true
-positive rate is defined as the number of true positives divided by
-the total number of positives (completeness of the positive
-identifications).  The false positive rate is defined as the number of
-false positives divided by the total number of negatives (impurity of
-the identifications).  The ROC curve illustrates the performance of
-our trained model as we vary the discrimination threshold.
+(ROC) curve (see Figure~\ref{fig:ROCcompilation}), which shows the
+true positive rate (tpr) as a function of false positive rate (fpr)
+for a given model and test set.  The true positive rate is defined as
+the number of true positives divided by the total number of positives
+(completeness of the positive identifications).  The false positive
+rate is defined as the number of false positives divided by the total
+number of negatives (impurity of the identifications).  The ROC curve
+illustrates the performance of our trained model as we vary the
+discrimination threshold.
 
 The classifier model assigns a score to each test image, which is a
 probability that the image is a strong lensing system.  To construct
@@ -683,52 +690,49 @@ the area under the curve (AUC).  The ideal model would have an AUC of
 1.  We show the ROC curves of our best performing models in each
 dataset.
 
-% HST model performance
-Figure~\ref{fig:ROC} shows the ROC curves for three different HOG
-parameterizations for the HST-like dataset in red, green, and blue.
-The parameters and corresponding AUC for each curve are labeled in the
-legend.  The models for the HST-like dataset perform well, and have
-AUCs very close to 1.  
+% Precision-recall
+For comparison, we also show a Precision-Recall curve (see
+Figure~\ref{fig:PRcompilation}), where precision is the number of true
+positives identified as positive divided by the total number of
+positively identified images (purity) and recall is the number of true
+positives identified as positive divided by the total number of true
+positives (completeness).  Each point in the figure is calculated with
+a varying threshold for identification.  Since our sample has a class
+balance of 50-50 between positives (lens) and negatives (non-lens),
+the most lenient threshold for identification would yield a precision
+of 0.5 at a recall of 1.0.  It is important to note that this figure
+changes as the class balance changes; if we had 90\% non-lenses and
+10\% lenses, the most lenient threshold would yield a precision of 1/9
+at a recall of 1.  The ROC curve is a more typical metric for
+supervised classification.
 
-% LSST model performance
-On the other hand, the model for our LSST-like dataset (solid magenta)
-does not perform well.  The dashed diagonal like corresponds to a
-model that is as good as a random classifier, e.g. a coin-flip, for
-each test image.  The LSST-like ROC curve does marginally better, and
-the $AUC=0.527$ is within the statistical noise of the sample.  
+% Summary of ROC curves
+Figure~\ref{fig:ROCcompilation} shows the ROC curves for models
+trained using the entire 10,000 training sample, with best-case HOG
+and regularization parameters.  The models have been evaluated on a
+hold-out test set of 1,000 images that were not used in the parameter
+search.  We show the mock HST, LSST1, and LSST10 results respectively
+in red, blue, and green.  Solid lines correspond to a model trained
+and tested on images with the lensing galaxy.  Dashed lines correspond
+to a model trained and tested on images where the lensing galaxy is
+excluded from the mock observation, simulating an ideal modeling and
+subtraction of the lensing galaxy, which has been one proposed method
+to improve the identification of strong lensing systems.  The
+corresponding AUC is listed in the legend.
 
-% No BCG LSST
-One possible method of improving the detection of strong lensing
-systems is to model out the BCG.  The dotted magenta ROC curve
-corresponds to a model trained and tested on LSST-like data where the
-BCG has not been added to the mock image.  This model results in an
-AUC of 0.64, performing better than random.  In other words, if we
-were to perfectly model out the BCG contribution in LSST-like data, we
-could improve the performance by $\sim10\%$.
+% Model performance summary
+The model performance for the mock HST data is AUC=0.975 for images
+with the lens galaxy, and AUC=0.98 for images without the lens galaxy
+(red solid and dashed).  On the other hand, the model for our
+LSST-like dataset for one year has an AUC=0.625 with the lens galaxy
+and AUC=0.579 without the lens galaxy (blue solid and dashed), and the
+model for our LSST-like dataset for 10 years has an AUC=0.809 with the
+lens galaxy and AUC=0.792 without the lens galaxy (green solid and
+dashed).  Removal of the lens galaxy does not systematically perform
+better, and is actually dependent on the size of the training set.  We
+discuss relative model performance and complexity for images with and
+without the lens galaxy in Section~\ref{sec:trainsetsize}.  
 
-% Choosing C
-The ROCs correspond to models that have been trained with logistic
-regression regularization parameter, $C_\text{LogReg}$, that best
-describes the training dataset without overfitting.  We discuss the
-choice of regularization parameter in
-Section~\ref{sec:regularizedfit}.
-
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-%% \begin{figure}[t]\label{fig:ROCHST}
-%% \begin{center}
-%% \includegraphics[width=\columnwidth]{figures/ROC_HST_HOG.png}
-%% \caption{Red, green, blue: ROC curves for a models trained on the
-%%   HST-like data with the Logistic Regression algorithm.  The magenta
-%%   solid (dotted) curve show the ROC curve for the LSST-like data with
-%%   (without) the BCG.  The corresponding parameters are labeled: N for
-%%   number of orientations, ppc for pixels-per-cell, cpb for
-%%   cells-per-block, and C for best regularization parameter.  The AUC
-%%   for each model is also labeled in the legend, where an AUC close to
-%%   1 is a near-ideal model, and an AUC close to 0.5 is a model that
-%%   performs as well as a coin-flip.}
-%% \end{center}
-%% \end{figure}
-%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure}[t]\label{fig:ROCcompilation}
 \begin{center}
@@ -768,22 +772,18 @@ Section~\ref{sec:regularizedfit}.
 As described in Section~\ref{sec:LR}, LR trains a model with
 complexity determined by the regularization parameter coefficient,
 $C_\text{LogReg}$.  Increasing model complexity (larger
-$C_\text{LogReg}$), will better describe features in the training
-set[wc?].  However, an overly complex model will overfit the training
-set at the expense of its performance on any independent test set.
-The regularization parameter ultimately defines the model performance,
-and we must perform a parameter search to identify the optimal value
-for $C_\text{LogReg}$.
+$C_\text{LogReg}$), will better describe features in the training set.
+However, an overly complex model will overfit the training set at the
+expense of its performance on any independent test set.  The
+regularization parameter ultimately defines the model performance, and
+we must perform a parameter search to identify the optimal value for
+$C_\text{LogReg}$.
 
 %  Our running over C - score and AUC as characterizations
 Figure~\ref{fig:regularization} shows the model performance as a
-function of regularization parameter.  The left panel shows the
-accuracy, or score, of the model as a function of regularization
-parameter.  The accuracy is simply the percentage of correct
-predictions, true positives and true negatives, out of a given set.
-The right panel shows the AUC of the model as a function of
-regularization parameter.  The solid and dotted lines respectively
-correspond to the model performance on the test and training set.
+function of regularization parameter for each data set HST, LSST, and
+LSST10.  The solid and dotted lines respectively correspond to the
+model performance on the test and training set.  
 
 % Training behavior with C
 For either characterization of the model, the model performance on the
@@ -803,6 +803,7 @@ performance on the test set decreases or asymptotes, as it has overfit
 the training set.
 
 % Train time with Creg
+In red, we show the train time as a function of $C_\text{LogReg}$.
 Lower Creg, more regularized, smaller volume to search for the
 solution (best fit coefficients), so faster on average.  But, still
 has some randomness associated with the path it takes to convergence
@@ -821,9 +822,9 @@ has some randomness associated with the path it takes to convergence
   use a subset of the the 10,000 training images to search over the LR
   $C_{reg}$ parameter, training on 8,000 and testing on 1,000.  Each
   panel corresponds to a different mock observation.  From left to
-  right: HST, LSST for one year, and LSST for 10 years.  The xsolid
-  blue lines correspond to the AUC of the training set, and the dotted
-  blue lines to the AUC of the test set.  To avoid overfitting, we
+  right: HST, LSST for one year, and LSST for 10 years.  The solid
+  blue lines correspond to the AUC of the test set, and the dotted
+  blue lines to the AUC of the training set.  To avoid overfitting, we
   choose the smallest parameter for which the AUC of the test set is
   maximal: 5000, 10, and 5000, respectively.  In thin red solid lines,
   we show the train time of the model, which roughly increases in a
@@ -859,24 +860,17 @@ $C_{LR}=100$, whereas it was $C_{LR}=500$ for the subset of trainsize
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure}[t]\label{fig:trainsizeLSST10}
 \begin{center}
-\includegraphics[width=\columnwidth]{figures/trainsize/LSST10.pdf}
-\caption{Solid blue line: AUC for models with varying size of the
-  training set for LSST10.  Dotted red line: Train time for that
-  model.  The improvement of AUC scales linearly with the log of the
-  training set size, but train time roughly scales logarithmically.}
+\includegraphics[width=\columnwidth]{figures/trainsize/LSST10_with_nLSST10.pdf}
+\caption{Solid (dotted) blue line: AUC for models with varying size of
+  the training set for LSST10 (nLSST10).  Solid (dotted) red line:
+  Optimal regularization parameter for training on the train size for
+  LSST10 (nLSST10). The improvement of AUC scales linearly with the
+  log of the training set size, but train time roughly scales
+  logarithmically.  Note, LSST10 requires more model complexity to
+  exceed the performance of nLSST10.}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure}[t]\label{fig:trainsizenLSST10}
-\begin{center}
-\includegraphics[width=\columnwidth]{figures/trainsize/nLSST10.pdf}
-\caption{Same as Figure~\ref{fig:trainsizeLSST10} for nLSST10.  For
-  small trainsize, the nLSST10 performs better than LSST10. }
-\end{center}
-\end{figure}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
-
 
 %-------------------------------------------------% 
 \subsubsection{Effects of Rotation on AUC}
