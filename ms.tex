@@ -106,10 +106,15 @@ multiply imaged quasars\citep{xli_etal12,suyu_etal14,suyu_etal16}.
 % Application of constraining mass profiles - large numbers needed.
 The application of strong gravitational lensing to constrain the mass
 distribution of strong lenses, such as early-type galaxies (ETGs),
-necessitates large samples of galaxy-galaxy lensing systems.  The
-strong lensing signature directly probes the underlying matter. These
-systems exhibit a background source galaxy that the lens galaxy
-deflects into a partial of full arc shaped Einstein ring.
+necessitates large samples of galaxy-galaxy lensing systems.
+\citet{miraldaescudeandlehar_92} first suggested that massive
+ellipticals would be likely frequent strong lensing sources in optical
+surveys.  These systems exhibit a background source galaxy that the
+lens galaxy deflects into a partial of full arc shaped Einstein ring.
+The strong lensing signature directly probes the underlying matter.
+The identification of such systems in upcoming surveys is the first
+step in constraining the mass-to-light ratio for a large number of
+objects in this mass range.
 
 % Image identification works: visual, ``robot'' identification -
 % ArcFinder, RingFinder..., and citizen science (space warps).  Many
@@ -142,55 +147,46 @@ images with comparable performance to humans \citep{dieleman_etal15}.
 
 % Early efforts
 Earlier efforts on automated, or ``robot'', identification of strong
-lensing systems have two distinct steps.  The first enhances and
-extracts characteristic features, and the second uses some form of
-pattern recognition to classify lens and non-lens containing systems.
-{\em ArcFinder} is one such code that finds arcs in groups or cluster
-scale lens \citep{seidelandbartelmann_07}, and {\em RingFinder} an
-analogous tool in searching for multiply imaged quasars
-\citep{gavazzi_etal14}.  
+lensing systems have two distinct generalized steps.  The first
+enhances and extracts characteristic features, and the second uses
+some form of pattern recognition in the features to classify lens and
+non-lens containing systems.  Among others, selected features might
+include shape parameterization
+\citep[see][e.g.]{,alard_06,kuboanddellantonio_08,xu_etal16,lee_17},
+colors in multi-band imaging \citep{maturi_etal14,gavazzi_etal14},
+light profiles \citep{braultandgavazzi_15}, and characteristics of
+potential lens galaxies \citep{marshall_etal09}.  Pattern recognition
+often incorporate cutoffs in selected parameter space distributions
+\citep{lenzen_etal04,joseph_etal14,paraficz_etal16}.  A number of
+these have been publicly distributed, with specific end applications.
+For example, {\em ArcFinder} is one such code that finds arcs in
+groups or cluster scale lens \citep{seidelandbartelmann_07}, and {\em
+  RingFinder} an analogous tool in searching for multiply imaged
+quasars \citep{gavazzi_etal14}.  Codes like these have been
+complementary to human identification \citep{more_etal16}.
+
+% Classical machine learning methods
+More recently, these methods have transitioned to using ``machine
+learning'' algorithms.  In classical machine learning, we can train a
+model to separate a dataset according to some desired classification
+scheme.  However, we still need to reduce the dimensionality of the
+problem by removing information in the images that do not pertain to
+the classifier.  
+
+Examples of automated classification will...
+% Previous works and our goal to make a universal pipeline 
+Machine learning to automate.  Here, we focus on the improvement from
+preprocessing the images and describe the pipeline, which is publicly
+available.  Depending on the image type, different preprocessing is
+likely necessary (rings, multiply lensed quasars, etc.)
 
 % Recent works, deep learning
 Much more recent works have made use of neural networks to 
 
-% Describe how machine learning is a step up
-With ``machine learning'' algorithms, we can train a model to separate
-a dataset according to some desired classification scheme.  However,
-we still need to reduce the dimensionality of the problem by removing
-information in the images that do not pertain to the classifier.
-Examples of automated classification will...
-
-% Previous works and our goal to make a universal pipeline 
-Machine learning to automate.  Previous works \citep{lenzen_etal04},
-(StrongML), More+... Here, we focus on the improvement from
-preprocessing the images and describe the pipeline, which is publicly
-available.  Depending on the image type, different preprocessing is
-likely necessary (rings, multiply lensed quasars, etc.) Our goal is to
-create an open source pipeline that is general enough for the user to
-select or add appropriate image processing techniques to augment the
-features of the lensed image, train and test data with different
-machine learning techniques, and to select the sequence of methods
-that maximizes completeness with optimal purity.
-
-% This is the first in MachLensFinder series with initial pipeline
-% results
-This is the first in a series of {\em MachLensFinder} papers.  We
-present our image processing and machine learning classifier pipeline.
-Our image processing procedure parameterizes edges in our image in a
-1-d histogram, enabling fast feature extraction that is similar to
-techniques used to identify humans in security software systems.  We
-train a model with logistic regression to identify features
-corresponding to strong lensing systems.
-
-% Summary of results
-We show results of the pipeline on mock galaxy-galaxy lens systems
-observed by HST and LSST as respective examples of classifier
-performance on optical space- and ground-based observations.
-\citet{miraldaescudeandlehar_92} first suggested that massive
-ellipticals would be likely frequent strong lensing sources in optical
-surveys.  We train and test our pipeline on subsamples from 10,000
-mock observed brightest cluster galaxy (BCG) strong lensing systems
-and 10,000 BCG non-strong lensing systems.
+\citep{petrillo_etal17} convolutional neural networks with the Kilo
+Degree Survey. \citet{bom_etal16} ... \citet{lanusse_etal17} using
+state-of-the-art residual networks to....  directly in the image space
+with minimal image pre-processing.
 
 % Need to optimize for completeness and purity.  Arc counts and mass
 % reconstruction.
@@ -199,8 +195,7 @@ purity.  In the application of arc abundance comparisons with
 cosmological predictions, completeness is important; we must be able
 to understand the reasons and frequency of false negatives.  In the
 application of mass reconstruction of the lensing object, completeness
-in strong lensing system identifications will allow us to constrain
-the mass-to-light ratio for a large number of objects.  
+in strong lensing system identifications will allow us  
 
 % Purity issues
 Since spectroscopic confirmation of background lensed images is
@@ -217,13 +212,33 @@ applied to image classification problems, \wording{these
   computational resources and expertise easily accessible to the
   entire scientific community.}  We present a supervised
 classification pipeline built with open source tools, tested on mock
-HST and LSST data.  Results are reproducible on personal computers, as
-both the pipeline and the data will be publicly distributed.  This
-first paper serves as a case study for one feature extraction and
-classical machine learning method, respectively, the {\em histogram of
-  oriented gradients} and {\em logistic regression}.  This framework
-is easily extendable to other feature methods and machine learning
-algorithms for supervised classification.
+HST and LSST data, which will also be made publicly available.  Our
+goal is to centralize an open source pipeline that is general enough
+for the user to select or add appropriate image processing techniques
+to augment the features of the lensed image, train and test data with
+different machine learning techniques, and to select the sequence of
+methods that provides optimal model performance.  Results are
+reproducible on personal computers, as both the pipeline and the data
+will be publicly distributed.
+
+% Summary of paper 
+This first paper serves as a case study for our pipeline with one
+feature extraction and classical machine learning method,
+respectively, the {\em histogram of oriented gradients} (HOG) and {\em
+  logistic regression} (LR).  HOG is a fast feature extraction
+procedure that quantifies edges in images, commonly used to identify
+humans in security software.  LR is a linear classifier, making its
+scalability relatively straightforward with existing open source
+tools.  This framework is easily extendable to other feature methods
+and machine learning algorithms for supervised classification.
+
+% Summary of results
+We show results of the pipeline on mock galaxy-galaxy lens systems
+observed by HST and LSST as respective examples of classifier
+performance on optical space- and ground-based observations.  We train
+and test our pipeline on subsamples from 10,000 mock observed strong
+lensing systems and 10,000 non-strong lensing systems, each centered
+on a potential lens galaxy.
 
 Our paper is organized as follows. In Section~\ref{sec:methods} we
 briefly describe the methods to generate the mock HST and LSST data
