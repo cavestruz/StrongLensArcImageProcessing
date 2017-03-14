@@ -133,7 +133,10 @@ Telescope Science (CFHTLS) telescope observations
 successful for a dataset like CFHTLS, classifying \todo{XX in XX
   time}\citep{}.  However, future datasets like Euclid
 \citep{oguriandmarshall_10} and LSST \cite{} will be \todo{XX} times
-this size, challenging the scalability of a citizen science approach.
+this size, and {\em Euclid} is estimated to find tens of thousands
+galaxy-scale strong lenses \citep{pawase_etal12}.  The volume of
+upcoming data challenges the scalability of a citizen science
+approach.
 
 % Transition to automated identification
 Recent efforts have focused on the development of automated methods
@@ -166,44 +169,30 @@ quasars \citep{gavazzi_etal14}.  Codes like these have been
 complementary to human identification \citep{more_etal16}.
 
 % Classical machine learning methods
-More recently, these methods have transitioned to using ``machine
-learning'' algorithms.  In classical machine learning, we can train a
-model to separate a dataset according to some desired classification
-scheme.  However, we still need to reduce the dimensionality of the
-problem by removing information in the images that do not pertain to
-the classifier.  
+The latter of these methods have transitioned to using ``machine
+learning'' algorithms for the pattern recognition step.  In classical
+machine learning, we can train a model to separate a dataset according
+to some desired classification scheme.  However, we still need to
+reduce the dimensionality of the problem with a feature extraction
+method.  The dominant ``features'' of that determine image
+classification are not a priori known, but determined by the
+algorithm.
 
-Examples of automated classification will...
-% Previous works and our goal to make a universal pipeline 
-Machine learning to automate.  Here, we focus on the improvement from
-preprocessing the images and describe the pipeline, which is publicly
-available.  Depending on the image type, different preprocessing is
-likely necessary (rings, multiply lensed quasars, etc.)
+% Recent works, neural nets, and deep learning
+Much more recent works have made use of a subset tool in machine
+learning, neural networks, to classify images either from input image
+parameters or directly in image space.  In \citet{estrada_etal07},
+authors used input shape parameters to train neural nets to identify
+arc candidates.  \citet{agnello_etal15} used neural networks trained
+on data from multiband magnitudes, and \citet{bom_etal16} used
+extracted morphological parameters.
 
-% Recent works, deep learning
-Much more recent works have made use of neural networks to 
-
-\citep{petrillo_etal17} convolutional neural networks with the Kilo
-Degree Survey. \citet{bom_etal16} ... \citet{lanusse_etal17} using
+% Convolutional and residual
+In image space, \citep{petrillo_etal17} used data from the Kilo Degree
+survey to train convolutional neural networks with the Kilo Degree
+Survey. \citet{bom_etal16}. \citet{lanusse_etal17} using
 state-of-the-art residual networks to....  directly in the image space
 with minimal image pre-processing.
-
-% Need to optimize for completeness and purity.  Arc counts and mass
-% reconstruction.
-In general, lensed image finding must optimize for completeness and
-purity.  In the application of arc abundance comparisons with
-cosmological predictions, completeness is important; we must be able
-to understand the reasons and frequency of false negatives.  In the
-application of mass reconstruction of the lensing object, completeness
-in strong lensing system identifications will allow us  
-
-% Purity issues
-Since spectroscopic confirmation of background lensed images is
-expensive, purity is key; we must minimize false positives that would
-waste follow up telescope time.  We discuss the performance of our
-image processing and classification pipeline with respect to the
-completeness and purity rates of our trained models and illustrate the
-scalability of training our models [wc???].  
 
 %  Relevance of our work
 While there has been a recent surge in the use of neural networks
