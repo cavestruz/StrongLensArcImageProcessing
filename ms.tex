@@ -196,8 +196,8 @@ pre-processing.  A major strength of the \citet{lanusse_etal17}
 implementation is that residual networks ..... , which regular
 convolutional networks do not.
 
-EDITING HERE: Double check that petrillo paper
-operates in image space.
+\todo{EDITING HERE: Double check that petrillo paper operates in image
+  space, edit previous paragraph.}
 
 %  Relevance of our work
 While there has been a recent surge in the use of neural networks
@@ -1060,10 +1060,10 @@ number of training images with log-log slope of approximately 1.
 
 % Augmenting dataset
 To augment our training set, we rotated each image in the set by
-multiples of $90^o$.  Augmenting our data by a factor of four
-naturally optimizes the use of available training data, since our
-feature extraction method of HOG is not rotationally invariant.  This
-has an equivalent improvement to the study illustrated in
+multiples of $90^o$.  Since our feature extraction method of HOG is
+not rotationally invariant, augmenting our data by a factor of four
+naturally optimizes the use of available training data.  This has an
+equivalent improvement to the study illustrated in
 Figure~\ref{fig:trainsizeLSST10}.
 
 % Rotations of the test set
@@ -1320,9 +1320,10 @@ We summarize key points below:
 % Benefits of our method
 We emphasize that classical linear classifiers, such as logistic
 regression, is scalable and relatively easy to parallelize with open
-source tools such as {\em Spark}.  Initial checks indicated that HOG
-features are well separated enough for a linear classifier algorithm.
-Reproducible results do not require supercomputing resources.
+source tools such as \todo{\em Spark}\footnote{...spark...org}}.
+  Initial checks indicated that HOG features are well separated enough
+  for a linear classifier algorithm.  Reproducible results do not
+  require supercomputing resources.
 
 % Impact of work
 These results indicate that effective image classification of
