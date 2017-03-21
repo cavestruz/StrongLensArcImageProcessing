@@ -130,13 +130,12 @@ platforms.  {\em SpaceWarps} is an example of citizen science based
 image classification of strong lensing systems in Canada France Hawaii
 Telescope Science (CFHTLS) telescope observations
 \citep{marshall_etal16,more_etal16}.  These platforms are quite
-successful for a dataset like CFHTLS, classifying \todo{XX in XX
-  time}\citep{}.  However, future datasets like Euclid
-\citep{oguriandmarshall_10} and LSST \cite{} will be \todo{XX} times
-this size, and {\em Euclid} is estimated to find tens of thousands
-galaxy-scale strong lenses \citep{pawase_etal12}.  The volume of
-upcoming data challenges the scalability of a citizen science
-approach.
+successful for a dataset like CFHTLS; here, 3,000 candidate images
+were identified in eight months, resulting in 89 final candidates.
+However, future datasets like Euclid \citep{oguriandmarshall_10} and
+LSST expect to find tens of thousands galaxy-scale strong lenses
+\citep{pawase_etal12}.  The volume of upcoming data challenges the
+scalability of a pure citizen science approach.
 
 % Transition to automated identification
 Recent efforts have focused on the development of automated methods
@@ -188,43 +187,44 @@ on data from multiband magnitudes, and \citet{bom_etal16} used
 extracted morphological parameters.
 
 % Convolutional and residual
-The most advanced use of neural networks for strong lensing
-classification operate directly in image space.
-\citep{petrillo_etal17} used mock Kilo Degree Survey data to train
-convolutional neural networks, with a training set size of six million
-images. \citet{lanusse_etal17} used state-of-the-art residual learning
-to also work directly in the image space with minimal image
-pre-processing.  A major strength of the \citet{lanusse_etal17}
-implementation is that residual learning has been found to be easier
-to train in deep neural networks, and can outperform implementations
-of convolutional neural networks.
+\wording{The most advanced use of neural networks for strong lensing
+  classification operate directly in image space.
+  \citep{petrillo_etal17} used mock Kilo Degree Survey data to train
+  convolutional neural networks, with a training set size of six
+  million images. \citet{lanusse_etal17} used state-of-the-art
+  residual learning to also work directly in the image space with
+  minimal image pre-processing.  A major strength of the
+  \citet{lanusse_etal17} implementation is that residual learning has
+  been found to be easier to train in deep neural networks, and can
+  outperform implementations of convolutional neural networks.}
 
 %  Relevance of our work
-While there has been a recent surge in the use of neural networks
-applied to astronomy image classification problems, \wording{these
+\wording{While there has been a recent surge in the use of neural
+  networks applied to astronomy image classification problems, these
   implementations are not readily scalable, nor are the necessary
   computational resources and expertise easily accessible to the
-  entire scientific community.}  We present a supervised
-classification pipeline built with open source tools, tested on mock
-HST and LSST data, which will also be made publicly available.  Our
-goal is to centralize an open source pipeline that is general enough
-for the user to select or add appropriate image processing techniques
-to augment the features of the lensed image, train and test data with
-different machine learning techniques, and to select the sequence of
-methods that provides optimal model performance.  Results are
-reproducible on personal computers, as both the pipeline and the data
-will be publicly distributed.
+  entire scientific community.  We present a supervised classification
+  pipeline built with open source tools, tested on mock HST and LSST
+  data, which will also be made publicly available.  Our goal is to
+  centralize an open source pipeline that is general enough for the
+  user to select or add appropriate image processing techniques to
+  augment the features of the lensed image, train and test data with
+  different machine learning techniques, and to select the sequence of
+  methods that provides optimal model performance.  Results are
+  reproducible on personal computers, as both the pipeline and the
+  data will be publicly distributed.}
 
 % Summary of paper 
-This first paper serves as a case study for our pipeline with one
-feature extraction and classical machine learning method,
-respectively, the {\em histogram of oriented gradients} (HOG) and {\em
-  logistic regression} (LR).  HOG is a fast feature extraction
-procedure that quantifies edges in images, commonly used to identify
-humans in security software.  LR is a linear classifier, making its
-scalability relatively straightforward with existing open source
-tools.  This framework is easily extendable to other feature methods
-and machine learning algorithms for supervised classification.
+This first paper serves as both a presentation of the mock data set
+and as a thorough case study for our pipeline with one feature
+extraction and classical machine learning method, respectively, the
+{\em histogram of oriented gradients} (HOG) and {\em logistic
+  regression} (LR).  HOG is a fast feature extraction procedure that
+quantifies edges in images, commonly used to identify humans in
+security software.  LR is a linear classifier, making its scalability
+relatively straightforward with existing open source tools.  This
+framework is easily extendable to other feature methods and machine
+learning algorithms for supervised classification.
 
 % Summary of results
 We show results of the pipeline on mock galaxy-galaxy lens systems
@@ -243,10 +243,15 @@ discussions in Section~\ref{sec:conclusions}.
 %-------------------------------------------------%
 \section{Methodology}
 \label{sec:methods}
-We use mock {\em Hubble Space Telescope}\footnote{\todo{hst.org}} (HST) and {\em Large
-Synoptic Sky Telescope}\footnote{\todo{lsst.org}}
-(LSST) images generated with PICS (Pipeline for Images of Cosmological Strong
-lensing) \citep{li_etal16} and LensPop\citep{collett_etal15} for training and testing.
+%-------------------------------------------------%
+\subsection{Mock Images}
+%-------------------------------------------------%
+We use mock {\em Hubble Space
+  Telescope}\footnote{https://www.spacetelescope.org/} (HST) and {\em
+  Large Synoptic Sky Telescope}\footnote{https://www.lsst.org} (LSST)
+images generated with {\em PICS} (Pipeline for Images of Cosmological
+Strong lensing) \citep{li_etal16} and {\em LensPop} \citep{collett_15}
+for training and testing.
 
 There are 10,000 lens containing mock observations and 10,000
 non-lens containing mock observations for running our parameter search. 
@@ -254,52 +259,52 @@ We keep a hold-out test set of 1,000 lens containing mock observations
 and 1,000 non-lens containing mock observations on which we evaluate
 the final trained model.
 
-Mock lensing systems contain mock observations include the lens galaxy, lensed
+Mock observations of lensing systems include the lens galaxy, lensed
 images of the source galaxy, and galaxies along the line of sight.
-Mock Non-lensing systems contain mock observations include all but a lensed source
-image.  We convolve each of the $2\times 10,000$ train/test images and
-$2\times 1,000$ hold-out images to produce three separate sets of mock
-``observations'' with equal numbers of lens and non-lens containing
-systems: (1) HST-like observations, (2) LSST-like observations over
-the span of one year, and (3) LSST-like observations over the span of
-ten years.  We respectively label these observations as HST, LSST1,
-and LSST10.
+Mock observations of non-lensing systems include all but the images of
+a lensed source galaxy.  We convolve each of the $2\times 10,000$
+train/test images and $2\times 1,000$ hold-out images to produce three
+separate sets of mock ``observations''.  These each have equal numbers
+of lens and non-lens containing systems: (1) HST-like observations,
+(2) LSST-like observations over the span of one year, and (3)
+LSST-like observations over the span of ten years.  We respectively
+label these observations as HST, LSST1, and LSST10.
+
 %-------------------------------------------------%
 \subsubsection{Modeling the Mass Distribution of Lens Galaxies}
-To produce simulated lensed galaxies, we first set mass models of the lenses to
-be the Singular Isothermal Ellipsoid (SIE). This model is not only analytically
-tractable, it has also been found to be consistent with models of individual
-lenses and lens statistics on the length scales relevant for strong lensing
-(e.g. Koopmans et al. 2006\footnote{Koopmans L. V. E., Treu T., Bolton A. S.,
-Burles S., Moustakas L. A., 2006, The Astrophysical Journal, 649, 599}; Gavazzi
-et al. 2007\footnote{Gavazzi R., Treu T., Rhodes J. D., Koopmans L. V. E.,
-Bolton A. S., Burles S., Massey R. J., Moustakas L. A., 2007, The Astrophysical
-Journal, 667, 176}; Dye et al. 2008\footnote{Dye S., Evans N. W., Belokurov V.,
-Warren S. J., Hewett P., 2008, Monthly Notices of the Royal Astronomical
-Society, 388, 384}; Li et al.
-2009\footnote{http://iopscience.iop.org/article/10.1088/1674-4527/9/11/001/meta}).
-The normalized convergence map of SIE model is defined as :
+%-------------------------------------------------%
 
-\begin{equation}
-\kappa = \frac{\theta_{\rm E}}{2}\frac{1}{\sqrt{x_1^2/q+x_2^2 q}}.
+To produce simulated lensed galaxies, we first model the mass of lens
+galaxies as the Singular Isothermal Ellipsoid (SIE). This model is
+both analytically tractable and is consistent with models of
+individual lenses and lens statistics on the length scales relevant
+for strong lensing
+\citep[e.g.]{koopmans_etal06,gavazzi_etal07,dye_etal08,liandchen_09}.
+
+The normalized convergence map of SIE model is defined as:
+%-------------------------------------------------%
+\begin{equation}\label{eqn:sie}
+\kappa = \frac{\theta_{\rm E}}{2}\frac{1}{\sqrt{x_1^2/q+x_2^2 q}},
 \end{equation}
-
-Where, $\theta_{\rm E}$ is the Einstein Radius, $q$ is axis
-ratio. Einstein radius can be calculated according to the redshift of
-the lens, the redshift of the source, and the velocity dispersion of
-the lens galaxy.
+%-------------------------------------------------%
+where $\theta_{\rm E}$ is the Einstein Radius and $q$ is axis ratio.
+The Einstein radius can be calculated from the redshift of the
+lens, the redshift of the source, and the velocity dispersion of the
+lens galaxy as follows,
+%-------------------------------------------------%
 \begin{equation}
 \theta_{\rm E} = 4\pi\left(\frac{\sigma_v}{c}\right)\frac{D_{ls}}{D_{s}}, 
 \end{equation}
-where, $c$ is the speed of light, $\sigma_v$ is the velocity
-dispersion of the lens galaxy, $D_{ls}$ and $D_{s}$ are the angular
-diameter distance from the source plane to the lens plane and from the
-source plane to the observer separately.
+%-------------------------------------------------%
+Here, $c$ is the speed of light, $\sigma_v$ is the velocity dispersion
+of the lens galaxy, $D_{ls}$ and $D_{s}$ are respectively the angular
+diameter distances from the source plane to the lens plane and from
+the source plane to the observer.
 
-To rotate the lenses with a random orientation angles, we adopt the
-transformation below:
+To rotate the lenses with random orientation angle $\phi$, we adopt
+the transformation below:
 \begin{eqnarray}
-\label{eq:rotation}
+\label{eqn:rotation}
 \begin{bmatrix}
     x_{1}\prime      \\
     x_{2}\prime 
@@ -314,16 +319,19 @@ transformation below:
     x_2      
 \end{bmatrix}.
 \end{eqnarray}
-$\phi$ is the orientation angle.  According to above equations, we need
-$\sigma_v$, $q$, $\phi$, redshift of the lens $z_l$, and redshift of the source
-$z_s$ to derivative the lensing maps completely. Velocity dispersion,
-ellipticity, and orientation are randomly chosen from typical ranges of a
-galaxy, where $\sigma_v = [150, 350] km/s$, $q = [0.5, 1.0]$, and $\phi = [0,
-360]$ degrees. The lens redshifts are obtained by matching the velocity
-dispersion in our simulations to the catalog of elliptical galaxies in the
-COSMOS survey from Zahid et al. (2015)\footnote{Zahid H. J., Damjanov I.,
-Geller M. J., Chilingarian I., 2015, The Astrophysical Journal, 806, 122}. The
-resulting redshift range of our lenses is zl ∈ [0.2, 0.7]. 
+
+From Equations~\ref{eqn:sie}~-~\ref{eqn:rotation}, there are five
+independent parameters from which we can derive the lensing map:
+velocity dispersion $\sigma_v$, axis ratio or ellipticity $q$,
+orientation angle $\phi$, redshift of the lens $z_l$, and redshift of
+the source $z_s$.  
+
+We choose $\sigma_v$, $q$, and $\phi$ randomly from typical ranges of
+observed galaxies: $\sigma_v \in [200, 320]~km/s$, $q \in [0.5, 1.0]$,
+and $\phi \in [0, 360]$.  We obtain the redshift of the lens galaxy by
+matching the velocity dispersion from our simulations to the catalog
+of elliptical galaxies in the COSMOS survey from \citet{zahid_etal15},
+resulting in lens galaxy redshifts in the range, $z_l \in [0.2,0.7]$.
 
 %-------------------------------------------------%
 \subsubsection{Modeling Images of the Lens Galaxies}
@@ -331,9 +339,10 @@ resulting redshift range of our lenses is zl ∈ [0.2, 0.7].
 We model the light distributions of the lens galaxies with an
 elliptical Sersic profile,
 %-------------------------------------------------%
-\begin{equation}\label{eqn:sersic}
+\begin{equation}\label{eqn:sersic} 
 I(R) = I_{\rm eff}~{\rm exp} \left\lbrace -b_{n} \left[ \left(
-  \frac{R}{R_{\rm eff}}\right)^{1/n} - 1 \right ] \right\rbrace,
+  \frac{R}{R_{\rm eff}}\right)^{1/n} - 1 \right ]
+\right\rbrace 
 \end{equation}
 %-------------------------------------------------%
 where, $R = \sqrt[]{x_1^2 /q+x_2^2 q }$, $R_{\rm eff}$ is the
@@ -341,123 +350,93 @@ effective radius in units of arcseconds, $I_{\rm eff}$ is the
 intensity at the effective radius, $n$ is the index of the Sersic
 profile, and $q$ is the ellipticity of the lens galaxy.  We perform a
 similar transformation as Equation~\ref{eqn:rotation} to orient the
-sources.  We assume that the distribution of light is following that
-of mass, so ellipticity and orientation are the same as the SIE model.
+source galaxies and assume that the distribution of light follows that
+of mass.  The ellipticity and orientation are therefore the same as in
+the SIE model.
 
-We use the COSMOS morphological
-catalog \footnote{\url{https://arxiv.org/pdf/1501.04977v2.pdf}} to
-match the velocity dispersion with an assigned effective radius,
-effective luminosity, and index to the light profile.  We also assume
-the light center is on top of the mass center, creating noiseless
-images of lens galaxies.
+We use the COSMOS morphological catalog \citep{zahid_etal15} to match
+the velocity dispersion with an assigned effective radius, effective
+luminosity, and index to the light profile.  We also assume the light
+center is on top of the mass center, creating noiseless images of lens
+galaxies.
 
 We construct galaxies along the line of sight by cutting light-cones
-from the \todo{Hubble Ultra Deep Field\footnote{udf...org}}.  We stack
-these images with the lens galaxy image and the lensed source galaxy,
-calibrating the magnitude of all three components.
+from the Hubble Ultra Deep
+Field\footnote{http://www.spacetelescope.org/science/deep\_fields/}.
+We stack these images with the lens galaxy image and the lensed source
+galaxy, calibrating the magnitude of all three components.
 
-The light distributions of the lens galaxies  are modeled as the elliptical
-Sersic profile, \begin{equation} I(R) = I_{\rm eff}~{\rm exp} \left\lbrace
--b_{n} \left[ \left( \frac{R}{R_{\rm eff}}\right)^{1/n} - 1 \right ]
-\right\rbrace \end{equation} where $R = \sqrt[]{x_1^2 /q+x_2^2 q }$, $R_{\rm
-eff}$ is the effective radius in units of arcsecond, $I_{\rm eff}$ is the
-intensity at the effective radius, $n$ is the index of the Sersic profile, $q$
-is the ellipticity, and We perform the similar transformation as Eq.
-\ref{eq:rotation} to orient the sources.  We assume that the distribution of
-light is following that of mass, so ellipticity and orientation are the same as
-the SIE model. Matching the velocity dispersion with the COSMOS morphological
-catalog \footnote{\url{https://arxiv.org/pdf/1501.04977v2.pdf}}, we assign
-effective radius, effective luminosity, and index to the light profile.  We
-also assume the light center is on top of the mass center, the noiseless images
-of lenses can be drawn. The galaxies on the line of sight are constructed by
-cutting light-cones from the Hubble Ultra Deep Field.  Stacking all these
-images together and collaborating the magnitude of each component, we create
-primarily simulated lensed images.
-
+%-------------------------------------------------%
 \subsubsection{Modeling Images of the Source Galaxies}
+%-------------------------------------------------%
+The background source galaxies come from a set of detailed images of
+low-redshift bright galaxies ($z\sim0.45$) that have been extracted
+from mosaics produced by the CANDELS team
+\citep{grogin_etal11,koekemoer_etal11} and selected from the CANDELS
+UDS catalog \citep{galametz_etal13}.  We rescale these background
+source galaxies, set the source redshift to $z_s=0.2$, and select
+source positions near caustics of the lensing system.  We then fix the
+projected position of the lens galaxy at the center of the field of
+view for each image.
 
-The background sources are a set of detailed images of low-redshift bright
-galaxies (z ∼ 0.45) extracted from the mosaics produced by the CANDELS team
-(Grogin et al. 2011\footnote{Grogin N. A., et al., 2011, The Astrophysical
-Journal Supplement Series December The Astrophysical Journal Supplement Series,
-197, 3535}; Koekemoer et al. 2011\footnote{Koekemoer A. M., et al., 2011, The
-Astrophysical Journal Supplement Series December The Astrophysical Journal
-Supplement Series, 197}) and selected from the CANDELS UDS catalog Galametz et
-al. (2013)\footnote{Galametz A., et al., 2013, The Astrophysical Journal
-Supplement Series, 206, 10}. These galaxies are rescaled and placed at a fixed
-redshift $z_s = 2.0$, near the caustics of the lensing system, and the
-projected position of the lens is fixed in the center of the field of view of
-each image. Therefore, once we have the lens, source, and the parameters of the
-image simulation, i.e., $300 \times 300 {\rm pixels}^2$ and 0.03 arcsec per
-pixel per side, settled, the lensed images can be produced by performing
-ray-tracing simulations.
+We perform ray-tracing simulations using the modeled galaxy images and
+parameters.  The lens galaxy, source galaxy, and parameters of the
+image simulations (i.e., $300 \times 300~{\rm pixels}^2$ with
+0.03~arcsec/pixel for an HST-like image) are inputs to the simulation
+that produce ideal lensed images with the appropriate resolution.
 
 %-------------------------------------------------%
 \subsubsection{Mock Observing}
 %-------------------------------------------------%
 
-The final part is mock observing. For HST-like
-observations, galaxies along the line of sight already include noise
-and a point spread function (PSF).  We therefore stack and magnitude
-calibrate all components to produce the final HST-like images, which
-are $300\times300~{\rm pix}^2$ with $0.03$~arcsec per pixel.
+The final part is to perform the mock observation from the ideal
+images produced in the previous step. For HST-like observations,
+galaxies along the line of sight already include noise and a point
+spread function (PSF).  We therefore stack and magnitude calibrate all
+components to produce the final HST-like images, which are
+$300\times300~{\rm pix}^2$ with $0.03$~arcsec per pixel.
 
-To produce LSST-like images from the ideal images produced in the previous steps,
-we use the LensPop software Collett (2015)\footnote{Collett T. E., 2015, The
-Astrophysical Journal, 811, 20} to perform mock observing. Images are resampled
-to match the detector pixel scale and convolved with a circularly symmetric
-Gaussian Point Spread Function discretised at the same pixel scale. A noisy
-realisation of this image is generated assuming a Poisson model based on the
-sky plus signal, and an additional Gaussian read-out noise. Parameters for
-these simulations follow Collett (2015)\footnote{Collett T. E., 2015, The
-Astrophysical Journal, 811, 20} and are based on the LSST observation simulator
-(Connolly et al. 2010)\footnote{Connolly A. J., et al., 2010, SPIE Astronomical
-Telescopes + Instrumentation, pp 77381O–77381O–10}. To account for seeing and
-sky-brightness variations over the course of the survey, each simulated
-exposure is drawn from a stochastic distribution of these parameters. We then
-consider two different strategies to use these exposures. For each field, we
-build one single-epoch image by keeping only the best seeing exposure and
-another ``worst-case''' stack image by co-adding all individual exposures after
-degrading them all in resolution to match the one with the worst seeing. These
-two sets of images will allow us to investigate the trade-off between
-signal-to-noise and resolution for our automated lens search. Figure 2.1
-illustrates a sample mock lensed and unlensed images from each telescope. From
-left to right, the top panel images respectively correspond to a mock HST
-lensing and non-lensing system. The mock HST images are 300 × 300 in size, and
-the pixel size is 0.03 arcsecond. For the HST-like data-set, many giant arcs
-are visually obvious. The middle panel images respectively correspond to a mock
-single-epoch LSST lensing and non-lensing systems. The bottom panel images
-respectively correspond to a mock stacked LSST lensing and non-lensing systems.
-These images are 45 × 45; the pixel size is 0.18 arcsecond. The ground based
-noise, PSF, and limited resolution of the LSST-like data-set make visual giant
-arc identification difficult. But when in the stacked LSST images, the quality
-is better, because more data improves the signal to noise ratio better.
+For LSST-like observations, we use the {\em LensPop} software
+\citep{collett_15}.  We resample images to match the detector pixel
+scale and convolve the resampled image with a circularly symmetric
+Gaussian Point Spread Function discretised at the same pixel scale. To
+generate a noisy realization of the image, we assume a Poisson model
+based on the sky plus signal, and an additional Gaussian read-out
+noise. Parameters for these simulations follow \citet{collett_15} and
+are based on the LSST observation simulator \citep{connolly_etal10}.
+
+To account for variations in seeing and sky-brightness over the course
+of the survey, we draw each simulated exposure from a stochastic
+distribution of these parameters. We then consider two different
+strategies to use the simulated exposures. First, we build one
+single-epoch image for each field (hereafter labeled as LSST1) by
+keeping only the best seeing exposure.  Second, we build another
+``worst-case'' stacked image by degrading all individual exposures to
+match the one with the worst seeing and co-add all exposures to a
+single image (hereafter labeled as LSST10).  These two sets of images
+will allow us to investigate the trade-off between resolution and
+signal-to-noise for our automated lens search.
 
 Figure~\ref{fig:mockimages} illustrates sample mock observations with
 a strong lensing signature from each telescope.  The left-most column
-respectively correspond to a mock HST lensing system with a highly
-magnified source galaxy (top) and a less visible image of the source
-galaxy (bottom). For the HST-like dataset, many arcs are visually
-obvious due to the exquisite spatial resolution.
+corresponds to a mock HST lensing system with a highly magnified
+source galaxy (top) and a less visible image of the source galaxy
+(bottom). For the HST-like dataset, many arcs are visually obvious due
+to the exquisite spatial resolution and quality of space based
+imaging.
 
-The middle column corresponds to the same simulated systems, as
-observed with over ten years of LSST, LSST10.  The right-most column
-corresponds to the simulated systems observed over just one year of
-LSST1.  LSST10 images visually exhibit an improved signal to noise
-ratio, recovering the arc feature, albeit at a much lower resolution
-than with the HST-like image.  The top images of LSST10 and LSST1 show
-a visible lensed source galaxy image.  The bottom images are washed
-out in the bottom row, where the magnification of the source galaxy is
-not as large.  The ground based noise, PSF, and limited resolution of
-the LSST1 make visual giant arc identification difficult, except in
-systems with the most magnified source galaxies.
-
-In the training sets, we also generate unlensed images, the procedure is
-similar to mock lensed images but getting rid of the part of ray-tracing. 10000
-lensed images and 10000 unlensed images are merged to construct one training
-set. Furthermore, for investigating the influence of BCG galaxies on the
-performance of our lens identification pipeline in LSST data, we build another
-training sets of the images without BCG galaxies.
+The middle column corresponds to the same simulated systems for
+LSST10.  The right-most column corresponds to the simulated systems of
+LSST1.  These images have resolution $45\times45~{\rm pixels}^2$ with
+$0.18$~arcsec/pixel.  LSST10 images visually exhibit the improved
+signal to noise ratio, recovering the arc feature, albeit at a much
+lower resolution than with the HST-like image or the LSST1 image.  The
+top images of LSST10 and LSST1 show a visible lensed source galaxy
+image.  The bottom images are washed out in the bottom row, where the
+magnification of the source galaxy is not as large.  The ground based
+noise, PSF, and limited resolution of the LSST1 make visual giant arc
+identification difficult, except in systems with the most magnified
+source galaxies.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure*}[t]\label{fig:mockimages}
@@ -483,12 +462,14 @@ ray-tracing, so these images do not have lensed source galaxies.
 Furthermore, we investigate the influence of light from the lens
 galaxies on the performance of our lens identification pipeline.  We
 generate another set of each HST, LSST1, and LSST10 images without the
-lens galaxy.  We label these nHST, nLSST1, and nLSST10.
+lens galaxy.  We respectively label these nHST, nLSST1, and nLSST10.
 
-The final data is then comprised of $6\times10,000$ lens containing
-images, and $6\times 10,000$ non-lens containing images.  We also keep
-a hold-out set of $6\times 1,000$ lens containing images, and $6\times
-1,000$ non-lens containing images.
+The final data set is then comprised of $6\times10,000$ lens
+containing images, and $6\times 10,000$ non-lens containing images.
+We also keep a hold-out set of $6\times 1,000$ lens containing images,
+and $6\times 1,000$ non-lens containing images.
+
+
 %-------------------------------------------------%
 \subsection{Strong Arc Lensing Identification Pipeline}
 %-------------------------------------------------%
@@ -548,7 +529,7 @@ searches to keep our test metric independent of tuning.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
 
 %-------------------------------------------------%
-\subsection{Feature Extractor: Histogram Oriented Gradients}\label{sec:hog}
+\subsubsection{Feature Extractor: Histogram Oriented Gradients}\label{sec:hog}
 %-------------------------------------------------%
 % HOG intro - 
 Originally created for human detection in computer vision, histogram
@@ -560,10 +541,10 @@ describe the procedure here.  The end result of HOG is a one
 dimensional histogram computed as follows.
 
 % Division of the image  
-HOG first divides the image into blocks of \wording{50\% overlap}.
-Each block contains $m\times m$ cells-per-block that each contain
-$n_{pix}\times n_{pix}$ pixels-per-cell.  The computed gradient
-orientation is quantized into $N_{orient}$ bins.
+HOG first divides the image into blocks of 50\% overlap.  Each block
+contains $m\times m$ cells-per-block that each contain $n_{pix}\times
+n_{pix}$ pixels-per-cell.  The computed gradient orientation is
+quantized into $N_{orient}$ bins.
 
 % Initial binning
 The orientation gradient of all pixels within each cell are binned
@@ -709,7 +690,7 @@ Section~\ref{sec:trainsetsize}.
 
 
 %-------------------------------------------------%
-\subsection{Machine Learning Algorithm: Logistic Regression}\label{sec:LR}
+\subsubsection{Machine Learning Algorithm: Logistic Regression}\label{sec:LR}
 %-------------------------------------------------%
 The problem of detecting gravitational lenses in images falls under
 the general category of {\em{classification}} in machine learning. In
@@ -1365,26 +1346,28 @@ We summarize key points below:
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Benefits of our method
-We emphasize that classical linear classifiers, such as logistic
-regression, is scalable and relatively easy to parallelize with open
-source tools such as \todo{\em Spark}\footnote{...spark...org}}.
-  Initial checks indicated that HOG features are well separated enough
-  for a linear classifier algorithm.  Reproducible results do not
-  require supercomputing resources.
+\wording{We emphasize that classical linear classifiers, such as
+  logistic regression, is scalable and relatively easy to parallelize
+  with open source tools such as {\em
+    Spark}\footnote{http://spark.apache.org/}.  Initial checks
+  indicated that HOG features are well separated enough for a linear
+  classifier algorithm.  Finally, our methods enable reproducible
+  results that do not require supercomputing resources.
 
 % Impact of work
 These results indicate that effective image classification of
 galaxy-galaxy strong lensing systems do not require large scale
-computing resources.
+computing resources or expertise.}
 
 % Caveat of the mock data set
 One major caveat of our resuls is the fact that our mock data likely
 does not describe the full range of lens and non-lens images that will
 be observed.  For example, the along the line of sight galaxies in our
 training and test images all come from the Hubble Ultra Deep field,
-sampling a smaller range of potential systems that are not associated
-with a lensed image.  We will address these shortcomings in subsequent
-work.  
+sampling a smaller range of potential contaminants that are not
+associated with a lensed image.  Also, the redshift of the source
+galaxies have been fixed to $z_s=.2$.  We will address these
+shortcomings in subsequent work.
 
 % Interpreting TP and FP rates
 Finally, we must take the class balance, or relative number of lens to
