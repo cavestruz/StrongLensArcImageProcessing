@@ -1228,25 +1228,25 @@ magnification, and the easier it is for our trained model to classify.
 
 % Discuss figure
 In Figure~\ref{fig:scorevslensparams}, we show the classification
-score as a function of image magnification for lens images in our
-HST-like sample.  The left-hand side shows the relation color-coded by
-the redshift of the lensing galaxy, and the right-hand side shows the
-relation color-coded by the velocity dispersion of the lensing galaxy.
-Lensing systems with images that have magnification $\gsim7$ will
-almost certainly be classified as positive with threshold scores above
-$\gsim0.5$.  These systems are also those that are most easily
-classified by eye.  However, our trained model has varying performance
-for systems with lower magnifications.
-
-
+score as a function of image magnification of the source galaxy in
+each of our samples.  In the top panel, each data point is color-coded
+by the velocity dispersion of the lensing galaxy.  In the bottom
+panel, the color-coding is by the redshift of the lens galaxy.  In
+either an HST-like or LSST-like observation, lensing systems with
+images that have magnification $\gsim7$ will almost certainly be
+classified as positive with threshold scores above $\gsim0.5$.  These
+systems are also those that are most easily classified by eye.
+However, our trained model has varying performance for systems with
+lower magnifications.
 
 % Some dependence on redshift and velocity dispersion, which is folded
 % into magnitude
-Almost \todo{X\%} of lensing systems with magnifications $\lsim7$ will
-be falsely identified as non-lenses for classification threshold
-scores $\gsim0.5$.  These systems typically have lenses that are at
-higher redshifts of $z\gsim0.5$ (lighter colors in left figure) and/or
-velocity dispersions lower than $\sigma_v\lsim230.$~km/s (darker
+In our mock HST sample, all but one of our lensing systems with
+magnifications $\lsim7$ will be successfully identified for
+classification threshold scores $\gsim0.5$.  These highly magnified
+systems typically have lenses that are at higher redshifts of
+$z\gsim0.5$ (lighter colors in bottom row) and/or lens galaxies with
+velocity dispersions higher than $\sigma_v\lsim230.$~km/s (darker
 colors in right figure).  Note that lensing galaxies with smaller
 velocity dispersions are less massive and therefore have a smaller
 efficiency of lensing cross section.  The smaller efficiency means
@@ -1254,7 +1254,7 @@ that a background galaxy is less likely to be strongly lensed with
 high magnification.  Also, due to hierarchical structure formation,
 galaxies are less massive at higher redshifts, so the trends of model
 performance with these three parameters are somewhat degenerate with
-one another.  
+one another.
 
 The relationship between our model performance and these lens
 parameters indicates that the magnification of lensed images is the
@@ -1274,14 +1274,29 @@ method to correct for this.
 \begin{figure*}[t]
   \centering 
   \mbox{
-    \subfigure{\includegraphics[width=\columnwidth,trim=0 0 0 0,
-        clip]{figures/HST/or5ppc32cpb4/magnitude_d_colorcodedby_z.pdf}}\hfill
-    \subfigure{\includegraphics[width=\columnwidth,trim=0 0 0 0,
-        clip]{figures/HST/or5ppc32cpb4/magnitude_d_colorcodedby_velocity_dispersion.pdf}}
-  } 
-\caption{Image classification score on HST mock data as a function of
-  lensed image magnification.  Left color-coded by redshift, right is
-  color coded by the lens velocity dispersion.}
+    \subfigure{\includegraphics[width=.66\columnwidth,trim=13 0 10 0,
+        clip]{figures/lens_parameter_dependence/HST_Magnification_Velocity_Dispersion.pdf}}\hfill
+    \subfigure{\includegraphics[width=.66\columnwidth,trim=13 0 10 0,
+        clip]{figures/lens_parameter_dependence/LSST10_Magnification_Velocity_Dispersion.pdf}}\hfill
+    \subfigure{\includegraphics[width=.66\columnwidth,trim=13 0 10 0,
+        clip]{figures/lens_parameter_dependence/LSST1_Magnification_Velocity_Dispersion.pdf}\hfill}
+  }\\ 
+  \mbox{
+    \subfigure{\includegraphics[width=.66\columnwidth,trim=13 0 10 0,
+        clip]{figures/lens_parameter_dependence/HST_Magnification_z.pdf}}\hfill
+    \subfigure{\includegraphics[width=.66\columnwidth,trim=13 0 10 0,
+        clip]{figures/lens_parameter_dependence/LSST10_Magnification_z.pdf}}\hfill
+    \subfigure{\includegraphics[width=.66\columnwidth,trim=13 0 10 0,
+        clip]{figures/lens_parameter_dependence/LSST1_Magnification_z.pdf}\hfill}
+  }\\ 
+\caption{Left to right: Image classification score on HST, LSST10,
+  LSST1 mock observed lensing images as a function of lensed image
+  magnification.  Top row: Each panel is color coded by the lens
+  velocity dispersion in km/s.  High velocity dispersion lens galaxies
+  are likely to produce high magnification images of the source
+  galaxies.  Magnification is the strongest indicator of how likely a
+  lensing system will be successfully classified.  Bottom row: Here,
+  we color code by the redshift of the lens galaxy.}
 \label{fig:scorevslensparams}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
