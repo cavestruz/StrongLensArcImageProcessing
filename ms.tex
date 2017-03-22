@@ -74,11 +74,12 @@ training set.  Models trained on fewer images perform better in
 absence of the lens galaxy, which can decrease the false positive rate
 by blending with light from a lensed galaxy image near the central
 lensing galaxy.  However, with larger training data sets, information
-from the lensing galaxy improves model performance.  \wording{Our
-  results show efficient and effective methods for automated strong
-  lensing identification with scalable linear methods that are easy to
-  parallelize with existing open source tools and are reproducible on
-  personal laptop computers.}
+from the lensing galaxy improves model performance.  Our
+results demonstrate efficient and effective methods for automated strong
+lensing identification. The simple classifier used here easily
+scales to large data sets on a computing cluster and is easily
+reproduced on a personal laptop, using existing open source tools
+in both cases.
 \end{abstract}
 %-------------------------------------------------%
 
@@ -199,20 +200,21 @@ extracted morphological parameters.
   outperform implementations of convolutional neural networks.}
 
 %  Relevance of our work
-\wording{While there has been a recent surge in the use of neural
-  networks applied to astronomy image classification problems, these
-  implementations are not readily scalable, nor are the necessary
-  computational resources and expertise easily accessible to the
-  entire scientific community.  We present a supervised classification
-  pipeline built with open source tools, tested on mock HST and LSST
-  data, which will also be made publicly available.  Our goal is to
-  centralize an open source pipeline that is general enough for the
-  user to select or add appropriate image processing techniques to
-  augment the features of the lensed image, train and test data with
-  different machine learning techniques, and to select the sequence of
-  methods that provides optimal model performance.  Results are
-  reproducible on personal computers, as both the pipeline and the
-  data will be publicly distributed.}
+While there has been a recent surge in the use of deep neural
+networks applied to image classification problems in astronomy,
+it is not always easy to scale these techniques to large data
+sets, nor are the necessary computational resources and hardware,
+such as GPUs, easily accessible to the
+entire scientific community.  We present a supervised classification
+pipeline built with open source tools, tested on mock HST and LSST
+data, which will also be made publicly available.  Our goal is to
+centralize an open source pipeline that is general enough for the
+user to select or add appropriate image processing techniques to
+augment the features of the lensed image, train and test data with
+different machine learning techniques, and to select the sequence of
+methods that provides optimal model performance.  Results are
+reproducible on personal computers, as both the pipeline and the
+data will be publicly distributed.
 
 % Summary of paper 
 This first paper serves as both a presentation of the mock data set
@@ -1361,18 +1363,16 @@ We summarize key points below:
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Benefits of our method
-\wording{We emphasize that classical linear classifiers, such as
-  logistic regression, is scalable and relatively easy to parallelize
-  with open source tools such as {\em
-    Spark}\footnote{http://spark.apache.org/}.  Initial checks
-  indicated that HOG features are well separated enough for a linear
-  classifier algorithm.  Finally, our methods enable reproducible
-  results that do not require supercomputing resources.
-
-% Impact of work
+We emphasize that simple linear classifiers, such as
+logistic regression, are scalable and relatively easy to parallelize
+with open source tools such as {\em
+Spark}\footnote{http://spark.apache.org/}.  Initial checks
+indicate that HOG feature extraction plus a linear
+classifier captures much of the complexity in the arc finding problem.
 These results indicate that effective image classification of
-galaxy-galaxy strong lensing systems do not require large scale
-computing resources or expertise.}
+galaxy-galaxy strong lensing systems can be achieved without
+large scale computing resources, or specialized hardware like GPUs,
+but can be scaled to large datasets on a computing cluster if needed.
 
 % Caveat of the mock data set
 One major caveat of our resuls is the fact that our mock data likely
