@@ -65,10 +65,10 @@ method, Histogram of Oriented Gradients (HOG), to capture edge
 patterns that are characteristic of strong gravitational arcs in
 galaxy-galaxy lensing.  We use logistic regression to train a
 supervised classifier model on the HOG of HST- and LSST-like images.
-We use an area under the curve (AUC) of a Receiver Operating
-Characteristic curve to assess model performance; $AUC=1.0$ is an
-ideal trained classifier, and $AUC=0.5$ does not provide any
-classification information.  Our best performing models on a training
+We use the area under the curve (AUC) of a Receiver Operating
+Characteristic (ROC) curve to assess model performance; $AUC=1.0$ is an
+ideal classifier, and $AUC=0.5$ is no better than randomly guessing.
+Our best performing models on a training
 set of 10,000 lens containing images and 10,000 non-lens containing
 images exhibit an AUC of 0.975 for an HST-like sample.  However, for
 one orbit of LSST, our model only reaches an AUC of 0.625.  For
@@ -78,11 +78,12 @@ training set.  Models trained on fewer images perform better in
 absence of the lens galaxy, the removal of which can decrease the
 false positive rate due to the blending of light between source images
 and the lens galaxy.  However, with larger training data sets,
-information from the lens galaxy improves model performance.  Our
-results demonstrate efficient and effective methods for automated
-strong lensing identification. With existing open source tools, this
-example linear classifier both runs on a personal laptop and can
-easily scale to large data sets on a computing cluster.
+information from the lens galaxy actually improves model performance.
+Our results demonstrate an efficient and effective method for automatically
+identifying strong lenses that captures much of the complexity of the
+arc finding problem. The linear classifier both runs on a
+personal laptop and can easily scale to large data sets on a computing
+cluster, all while using existing open source tools.
 \end{abstract}
 %-------------------------------------------------%
 
@@ -101,20 +102,20 @@ galaxies \citep{lyndsandpetrosian_86,gladders_etal03}, multiply imaged
 quasars \citep{walsh_etal79}, multiply imaged galaxies
 \citep{sharon_etal05}, and arclets \citep{bezecourt_etal98}.  Lensing
 signatures probe the underlying dark matter distribution of the lens
-\citep{warrenanddye_03}, high redshift galaxy formation
-\citep{allam_etal07}, and provide a geometric test of cosmology via
-comparison of predicted arc abundances and observed abundances
-\citep{kochanek_96,chae_03,linder_04} and time-delay signals from
-multiply imaged quasars\citep{xli_etal12,suyu_etal14,suyu_etal16}.
+\citep{warrenanddye_03}, and high redshift galaxy formation
+\citep{allam_etal07}. They also provide a geometric test of cosmology via
+comparison of predicted arc abundances with observed abundances
+\citep{kochanek_96,chae_03,linder_04}, and via time-delay between signals
+from multiply imaged quasars \citep{xli_etal12,suyu_etal14,suyu_etal16}.
 
 % Application of constraining mass profiles - large numbers needed.
 The application of strong gravitational lensing to constrain the mass
 distribution of strong lenses, such as early-type galaxies (ETGs),
 necessitates large samples of galaxy-galaxy lensing systems.
 \citet{miraldaescudeandlehar_92} first suggested that massive
-ellipticals would be likely frequent strong lensing sources in optical
-surveys.  These systems exhibit a background source galaxy that the
-lens galaxy deflects into a partial of full arc shaped Einstein ring.
+ellipticals would likely be frequent strong lensing sources in optical
+surveys.  These systems contain a background source galaxy that the
+lens galaxy deflects into a partial or full arc shaped Einstein ring.
 The strong lensing signature directly probes the underlying matter.
 The identification of such systems in upcoming surveys is the first
 step in constraining the mass-to-light ratio for a large number of
@@ -147,8 +148,8 @@ with performance comparable to or better than humans. {\em SpaceWarps}
 is a part of the Zooniverse Project \citep{marshall_etal16}, which
 also includes {\em Galaxy Zoo}, the citizen science based image
 classification of galaxy types \citep{lintott_etal08}.  Galaxy
-classification is an early successful example of in which machine
-learning algorithms successfully train models to classify astronomical
+classification is an early example in which machine
+learning algorithms successfully trained models to classify astronomical
 images with comparable performance to humans \citep{dieleman_etal15}.
 
 % Early efforts
@@ -162,30 +163,36 @@ include shape parameterization
 colors in multi-band imaging \citep{maturi_etal14,gavazzi_etal14},
 light profiles \citep{braultandgavazzi_15}, and characteristics of
 potential lens galaxies \citep{marshall_etal09}.  Pattern recognition
-often incorporate cutoffs in selected parameter space distributions
+often incorporates cutoffs in selected parameter space distributions
 \citep{lenzen_etal04,joseph_etal14,paraficz_etal16}.  A number of
 these have been publicly distributed, with specific end applications.
 For example, {\em ArcFinder} is one such code that finds arcs in
 groups or cluster scale lens \citep{seidelandbartelmann_07}, and {\em
-  RingFinder} an analogous tool in searching for multiply imaged
+  RingFinder} is an analogous tool in searching for multiply imaged
 quasars \citep{gavazzi_etal14}.  Codes like these have been
 complementary to human identification \citep{more_etal16}.
 
 % Classical machine learning methods
-The latter of these methods have transitioned to using ``machine
-learning'' algorithms for the pattern recognition step.  In classical
-machine learning, we can train a model to separate a dataset according
-to some desired classification scheme.  However, we still need to
-reduce the dimensionality of the problem with a feature extraction
-method.  The dominant ``features'' of that determine image
-classification are not a priori known, but determined by the
-algorithm.
+Pattern recognition methods have transitioned to using ``machine
+learning'' algorithms in place of manual cutoffs.  With
+machine learning, we can train a model to separate a dataset into
+a known set of classes, such as ``lensing systems'' and
+``non-lensing systems''. However, many classic machine learning
+algorithms do not work well in image space, i.e. directly using the
+raw pixel values of the image, but first require a process of
+\em{feature engineering}, in which domain expertise is used to
+extract variables which are more directly related to the classification
+task at hand.  An example would be the application of an edge detector.
+The optimal weights and cutoffs for these derived variables that are
+used to determine the class label of an image are found automatically
+by the algorithm.
 
 % Recent works, neural nets, and deep learning
-Much more recent works have made use of a subset tool in machine
-learning, neural networks, to classify images either from input image
+Some more recent works have made use of a subset of machine
+learning algorithms called neural networks to classify images,
+either from derived image
 parameters or directly in image space.  In \citet{estrada_etal07},
-authors used input shape parameters to train neural nets to identify
+authors used derived shape parameters to train neural nets to identify
 arc candidates.  \citet{agnello_etal15} used neural networks trained
 on data from multiband magnitudes, and \citet{bom_etal16} used
 extracted morphological parameters.
@@ -195,12 +202,13 @@ The most advanced use of neural networks for strong lensing
 classification operate directly in image space.
 \citep{petrillo_etal17} used mock Kilo Degree Survey data to train
 convolutional neural networks, with a training set size of six million
-images. \citet{lanusse_etal17} used state-of-the-art residual learning
+images. \citet{lanusse_etal17} used state-of-the-art deep residual
+neural networks
 to also work directly in the image space with minimal image
 pre-processing.  A major strength of the \citet{lanusse_etal17}
-implementation is that residual learning has been found to be easier
-to train in deep neural networks, and can outperform implementations
-of convolutional neural networks.
+implementation is that in comparison to deep convolutional neural
+networks, deep residual neural networks have been found to
+be easier to train and perform better.
 
 %  Relevance of our work
 While there has been a recent surge in the use of deep neural
@@ -211,8 +219,8 @@ such as GPUs, easily accessible to the
 entire scientific community.  We present a supervised classification
 pipeline built with open source tools, tested on mock HST and LSST
 data, which will also be made publicly available.  Our goal is to
-centralize an open source pipeline that is general enough for the
-user to select or add appropriate image processing techniques to
+create a centralized open source pipeline that is general enough for
+the user to select or add appropriate image processing techniques to
 augment the features of the lensed image, train and test data with
 different machine learning techniques, and to select the sequence of
 methods that provides optimal model performance.  Results are
@@ -228,8 +236,8 @@ extraction and classical machine learning method, respectively, the
 quantifies edges in images, commonly used to identify humans in
 security software.  LR is a linear classifier, making its scalability
 relatively straightforward with existing open source tools.  This
-framework is easily extendable to other feature methods and machine
-learning algorithms for supervised classification.
+framework is easily extendable to other feature extraction methods
+and machine learning algorithms for supervised classification.
 
 % Summary of results
 We show results of the pipeline on mock galaxy-galaxy lens systems
@@ -260,7 +268,7 @@ for training and testing.
 
 There are 10,000 lens containing mock observations and 10,000
 non-lens containing mock observations for running our parameter search. 
-We keep a hold-out test set of 1,000 lens containing mock observations
+We keep a hold-out set of 1,000 lens containing mock observations
 and 1,000 non-lens containing mock observations on which we evaluate
 the final trained model.
 
@@ -280,19 +288,19 @@ label these observations as HST, LSST1, and LSST10.
 %-------------------------------------------------%
 
 To produce simulated lensed galaxies, we first model the mass of lens
-galaxies as the Singular Isothermal Ellipsoid (SIE). This model is
+galaxies as a Singular Isothermal Ellipsoid (SIE). This model is
 both analytically tractable and is consistent with models of
 individual lenses and lens statistics on the length scales relevant
 for strong lensing
 \citep[e.g.]{koopmans_etal06,gavazzi_etal07,dye_etal08,liandchen_09}.
 
-The normalized convergence map of SIE model is defined as:
+The normalized convergence map of the SIE model is defined as:
 %-------------------------------------------------%
 \begin{equation}\label{eqn:sie}
 \kappa = \frac{\theta_{\rm E}}{2}\frac{1}{\sqrt{x_1^2/q+x_2^2 q}},
 \end{equation}
 %-------------------------------------------------%
-where $\theta_{\rm E}$ is the Einstein Radius and $q$ is axis ratio.
+where $\theta_{\rm E}$ is the Einstein Radius and $q$ is the axis ratio.
 The Einstein radius can be calculated from the redshift of the
 lens, the redshift of the source, and the velocity dispersion of the
 lens galaxy as follows,
@@ -444,7 +452,7 @@ identification difficult, except in systems with the most magnified
 source galaxies.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure*}[t]\label{fig:mockimages}
+\begin{figure*}[t]
 \begin{center}
 \includegraphics[width=2\columnwidth]{figures/tiles/compilations/telescope_compilation.pdf}
 \caption{Left to right show example mock HST, LSST 10 year, and LSST 1
@@ -455,7 +463,7 @@ source galaxies.
   images have $n_\text{pix}\times n_\text{pix}=45\times45$.  The
   resolution and noise of a ground based telescope is noticeably
   worse. Visual identification of giant arcs in the LSST images in the
-  bottom row is very difficult.}
+  bottom row is very difficult.}\label{fig:mockimages}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -483,20 +491,21 @@ To perform our analysis, we have used tools from {\em Scikit-learn}
 \citep{pedregosa_etal12}.  We outline the identification pipeline in
 Figure~\ref{fig:pipeline}, which is a general description of
 supervised classification.  Supervised classification is a class of
-machine learning where the labels of classification in the training
-set are known.  In our case, the labels are lens and non-lens
+machine learning where the class labels in the training
+set are known.  In our case, the labels are ``lens'' and ``non-lens''
 containing images.
 
 The first step of our pipeline consists of a feature extraction stage,
 where our feature vector is a {\em histogram of oriented gradients}
-\citep{dalalandtriggs_05} that quantifies edges in the image.  We
+(HOG) \citep{dalalandtriggs_05} that quantifies edges in the image.  We
 describe the method and parameter search in Section~\ref{sec:hog}.  We
 then use {\em Logistic Regression} (LR), a machine learning algorithm
 described in Section~\ref{sec:LR}, to train a classifier model on a
 subset of our images.  LR requires a parameter search over the
 regression coefficient, $C_{LogReg}$, which we explore in
 Section~\ref{sec:regularization}.  We briefly comment that our initial
-tests with {\em Support Vector Machine} (SVM) as an alternative
+tests with a {\em Support Vector Machine} (SVM) using radial basis
+fucntions as an alternative
 machine learning algorithm yielded negligible performance improvement,
 and significantly increased computation cost.  This indicated that the
 features of lens and non-lens images are relatively well separated by
@@ -513,7 +522,7 @@ methodology in Section~\ref{sec:gridsearch}.
 The second step of our analysis is to test our trained model on an
 independent subset of the images to assess the model performance.
 Here, we evaluate the model on each test image, predicting a
-likelihood (``score'') between 0 and 1 that this is a lens containing
+likelihood (``score'') between 0 and 1 that image contains a lensing
 system.  This ``holdout set'' is not used in any of our parameter
 searches to keep our test metric independent of tuning.
 
@@ -537,7 +546,7 @@ searches to keep our test metric independent of tuning.
 \subsubsection{Feature Extractor: Histogram Oriented Gradients}\label{sec:hog}
 %-------------------------------------------------%
 % HOG intro - 
-Originally created for human detection in computer vision, histogram
+Originally created for human detection in computer vision, histogram of
 oriented gradients (HOG) is a feature extraction method that computes
 centered horizontal and vertical gradients. HOG is relatively robust
 to noise in the image, and is a fairly fast transform that describes
@@ -555,10 +564,9 @@ quantized into $N_{orient}$ bins.
 The orientation gradient of all pixels within each cell are binned
 into the quantized orientations, providing a net gradient description
 within that cell.  As an example, for $N_{orient}=3$, our bins are
-centered at $\theta=0, 2\pi/3, 4\pi/3$ in radians.  If a cell has no
-gradient in the vertical direction, and only a gradient across the
-horizontal direction, say in the positive x-direction with
-$\theta=\pi/2$, it will contribute 75\% of its magnitude to the
+centered at $\theta=0, 2\pi/3, 4\pi/3$ in radians.  If a cell
+only has a gradient in the
+$\theta=\pi/2$ direction, it will contribute 75\% of its magnitude to the
 $\theta=2\pi/3$ bin, and 25\% of its magnitude to the $\theta=0$ bin.
 The bins in all cells are then concatenated to make a larger feature
 vector that is $N_{orient}$\times$N_{cells}$.
@@ -568,7 +576,7 @@ The last step is a normalization procedure to control for illumination
 effects.  Here, the sub-histograms of each cell within the same block
 are normalized with respect to one another before the transformation
 returns the final feature vector.  The division of the image and the
-quantization of orientations provide a total of 3 parameters in HOG:
+quantization of orientations are thus controlled by 3 parameters in HOG:
 $N_{orient}$, cells-per-block, and pixels-per-cell.  We discuss how we
 select parameters using cross-validation in
 Section~\ref{sec:gridsearch}
@@ -628,7 +636,7 @@ our grid search.
 
 Next, the cells per block parameter determines the normalization of
 each cell with respect to the neighboring cell.  In general, this will
-downweight arc-like edges in cells that neighbor very bright cells,
+down-weight arc-like edges in cells that neighbor very bright cells,
 such as cells that cover the central lens galaxy.  We therefore vary
 the cells per block parameter between (2, 2) and (4, 4) for the
 LSST-like images and between (1, 1) and (4, 4) for the HST-like
@@ -646,8 +654,9 @@ right in Figure~\ref{fig:hogimages}).
 
 Finally, the resolution of the overall image will also limit the
 additional information that an increase in $N_\text{orient}$ will
-provide.  The best case number of orientations for each dataset is
-$N_\text{orient,HST}=9$, $N_\text{orient,LSST10}=3$, \todo{and
+provide.  \todo{From the grid search, the best case number of orientations
+for each dataset is
+$N_\text{orient,HST}=9$, $N_\text{orient,LSST10}=3$, and
   $N_\text{orient,LSST1}=$.}
 
 % Impact on image performance
@@ -660,7 +669,7 @@ training set size affects the train time for each data set in
 Section~\ref{sec:trainsetsize}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
-\begin{figure*}[t]\label{fig:hogimages}
+\begin{figure*}[t]
 \begin{center}
 \includegraphics[width=2\columnwidth]{figures/tiles/compilations/hog_telescope_compilation.pdf}
 \caption{Left to right show example image transforms of mock images
@@ -672,7 +681,7 @@ Section~\ref{sec:trainsetsize}.
     direction perpendicular to that gradient.}  The actual extracted
   features fill a one-dimensional feature vector comprised of the
   magnitudes of each of the oriented edges within the visualized
-  cells.}
+  cells.}\label{fig:hogimages}
 \end{center}
 \end{figure*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -699,16 +708,16 @@ Section~\ref{sec:trainsetsize}.
 %-------------------------------------------------%
 The problem of detecting gravitational lenses in images falls under
 the general category of {\em{classification}} in machine learning. In
-general the task is to find a function that assigns data points $x$ to
+general, the task is to find a function that assigns data points $x$ to
 one of two or more classes, denoted by the class label $y$.  This is
 equivalent to specifying a decision boundary, or decision boundaries
 between the classes in the space of the data points.  (Compare this to
 {\em{regression}} in which the task is to find a function $y=f(x)$,
 where $y$ is a continuous, rather than discrete, variable.) In our
 case, we have two classes: lens and non-lens containing images, and
-the data points $x$ are the HOG feature vectors transformed from the
-training set data.  In this paper we use the Logisitic Regression (LR)
-algorithm, for which the decision boundary is a hyperplane .  (The
+the data points $x$ are the HOG feature vectors extracted from the
+images.  In this paper we use the \em{Logisitic Regression}
+(LR) algorithm, for which the decision boundary is a hyperplane.  (The
 equivalent in the regression setting would be linear regression.) In
 LR we determine the optimal hyperplane by minimizing the objective
 function
@@ -723,14 +732,14 @@ the parameters of the hyperplane. Eq. \ref{eqn:log_reg_objective}
 is to be minimized with respect to $A$ and $b$.
 Other more complicated machine learning algorithms exist which
 do not necessarily produce a linear decision boundary, such as
-Support Vector Machines (SVM), Random Forests, and Neural Networks.
-training set data \citep{hastie_09}.
+\em{Support Vector Machines} (SVM), \em{Random Forests}, and
+\em{Neural Networks} \citep{hastie_09}.
 
 The HOG feature vectors in this paper can be very high-dimensional.
 When dealing with high-dimensional data, where the number of
 dimensions becomes comparable to the number of data points,
 overfitting can become an issue. (An example of an extreme case
-of overfitting would be if you fit a degree $n$ polynomial to $n$
+of overfitting is fitting a degree $n$ polynomial to $n$
 points.  The polynomial would simply wiggle so that it goes
 through every point, and would have no predictive power if you
 tried to interpolate or extrapolate.) In machine learning,
@@ -752,16 +761,16 @@ the model will overfit, and if it is too small the model will
 underfit.  To determine whether a model is overfit or underfit, the
 model is trained, (i.e. Eq. \ref{eqn:log_reg_regularized} is
 minimized), on a subset of the data called the {\em{training set}} and
-its performance (goodness of fit) is evaluated both on the the
-training set and a set of hold-out data called the {\em{test set}}
+its performance (goodness of fit) is evaluated both on the
+training set and a separate {\em{test set}}
 that was not used in constructing the model.
-Figure~\ref{fig:regularization} shows the performance of a model for
+Figure~\ref{fig:regularization} shows the performance of a model with
 selected HOG parameters as a function of the regularization parameter,
 $C_\text{LogReg}$, for both the training and the test set.  (The
 performance can be measured by the accuracy, i.e. percent of images
 correctly classified, or by some other metric, such as the area under
-the Receiver Operating Characteristic curve (see
-Section~\ref{sec:ROC}).)
+the Receiver Operating Characteristic curve described in
+Section~\ref{sec:ROC}.)
 
 When $C_\text{LogReg}$ is small, the performance of the model improves
 with increasing $C_\text{LogReg}$ on both the training and test set,
@@ -844,7 +853,7 @@ supervised classification.
 Figure~\ref{fig:ROCcompilation} shows the ROC curves for models
 trained using the entire 10,000 training sample, with best-case HOG
 and regularization parameters.  The models have been evaluated on a
-hold-out test set of 1,000 images that were not used in the parameter
+hold-out set of 1,000 images that were not used in the parameter
 search.  We show the mock HST, LSST1, and LSST10 results respectively
 in red, blue, and green.  Solid lines correspond to a model trained
 and tested on images with the lensing galaxy.  Dashed lines correspond
@@ -924,7 +933,7 @@ metric for performance.  In red, we show the train time as a function
 of $C_{LogReg}$.
 
 % Training behavior with C
-As expected, the training set increases and asymptotes with
+As expected, the training set AUC increases and asymptotes with
 $C_\text{LogReg}$.  With increasing model complexity, the model better
 fits the training data set.  This is analogous to fitting a seventh
 order polynomial to seven data points, where the fitting function will
@@ -941,7 +950,7 @@ set (see Section~\ref{sec:trainsetsize}), so this choice is not
 generalizable.
 
 % Train time with Creg
-For fixed train size, the log of the train time roughly scales
+For fixed training set size, the log of the train time roughly scales
 linearly with the log of $C_\text{LogReg}$.  Since lower values of
 $C_\text{LogReg}$ correspond to a more regularized model, there is a
 smaller volume in hyperparameter space to search for the best fit
@@ -959,9 +968,9 @@ it takes to convergence.
 \includegraphics[width=.66\columnwidth]{figures/Creg/LSST1.pdf}
 \includegraphics[width=.66\columnwidth]{figures/Creg/LSST10.pdf}
 \caption{AUC of the model with varying LR regularization coefficient
-  parameter, $C_{reg}$, used when training the model classifier.  We
-  use a subset of the the 10,000 training images to search over the LR
-  $C_{reg}$ parameter, training on 8,000 and testing on 1,000.  Each
+  parameter, $C_{LogReg}$, used when training the model classifier.  We
+  use a subset of the 10,000 training images to search over the LR
+  $C_{LogReg}$ parameter, training on 8,000 and testing on 1,000.  Each
   panel corresponds to a different mock observation.  From left to
   right: HST, LSST for one year, and LSST for 10 years.  The solid
   blue lines correspond to the AUC of the test set, and the dotted
@@ -983,7 +992,7 @@ it takes to convergence.
 %-------------------------------------------------% 
 
 In this section, we show the effects of training set size on model
-performance on the holdout test set of 1,000 images.  We also compare
+performance on the hold-out test set of 1,000 images.  We also compare
 the improvement between images that include the lens galaxy and images
 with no lens galaxy.
 
@@ -1002,11 +1011,11 @@ increase in training size, the AUC for nLSST10 changes from just below
 In solid red, we see that the optimal value for $C_\text{LogReg}$ for
 LSST10 roughly scales logarithmically with the log of the train size,
 with an exception of the data point corresponding to train size of
-2000.  Generally, a larger training set will require an increase in
-model complexity to capture additional information.  This is also true
-for the optimal $C_\text{LogReg}$ dependence on the number of training
-images in the nLSST10 data.  But, the required complexity is
-systematically less than for the LSST10 images.  
+2000.  Generally, a larger training set allows for an increase in
+model complexity without reducing its ability to generalize.  This is
+also true for the optimal $C_\text{LogReg}$ dependence on the number
+of training images in the nLSST10 data.  But, the required complexity
+is systematically less than for the LSST10 images.  
 
 % Comparison of the two LSST10 vs. nLSST10
 In the LSST10 case, the trained model can incorporate the additional
@@ -1036,10 +1045,10 @@ Figure~\ref{fig:regularization}).
 % Train time
 Figure~\ref{fig:traintimeLSST10} shows the train time for LSST10 and
 nLSST10 as a function of the size of the training set for the optimal
-regularization parameter for that subset training data.  Each model
+regularization parameter for that subset of the training data.  Each model
 uses features extracted with the same HOG parameterization from the
-grid search and the optimal regularization parameter for that subset
-train data.  The train time of a given model generally increases for
+grid search and the optimal regularization parameter for that subset of
+the training data.  The train time of a given model generally increases for
 increasing regularization parameter.  For the subset of train size
 $N_\text{train}=2000$ in LSST10, the optimal regularization parameter
 happened to be $C_{LogReg}=100$, whereas it was $C_{LogReg}=500$ for
@@ -1179,8 +1188,8 @@ False Positives (fp), Borderline Positives (bp), Borderline Negatives
 (bn), False Negatives (fn), and True Negatives (tn).
 
 Figure~\ref{fig:ROCsamplesLSST10} illustrates four images from each
-paradigm for the holdout test set of LSST10.  The trained model used
-the entire 10,000 training set.  The left two columns show lens
+paradigm for the hold-out test set of LSST10.  The trained model used
+the entire 10,000 image training set.  The left two columns show lens
 systems, and the right two columns show non-lens systems.  The
 annotation in the top left corner of each images shows the score,
 \todo{and the letters in the bottom right label the paradigm of
@@ -1193,8 +1202,8 @@ lowest scoring non-lens systems) have small lens galaxies with
 galaxies along the line of sight that are rounded.  The successful
 classification of these two paradigms are least sensitive to the
 threshold.  On the other hand the failed classification of the false
-negatives (the highest scoring non-lens systems) and the false
-positives (the lowest scoring lens systems) are also least sensitive
+positives (the highest scoring non-lens systems) and the false
+negatives (the lowest scoring lens systems) are also least sensitive
 to the threshold.  False negatives are typically lens systems with
 lensed images of smaller magnification and minor distortions that
 mimic along the line of sight galaxies that the model has learned to
@@ -1323,7 +1332,7 @@ features and/or machine learning algorithms.
 
 % Training set
 We have also made use of a new sophisticated set of mock observations,
-which will also be made publicly available.  The lensing systems have
+which will be made publicly available.  The lensing systems have
 lens galaxies generated with a realistic redshift distribution and
 along the line of sight galaxies drawn from Hubble Ultra-Deep field
 observations.  We have explored results from mock HST, one year LSST,
@@ -1368,17 +1377,17 @@ We summarize key points below:
 % Benefits of our method
 We emphasize that simple linear classifiers, such as logistic
 regression, are scalable and relatively easy to parallelize with open
-source tools such as {\em Spark}\footnote{http://spark.apache.org/}.
+source tools such as {\em Apache Spark}\footnote{http://spark.apache.org/}.
 Our work indicates that HOG feature extraction plus a linear
 classifier captures much of the complexity in the arc finding problem.
 {\it These results indicate that effective image classification of
   galaxy-galaxy strong lensing systems can be achieved without large
   scale computing resources, or specialized hardware like GPUs.}
-These methods also scale for large datasets on a computing cluster, if
+The methods also scale to large datasets on a computing cluster, if
 needed.
 
 % Caveat of the mock data set
-One major caveat of our resuls is the fact that our mock data likely
+One major caveat to our resuls is the fact that our mock data likely
 does not describe the full range of lens and non-lens images that will
 be observed.  For example, the along the line of sight galaxies in our
 training and test images all come from the Hubble Ultra Deep field,
@@ -1410,7 +1419,7 @@ NSFC, grant no.11503064, and Shanghai Natural Science Foundation,
 grant no. 15ZR1446700. This work was also supported in part by the
 Kavli Institute for Cosmological Physics at the University of Chicago
 through grant NSF PHY-1125897 and an endowment from the Kavli
-Foundation and its founder Fred Kavli.emacs -nw 
+Foundation and its founder Fred Kavli.
 \lastpagefootnotes
 
 
