@@ -56,32 +56,33 @@ distribution of lensing systems, a window to the high redshift
 universe, and a geometric probe of cosmological models.  The advent of
 large scale surveys such as the Large Synoptic Sky Telescope and
 Euclid has prompted a need for automatic and efficient identification
-of strong lensing systems.  We present {\em (ALL) Automated Lensing
-  Learner}, a strong lensing identification pipeline that will be
-publicly released as open source software.  In this first application,
-we employ a fast feature extraction method, Histogram of Oriented
-Gradients (HOG), to capture edge patterns that are characteristic of
-strong gravitational arcs in galaxy-galaxy lensing.  We use logistic
-regression to train a supervised classifier model on the HOG of HST-
-and LSST-like images.  We use an area under the curve (AUC) of a
-Receiver Operating Characteristic curve to assess model performance;
-$AUC=1.0$ is an ideal trained classifier, and $AUC=0.5$ does not
-provide any classification information.  Our best performing models on
-a training set of 10,000 lens containing images and 10,000 non-lens
-containing images exhibit an AUC of 0.975 for an HST-like sample.
-However, for one orbit of LSST, our model only reaches an AUC of
-0.625.  For 10-year mock LSST observations, the AUC improves to 0.809.
-Model performance appears to continually improve with the size of the
+of strong lensing systems.  We present (1) {\em (ALL) Automated
+  Lensing Learner}, a strong lensing identification pipeline that will
+be publicly released as open source software, and (2) a publicly
+available mock LSST dataset with strong galaxy-galaxy lenses.  In this
+first application of the pipeline, we employ a fast feature extraction
+method, Histogram of Oriented Gradients (HOG), to capture edge
+patterns that are characteristic of strong gravitational arcs in
+galaxy-galaxy lensing.  We use logistic regression to train a
+supervised classifier model on the HOG of HST- and LSST-like images.
+We use an area under the curve (AUC) of a Receiver Operating
+Characteristic curve to assess model performance; $AUC=1.0$ is an
+ideal trained classifier, and $AUC=0.5$ does not provide any
+classification information.  Our best performing models on a training
+set of 10,000 lens containing images and 10,000 non-lens containing
+images exhibit an AUC of 0.975 for an HST-like sample.  However, for
+one orbit of LSST, our model only reaches an AUC of 0.625.  For
+10-year mock LSST observations, the AUC improves to 0.809.  Model
+performance appears to continually improve with the size of the
 training set.  Models trained on fewer images perform better in
-absence of the lens galaxy, which can decrease the false positive rate
-by blending with light from a lensed galaxy image near the central
-lensing galaxy.  However, with larger training data sets, information
-from the lensing galaxy improves model performance.  Our
-results demonstrate efficient and effective methods for automated strong
-lensing identification. The simple classifier used here easily
-scales to large data sets on a computing cluster and is easily
-reproduced on a personal laptop, using existing open source tools
-in both cases.
+absence of the lens galaxy, the removal of which can decrease the
+false positive rate due to the blending of light between source images
+and the lens galaxy.  However, with larger training data sets,
+information from the lens galaxy improves model performance.  Our
+results demonstrate efficient and effective methods for automated
+strong lensing identification. With existing open source tools, this
+example linear classifier both runs on a personal laptop and can
+easily scale to large data sets on a computing cluster.
 \end{abstract}
 %-------------------------------------------------%
 
@@ -1365,16 +1366,16 @@ We summarize key points below:
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Benefits of our method
-We emphasize that simple linear classifiers, such as
-logistic regression, are scalable and relatively easy to parallelize
-with open source tools such as {\em
-Spark}\footnote{http://spark.apache.org/}.  Initial checks
-indicate that HOG feature extraction plus a linear
+We emphasize that simple linear classifiers, such as logistic
+regression, are scalable and relatively easy to parallelize with open
+source tools such as {\em Spark}\footnote{http://spark.apache.org/}.
+Our work indicates that HOG feature extraction plus a linear
 classifier captures much of the complexity in the arc finding problem.
-These results indicate that effective image classification of
-galaxy-galaxy strong lensing systems can be achieved without
-large scale computing resources, or specialized hardware like GPUs,
-but can be scaled to large datasets on a computing cluster if needed.
+{\it These results indicate that effective image classification of
+  galaxy-galaxy strong lensing systems can be achieved without large
+  scale computing resources, or specialized hardware like GPUs.}
+These methods also scale for large datasets on a computing cluster, if
+needed.
 
 % Caveat of the mock data set
 One major caveat of our resuls is the fact that our mock data likely
@@ -1400,16 +1401,16 @@ more standard metric in the literature.  On the other hand, the ROC
 curves show a representative rate for lens and source distributions
 that are evenly sampled.  We do {\it not} expect this sampling to be
 representative of what we might expect from a an observational survey.
-
+We leave these additional challenges to future work.
 
 \acknowledgments CA acknowledges support from the Enrico Fermi
 Institute at the University of Chicago, and the University of Chicago
-Provost's Office. This work was also supported in part by the Kavli
-Institute for Cosmological Physics at the University of Chicago
+Provost's Office. NL would like to thank the funding support from
+NSFC, grant no.11503064, and Shanghai Natural Science Foundation,
+grant no. 15ZR1446700. This work was also supported in part by the
+Kavli Institute for Cosmological Physics at the University of Chicago
 through grant NSF PHY-1125897 and an endowment from the Kavli
-Foundation and its founder Fred Kavli.  NL would like to thank the
-funding support from NSFC, grant no.11503064, and Shanghai Natural
-Science Foundation, grant no. 15ZR1446700.
+Foundation and its founder Fred Kavli.emacs -nw 
 \lastpagefootnotes
 
 
