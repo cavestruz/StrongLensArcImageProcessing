@@ -103,10 +103,11 @@ quasars \citep{walsh_etal79}, multiply imaged galaxies
 \citep{sharon_etal05}, and arclets \citep{bezecourt_etal98}.  Lensing
 signatures probe the underlying dark matter distribution of the lens
 \citep{warrenanddye_03}, and high redshift galaxy formation
-\citep{allam_etal07}. They also provide a geometric test of cosmology via
-comparison of predicted arc abundances with observed abundances
-\citep{kochanek_96,chae_03,linder_04}, and via time-delay between signals
-from multiply imaged quasars \citep{xli_etal12,suyu_etal14,suyu_etal16}.
+\citep{allam_etal07}. Strong lenses also provide a geometric test of
+cosmology via comparison of predicted arc abundances with observed
+abundances \citep{kochanek_96,chae_03,linder_04}, and via time-delay
+between signals from multiply imaged quasars
+\citep{xli_etal12,suyu_etal14,suyu_etal16}.
 
 % Application of constraining mass profiles - large numbers needed.
 The application of strong gravitational lensing to constrain the mass
@@ -174,18 +175,19 @@ complementary to human identification \citep{more_etal16}.
 
 % Classical machine learning methods
 Pattern recognition methods have transitioned to using ``machine
-learning'' algorithms in place of manual cutoffs.  With
-machine learning, we can train a model to separate a dataset into
-a known set of classes, such as ``lensing systems'' and
-``non-lensing systems''. However, many classic machine learning
-algorithms do not work well in image space, i.e. directly using the
-raw pixel values of the image, but first require a process of
-\em{feature engineering}, in which domain expertise is used to
-extract variables which are more directly related to the classification
-task at hand.  An example would be the application of an edge detector.
-The optimal weights and cutoffs for these derived variables that are
-used to determine the class label of an image are found automatically
-by the algorithm.
+learning'' algorithms in place of manual cutoffs.  With machine
+learning, we can train a model to separate a dataset into a known set
+of classes, such as ``lensing systems'' and ``non-lensing
+systems''. However, many classic machine learning algorithms do not
+work well in image space, i.e. directly using the raw pixel values of
+the image, but first require a process of \em{feature engineering}.
+{\em Feature engineering} uses domain expertise 
+to extract variables
+that are more directly related to the classification task at hand.  An
+example would be the application of an edge detector.  The optimal
+weights and cutoffs for these derived variables that are used to
+determine the class label of an image are found automatically by the
+algorithm.
 
 % Recent works, neural nets, and deep learning
 Some more recent works have made use of a subset of machine
@@ -203,29 +205,28 @@ classification operate directly in image space.
 \citep{petrillo_etal17} used mock Kilo Degree Survey data to train
 convolutional neural networks, with a training set size of six million
 images. \citet{lanusse_etal17} used state-of-the-art deep residual
-neural networks
-to also work directly in the image space with minimal image
-pre-processing.  A major strength of the \citet{lanusse_etal17}
+neural networks to also work directly in the image space with minimal
+image pre-processing.  A major strength of the \citet{lanusse_etal17}
 implementation is that in comparison to deep convolutional neural
-networks, deep residual neural networks have been found to
-be easier to train and perform better.
+networks, deep residual neural networks have been found to be easier
+to train and perform better (Metcalf et al., in prep).
 
 %  Relevance of our work
-While there has been a recent surge in the use of deep neural
-networks applied to image classification problems in astronomy,
-it is not always easy to scale these techniques to large data
-sets, nor are the necessary computational resources and hardware,
-such as GPUs, easily accessible to the
-entire scientific community.  We present a supervised classification
-pipeline built with open source tools, tested on mock HST and LSST
-data, which will also be made publicly available.  Our goal is to
-create a centralized open source pipeline that is general enough for
-the user to select or add appropriate image processing techniques to
-augment the features of the lensed image, train and test data with
-different machine learning techniques, and to select the sequence of
-methods that provides optimal model performance.  Results are
-reproducible on personal computers, as both the pipeline and the
-data will be publicly distributed.
+While there has been a recent surge in the use of deep neural networks
+applied to image classification problems in astronomy, it is not
+always easy to scale these techniques to large data sets, nor are the
+necessary computational resources and hardware, such as graphical
+processing units (GPUs), easily accessible to the entire scientific
+community.  We present a supervised classification pipeline built with
+open source tools.  We test the pipeline on mock HST and LSST data,
+which will also be made publicly available.  Our goal is to create a
+centralized open source pipeline that is general enough for the user
+to select or add appropriate image processing techniques to augment
+the features of the lensed image, train and test data with different
+machine learning techniques, and to select the sequence of methods
+that provides optimal model performance.  Results are reproducible on
+personal computers, as both the pipeline and the data will be publicly
+distributed.
 
 % Summary of paper 
 This first paper serves as both a presentation of the mock data set
@@ -505,7 +506,7 @@ subset of our images.  LR requires a parameter search over the
 regression coefficient, $C_{LogReg}$, which we explore in
 Section~\ref{sec:regularization}.  We briefly comment that our initial
 tests with a {\em Support Vector Machine} (SVM) using radial basis
-fucntions as an alternative
+functions as an alternative
 machine learning algorithm yielded negligible performance improvement,
 and significantly increased computation cost.  This indicated that the
 features of lens and non-lens images are relatively well separated by
