@@ -180,9 +180,8 @@ learning, we can train a model to separate a dataset into a known set
 of classes, such as ``lensing systems'' and ``non-lensing
 systems''. However, many classic machine learning algorithms do not
 work well in image space, i.e. directly using the raw pixel values of
-the image, but first require a process of \em{feature engineering}.
-{\em Feature engineering} uses domain expertise 
-to extract variables
+the image, but first require a process of {\em feature engineering}.
+{\em Feature engineering} uses domain expertise to extract variables
 that are more directly related to the classification task at hand.  An
 example would be the application of an edge detector.  The optimal
 weights and cutoffs for these derived variables that are used to
@@ -591,34 +590,38 @@ Section~\ref{sec:gridsearch}
 \begin{center}
 \begin{tabular}{cccccc}
 \hline \\ [-0.2cm]
-N$_{orient}$ & Pixels/Cell & Cells/Block & C$_{reg}$ & HOG size & Score \\ [0.2cm]
+N$_{orient}$ & Pixels/Cell & Cells/Block & C$_{reg}$ & Score \\ [0.2cm]
 \hline \\ [-0.2cm]
 \multicolumn{6}{c}{(a) HST-like data} \\ [0.2cm]
 \hline \\ [-0.2cm]
-9 & (4, 4) & (3, 3) & 50. & &$0.76181\pm0.00491$\\ [0.2cm]
-9 & (4, 4) & (1, 1) & 50. & &$0.83403\pm0.00547$\\ [0.2cm]
-9 & (8, 8) & (3, 3) & 50. & &$0.85417\pm0.00851$\\ [0.2cm] 
-9 & (8, 8) & (1, 1) & 50. & &$0.86389\pm0.00687$\\ [0.2cm] 
-9 & (16, 16) & (1, 1) & 50. & & $0.88542\pm0.00680$ \\ [0.2cm]
-9 & (16, 16) & (3, 3) & 10. & &$0.89306\pm0.00687$ \\ [0.2cm]
-8 & (16, 16) & (3, 3) & 50. & &$0.90000\pm0.00170$ \\ [0.2cm]
-9 & (16, 16) & (3, 3) & 50. & &$0.90139\pm0.00804$ \\ [0.2cm]
+9 & (16, 16) & (4, 4) & 10. & $0.90141\pm 0.00658$ \\ [0.2cm]
+9 & (24, 24) & (3, 3) & 10. & $0.89266\pm 0.01033$ \\ [0.2cm]
+9 & (16, 16) & (1, 1) & 10. & $0.87484\pm 0.00671$ \\ [0.2cm]
+7 & (16, 16) & (4, 4) & 10. & $0.90031\pm 0.00956$ \\ [0.2cm]
+5 & (16, 16) & (4, 4) & 10. & $0.89453\pm 0.00840$ \\ [0.2cm]
+9 & (32, 32) & (4, 4) & 10. & $0.85828\pm 0.01004$ \\ [0.2cm]
+9 & (32, 32) & (4, 4) & 50. & $0.87344\pm 0.01267$ \\ [0.2cm]
 \hline \\ [-0.2cm]
 \multicolumn{6}{c}{(b) LSST-like data} \\ [0.2cm]
 \hline \\ [-0.2cm]
-& & & & &\\
-& & & & &\\ [0.2cm]
+3 & (5, 5) & (4, 4) & 100. & $0.64328\pm 0.00769$ \\ [0.2cm]
+4 & (5, 5) & (4, 4) & 100. & $0.62469\pm 0.00485$ \\ [0.2cm]
+3 & (5, 5) & (2, 2) & 100. & $0.63281\pm 0.00869$ \\ [0.2cm]
+5 & (5, 5) & (4, 4) & 100. & $0.62734\pm 0.00800$ \\ [0.2cm]
+3 & (3, 3) & (4, 4) & 100. & $0.59109\pm 0.00313$ \\ [0.2cm]
+3 & (3, 3) & (2, 2) & 100. & $0.57297\pm 0.00508$ \\ [0.2cm]
+4 & (4, 4) & (3, 3) & 100. & $0.63125\pm 0.01227$ \\ [0.2cm]
 \hline
 \end{tabular}
 \end{center}
 \label{tab:gridsearch}
-\tablecomments{Panel (a) shows the results of a grid search across a
-  range of HOG parameters and regression coefficient \wording{with
-    training and test sets of size 1440 with the HST-like mock
-    dataset.}  Panel (b) shows the corresponding results for training
-  and test sets of \wording{size 5760 with the LSST mock dataset.}  We
-  explore different HOG parameters in each dataset due to resolution
-  and image size differences.}
+\tablecomments{Panel (a) shows a subsample of the results of a grid
+  search for HST across a range of HOG parameters and regression
+  coefficient. Panel (b) shows a subsample of the results of a grid
+  search for LSST10. Each use a data set of size $2\times8000$ for
+  cross validation to get the average scores and standard deviation.
+  We explore different HOG parameters in each dataset due to
+  resolution and image size differences.}
 \end{table}
 
 We run a grid search across parameters that should reasonably sample
@@ -655,10 +658,9 @@ right in Figure~\ref{fig:hogimages}).
 
 Finally, the resolution of the overall image will also limit the
 additional information that an increase in $N_\text{orient}$ will
-provide.  \todo{From the grid search, the best case number of orientations
-for each dataset is
-$N_\text{orient,HST}=9$, $N_\text{orient,LSST10}=3$, and
-  $N_\text{orient,LSST1}=$.}
+provide.  From the grid search, the best case number of orientations
+for each dataset is $N_\text{orient,HST}=9$,
+$N_\text{orient,LSST10}=3$, and $N_\text{orient,LSST1}=5$.
 
 % Impact on image performance
 The image resolution affects the length of the HOG feature vector,
@@ -677,11 +679,11 @@ Section~\ref{sec:trainsetsize}.
   from Figure~\ref{fig:mockimages} with a visualized histogram of
   oriented gradients.  The image transform picks up edge features,
   with arc features showing up as edges across radial orientations.
-  \wording{Each of the oriented gradients within a cell is
-    color-coded by magnitude, and represented as a line in the
-    direction perpendicular to that gradient.}  The actual extracted
-  features fill a one-dimensional feature vector comprised of the
-  magnitudes of each of the oriented edges within the visualized
+  Each of the oriented gradients within a cell is color-coded by
+  magnitude, and represented as a line in the direction perpendicular
+  to that gradient.  The actual extracted features fill a
+  one-dimensional feature vector comprised of the magnitudes of each
+  of the oriented edges within the visualized
   cells.}\label{fig:hogimages}
 \end{center}
 \end{figure*}
@@ -997,26 +999,18 @@ performance on the hold-out test set of 1,000 images.  We also compare
 the improvement between images that include the lens galaxy and images
 with no lens galaxy.
 
-Figure~\ref{fig:trainsizeLSST10} shows how the AUC and the optimal
-logistic regression coefficient depend on the log of the size of the
-training set for both the LSST10 data in solid blue lines, and the
-nLSST10 data in dashed blue lines.  The AUC for models trained on the
-LSST10 data improves almost linearly with the log of the training set
-size, increasing from AUC=0.705 to AUC=0.788 when the train size is
-increased from 500 lens/non-lens images to 8000 lens/non-lens images.
-However, for the nLSST10 data, where the lens galaxy has been removed
-from the images, the improvement is less dramatic.  With the same
-increase in training size, the AUC for nLSST10 changes from just below
-0.77 to just below 0.78.
-
-In solid red, we see that the optimal value for $C_\text{LogReg}$ for
-LSST10 roughly scales logarithmically with the log of the train size,
-with an exception of the data point corresponding to train size of
-2000.  Generally, a larger training set allows for an increase in
-model complexity without reducing its ability to generalize.  This is
-also true for the optimal $C_\text{LogReg}$ dependence on the number
-of training images in the nLSST10 data.  But, the required complexity
-is systematically less than for the LSST10 images.  
+% LSST10 and nLSST10 behavior
+Figure~\ref{fig:trainsizeLSST} shows how the AUC depends on the log of
+the size of the training set for both the LSST10 (LSST1) data in the
+solid blue (red) line, and the nLSST10 (nLSST1) data in dashed blue
+(red) line.  The AUC for models trained on the LSST10 data improves
+almost linearly with the log of the training set size, increasing from
+AUC=0.705 to AUC=0.788 when the train size is increased from
+$2\times500$ lens/non-lens images to $2\times8000$ lens/non-lens
+images.  However, for the nLSST10 data, where the lens galaxy has been
+removed from the images, the improvement is less dramatic.  With the
+same increase in training size, the AUC for nLSST10 changes from just
+below 0.77 to just below 0.78.
 
 % Comparison of the two LSST10 vs. nLSST10
 In the LSST10 case, the trained model can incorporate the additional
@@ -1030,7 +1024,12 @@ for better model performance for smaller training data set sizes
 improve more rapidly with train size, since the additional information
 from the lens galaxy better describes the lens containing images.  For
 $N_\text{train}\gsim 5,000$, the models trained on LSST10 outperform
-  those trained on nLSST10.
+those trained on nLSST10.
+
+% LSST1 and nLSST1 behavior
+In red, we see an analogous improvement for LSST1 and nLSST1.  Here,
+the crossover happens at train size of $2x1000$, where an increase in
+larger training data set size does not help improve the AUC for nLSST1.
 
 %M Model complexity, train time, and performance
 Since the models that contain information from the lens galaxy edges
@@ -1041,20 +1040,35 @@ which is two-fold.  The train time will increase due to both an
 increase in data to fit, and also an increase in optimal
 $C_\text{LogReg}$ where the volume of hyperparameter space for allowed
 solutions is larger (see red lines in
-Figure~\ref{fig:regularization}).
+Figure~\ref{fig:regularization}).  
+
+% Train time dependence
+We illustrate the dependence of train time on both the size of the
+training set and model complexity in Figures~\ref{fig:traintimeLSST10}
+and \ref{fig:traintimeLSST1}.  In red,
+Figure~\ref{fig:traintimeLSST10} shows that the optimal values for
+$C_\text{LogReg}$.  For LSST10, $C_\text{LogReg}$ roughly scales
+logarithmically with the log of the train size, with an exception of
+the data point corresponding to train size of 2000.  Generally, a
+larger training set allows for an increase in model complexity without
+reducing its ability to generalize.  This is also true for the optimal
+$C_\text{LogReg}$ dependence on the number of training images in the
+nLSST10 data.  But, the required complexity is systematically less
+than for the LSST10 images.
 
 % Train time
-Figure~\ref{fig:traintimeLSST10} shows the train time for LSST10 and
-nLSST10 as a function of the size of the training set for the optimal
-regularization parameter for that subset of the training data.  Each model
-uses features extracted with the same HOG parameterization from the
-grid search and the optimal regularization parameter for that subset of
-the training data.  The train time of a given model generally increases for
-increasing regularization parameter.  For the subset of train size
-$N_\text{train}=2000$ in LSST10, the optimal regularization parameter
-happened to be $C_{LogReg}=100$, whereas it was $C_{LogReg}=500$ for
-the subset of trainsize 1000, and $C_{LogReg}=1000$ for the subset of
-trainsize 4000.  This makes the train time increase at train size
+In blue, Figure~\ref{fig:traintimeLSST10} also shows the train time
+for LSST10 and nLSST10 as a function of the size of the training set
+for the optimal regularization parameter for that subset of the
+training data.  Each model uses features extracted with the same HOG
+parameterization from the grid search and the optimal regularization
+parameter for that subset of the training data.  The train time of a
+given model generally increases for increasing regularization
+parameter.  For the subset of train size $N_\text{train}=2000$ in
+LSST10, the optimal regularization parameter happened to be
+$C_{LogReg}=100$, whereas it was $C_{LogReg}=500$ for the subset of
+trainsize 1000, and $C_{LogReg}=1000$ for the subset of trainsize
+4000.  This makes the train time increase at train size
 $N_\text{train}=2000$ for LSST10 less dramatic than the average
 log-log slope of approximately 2.
 
@@ -1066,19 +1080,33 @@ train size is mostly due to only having more data to fit in the
 regression, leading to a steady and slow increase of train time with
 number of training images with log-log slope of approximately 1.
 
+% Train time behavior for LSST1 and nLSST1
+\wording{For LSST1, Figure~\ref{fig:traintimeLSST1} shows the same
+  relationships between train time and train size in blue, and the
+  optimal regulariztion parameter (or model complexity) in red.
+  Contrary to what we found when comparing LSST10 to nLSST10, nLSST1
+  requires more model complexity than LSST1.  Recall that LSST1 and
+  nLSST1 correspond to single epoch simulated exposures with the best
+  seeing; these images exhibit better resolution but worse signal to
+  noise.  The switch in required model complexity corresponds to a
+  trade-off between features from the lens galaxy providing additional
+  information or swamping the signal from a strong lensing arc.}
+
 % AUC vs. regularization on larger train/test set with comparable
 % grid search in parameterization
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=\columnwidth]{figures/trainsize/LSST10_with_nLSST10.pdf}
+\includegraphics[width=\columnwidth]{figures/trainsize/combined_LSST10_with_nLSST10.pdf}
 \caption{Solid (dotted) blue line: AUC for models with varying size of
   the training set for LSST10 (nLSST10).  Solid (dotted) red line:
-  Optimal regularization parameter for training on the train size for
-  LSST10 (nLSST10). The improvement of AUC scales linearly with the
-  log of the training set size, but train time roughly scales
-  logarithmically.  Note, LSST10 requires more model complexity to
-  exceed the performance of nLSST10.}\label{fig:trainsizeLSST10}
+  Same for LSST1. The improvement of AUC scales roughly linearly with
+  the log of the training set size.  However, LSST10 and LSST1 have a
+  steeper improvement with data training size.  The performance of
+  nLSST10 and nLSST1 models trained on smaller training data sets is
+  better than the respective LSST10 and LSST1 models trained on the
+  same size data, but the LSST10 and LSST1 models outperform with
+  larger size training data set.}\label{fig:trainsizeLSST}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -1086,13 +1114,30 @@ number of training images with log-log slope of approximately 1.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure}[t]
 \begin{center}
-\includegraphics[width=\columnwidth]{figures/traintime/LSST10.pdf}
+  \includegraphics[width=\columnwidth]{figures/traintime/LSST10.pdf}}
 \caption{Solid (dotted) blue line: Train time for models with varying
   size of the training set for LSST10 (nLSST10).  Train time roughly
-  scales logarithmically.  Note, LSST10 requires more model complexity
-  to exceed the performance of nLSST10, and therefore requires more
+  scales logarithmically with the train size, but the train time is
+  also affected by model complexity.  Solid (dotted) red line: Best
+  regularization parameter as a function of train size.  Note, LSST10
+  requires more model complexity to exceed the performance of nLSST10
+  (see blue solid and dotted lines in
+  Figure~\ref{fig:trainsizeLSST}), and therefore requires more
   training time for continual increase in
-  performance.}\label{fig:traintimeLSST10}
+  performance. }\label{fig:traintimeLSST10}
+\end{center}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
+\begin{figure}[t]
+\begin{center}
+  \includegraphics[width=\columnwidth]{figures/traintime/LSST1.pdf}}
+\caption{Same as Figure~\ref{fig:traintimeLSST10}, but for LSST1.
+  Here, nLSST1 requires more model complexity than LSST1.  Note, that
+  LSST1 and nLSST1 have better seeing but reduced overall signal to
+  noise than LSST10 and nLSST10.  This corresponds to better
+  resolution, and therefore sharper edge features that prominently
+  corespond to arcs.}\label{fig:traintimeLSST1}
 \end{center}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%            
@@ -1107,7 +1152,7 @@ multiples of $90^o$.  Since our feature extraction method of HOG is
 not rotationally invariant, augmenting our data by a factor of four
 naturally optimizes the use of available training data.  This has an
 equivalent improvement to the study illustrated in
-Figure~\ref{fig:trainsizeLSST10}.
+Figure~\ref{fig:trainsizeLSST}.
 
 % Rotations of the test set
 We also tested the effects of evaluating our model on all four
@@ -1128,7 +1173,7 @@ Figure~\ref{fig:rotation_test} also summarizes the best-case results
 of our models trained on our entire 10,000 training sets, and tested
 on our holdout 1,000 test set.  Recall, however, that we expect model
 performance on images containing the lens galaxy to improve further
-with larger training sets (see Figure~\ref{fig:trainsizeLSST10}).
+with larger training sets (see Figure~\ref{fig:trainsizeLSST}).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure}[t]
@@ -1192,9 +1237,7 @@ Figure~\ref{fig:ROCsamplesLSST10} illustrates four images from each
 paradigm for the hold-out test set of LSST10.  The trained model used
 the entire 10,000 image training set.  The left two columns show lens
 systems, and the right two columns show non-lens systems.  The
-annotation in the top left corner of each images shows the score,
-\todo{and the letters in the bottom right label the paradigm of
-  performance.}
+annotation in the top left corner of each images shows the score.
 
 % tp, tn description
 In general, the true positives (the highest scoring lens systems) have
@@ -1261,7 +1304,7 @@ magnifications $\lsim7$ will be successfully identified for
 classification threshold scores $\gsim0.5$.  These highly magnified
 systems typically have lenses that are at higher redshifts of
 $z\gsim0.5$ (lighter colors in bottom row) and/or lens galaxies with
-velocity dispersions higher than $\sigma_v\lsim230.$~km/s (darker
+velocity dispersions larger than $\sigma_v\gsim230.$~km/s (darker
 colors in right figure).  Note that lensing galaxies with smaller
 velocity dispersions are less massive and therefore have a smaller
 efficiency of lensing cross section.  The smaller efficiency means
