@@ -590,31 +590,32 @@ Section~\ref{sec:gridsearch}
 \begin{center}
 \begin{tabular}{cccccc}
 \hline \\ [-0.2cm]
-N$_{orient}$ & Pixels/Cell & Cells/Block & C$_{reg}$ & Score \\ [0.2cm]
+N$_{orient}$ & Pixels/Cell & Cells/Block & C$_{reg}$ & Score & \\ [0.2cm]
 \hline \\ [-0.2cm]
 \multicolumn{6}{c}{(a) HST-like data} \\ [0.2cm]
 \hline \\ [-0.2cm]
-9 & (16, 16) & (4, 4) & 10. & $0.90141\pm 0.00658$ \\ [0.2cm]
-9 & (24, 24) & (3, 3) & 10. & $0.89266\pm 0.01033$ \\ [0.2cm]
-9 & (16, 16) & (1, 1) & 10. & $0.87484\pm 0.00671$ \\ [0.2cm]
-7 & (16, 16) & (4, 4) & 10. & $0.90031\pm 0.00956$ \\ [0.2cm]
-5 & (16, 16) & (4, 4) & 10. & $0.89453\pm 0.00840$ \\ [0.2cm]
-9 & (32, 32) & (4, 4) & 10. & $0.85828\pm 0.01004$ \\ [0.2cm]
-9 & (32, 32) & (4, 4) & 50. & $0.87344\pm 0.01267$ \\ [0.2cm]
+9 & (16, 16) & (4, 4) & 10. & $0.90141\pm 0.00658$ &\\ [0.2cm]
+9 & (24, 24) & (3, 3) & 10. & $0.89266\pm 0.01033$ &\\ [0.2cm]
+9 & (16, 16) & (1, 1) & 10. & $0.87484\pm 0.00671$ &\\ [0.2cm]
+7 & (16, 16) & (4, 4) & 10. & $0.90031\pm 0.00956$ &\\ [0.2cm]
+5 & (16, 16) & (4, 4) & 10. & $0.89453\pm 0.00840$ &\\ [0.2cm]
+9 & (32, 32) & (4, 4) & 10. & $0.85828\pm 0.01004$ &\\ [0.2cm]
+9 & (32, 32) & (4, 4) & 50. & $0.87344\pm 0.01267$ &\\ [0.2cm]
 \hline \\ [-0.2cm]
 \multicolumn{6}{c}{(b) LSST-like data} \\ [0.2cm]
 \hline \\ [-0.2cm]
-3 & (5, 5) & (4, 4) & 100. & $0.64328\pm 0.00769$ \\ [0.2cm]
-4 & (5, 5) & (4, 4) & 100. & $0.62469\pm 0.00485$ \\ [0.2cm]
-3 & (5, 5) & (2, 2) & 100. & $0.63281\pm 0.00869$ \\ [0.2cm]
-5 & (5, 5) & (4, 4) & 100. & $0.62734\pm 0.00800$ \\ [0.2cm]
-3 & (3, 3) & (4, 4) & 100. & $0.59109\pm 0.00313$ \\ [0.2cm]
-3 & (3, 3) & (2, 2) & 100. & $0.57297\pm 0.00508$ \\ [0.2cm]
-4 & (4, 4) & (3, 3) & 100. & $0.63125\pm 0.01227$ \\ [0.2cm]
+3 & (5, 5) & (4, 4) & 100. & $0.64328\pm 0.00769$ &\\ [0.2cm]
+4 & (5, 5) & (4, 4) & 100. & $0.62469\pm 0.00485$ &\\ [0.2cm]
+3 & (5, 5) & (2, 2) & 100. & $0.63281\pm 0.00869$ &\\ [0.2cm]
+5 & (5, 5) & (4, 4) & 100. & $0.62734\pm 0.00800$ &\\ [0.2cm]
+3 & (3, 3) & (4, 4) & 100. & $0.59109\pm 0.00313$ &\\ [0.2cm]
+3 & (3, 3) & (2, 2) & 100. & $0.57297\pm 0.00508$ &\\ [0.2cm]
+4 & (4, 4) & (3, 3) & 100. & $0.63125\pm 0.01227$ &\\ [0.2cm]
 \hline
 \end{tabular}
 \end{center}
 \label{tab:gridsearch}
+
 \tablecomments{Panel (a) shows a subsample of the results of a grid
   search for HST across a range of HOG parameters and regression
   coefficient. Panel (b) shows a subsample of the results of a grid
@@ -719,7 +720,7 @@ between the classes in the space of the data points.  (Compare this to
 where $y$ is a continuous, rather than discrete, variable.) In our
 case, we have two classes: lens and non-lens containing images, and
 the data points $x$ are the HOG feature vectors extracted from the
-images.  In this paper we use the \em{Logisitic Regression}
+images.  In this paper we use the {\em Logisitic Regression}
 (LR) algorithm, for which the decision boundary is a hyperplane.  (The
 equivalent in the regression setting would be linear regression.) In
 LR we determine the optimal hyperplane by minimizing the objective
@@ -735,8 +736,8 @@ the parameters of the hyperplane. Eq. \ref{eqn:log_reg_objective}
 is to be minimized with respect to $A$ and $b$.
 Other more complicated machine learning algorithms exist which
 do not necessarily produce a linear decision boundary, such as
-\em{Support Vector Machines} (SVM), \em{Random Forests}, and
-\em{Neural Networks} \citep{hastie_09}.
+{\em Support Vector Machines} (SVM), {\em Random Forests}, and
+{\em Neural Networks} \citep{hastie_09}.
 
 The HOG feature vectors in this paper can be very high-dimensional.
 When dealing with high-dimensional data, where the number of
