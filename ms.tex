@@ -281,9 +281,9 @@ a lensed source galaxy.  We convolve each of the $2\times 10,000$
 train/test images and $2\times 1,000$ hold-out images to produce three
 separate sets of mock ``observations''.  These each have equal numbers
 of lens and non-lens containing systems: (1) HST-like observations,
-(2) LSST-like observations over the span of one year, and (3)
-LSST-like observations over the span of ten years.  We respectively
-label these observations as HST, LSST1, and LSST10.
+(2) best single exposure LSST-like observations, and (3) LSST-like
+observations over the span of ten years.  We respectively label these
+observations as HST, LSST-best, and LSST10.
 
 %-------------------------------------------------%
 \subsubsection{Modeling the Mass Distribution of Lens Galaxies}
@@ -424,13 +424,13 @@ To account for variations in seeing and sky-brightness over the course
 of the survey, we draw each simulated exposure from a stochastic
 distribution of these parameters. We then consider two different
 strategies to use the simulated exposures. First, we build one
-single-epoch image for each field (hereafter labeled as LSST1) by
+single-epoch image for each field (hereafter labeled as LSST-best) by
 keeping only the best seeing exposure.  Second, we build another
-``worst-case'' stacked image by degrading all individual exposures to
-match the one with the worst seeing and co-add all exposures to a
-single image (hereafter labeled as LSST10).  These two sets of images
-will allow us to investigate the trade-off between resolution and
-signal-to-noise for our automated lens search.
+``worst-case'' stacked image by degrading all individual exposures,
+ten per filter per year, to match the one with the worst seeing and
+co-add all exposures to a single image (hereafter labeled as LSST10).
+These two sets of images will allow us to investigate the trade-off
+between resolution and signal-to-noise for our automated lens search.
 
 Figure~\ref{fig:mockimages} illustrates sample mock observations with
 a strong lensing signature from each telescope.  The left-most column
@@ -442,23 +442,23 @@ imaging.
 
 The middle column corresponds to the same simulated systems for
 LSST10.  The right-most column corresponds to the simulated systems of
-LSST1.  These images have resolution $45\times45~{\rm pixels}^2$ with
+LSST-best.  These images have resolution $45\times45~{\rm pixels}^2$ with
 $0.18$~arcsec/pixel.  LSST10 images visually exhibit the improved
 signal to noise ratio, recovering the arc feature, albeit at a much
-lower resolution than with the HST-like image or the LSST1 image.  The
-top images of LSST10 and LSST1 show a visible lensed source galaxy
-image.  The bottom images are washed out in the bottom row, where the
-magnification of the source galaxy is not as large.  The ground based
-noise, PSF, and limited resolution of the LSST1 make visual giant arc
-identification difficult, except in systems with the most magnified
-source galaxies.
+lower resolution than with the HST-like image or the LSST-best image.
+The top images of LSST10 and LSST-best show a visible lensed source
+galaxy image.  The bottom images are washed out in the bottom row,
+where the magnification of the source galaxy is not as large.  The
+ground based noise, PSF, and limited resolution of the LSST-best make
+visual giant arc identification difficult, except in systems with the
+most magnified source galaxies.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%                                        
 \begin{figure*}[t]
 \begin{center}
 \includegraphics[width=2\columnwidth]{figures/tiles/compilations/telescope_compilation.pdf}
-\caption{Left to right show example mock HST, LSST 10 year, and LSST 1
-  year images.  The top row corresponds to a lensing system with a
+\caption{Left to right show example mock HST, LSST 10 year, and
+  LSST-best images.  The top row corresponds to a lensing system with a
   very visible arc signature, and the bottom row to a lensing system
   that is less obvious.  Example mock HST images have
   $n_\text{pix}\times n_\text{pix}=300\times300$.  Example mock LSST
@@ -476,8 +476,8 @@ ray-tracing, so these images do not have lensed source galaxies.
 
 Furthermore, we investigate the influence of light from the lens
 galaxies on the performance of our lens identification pipeline.  We
-generate another set of each HST, LSST1, and LSST10 images without the
-lens galaxy.  We respectively label these nHST, nLSST1, and nLSST10.
+generate another set of each HST, LSST-best, and LSST10 images without the
+lens galaxy.  We respectively label these nHST, nLSST-best, and nLSST10.
 
 The final data set is then comprised of $6\times10,000$ lens
 containing images, and $6\times 10,000$ non-lens containing images.
@@ -663,7 +663,7 @@ Finally, the resolution of the overall image will also limit the
 additional information that an increase in $N_\text{orient}$ will
 provide.  From the grid search, the best case number of orientations
 for each dataset is $N_\text{orient,HST}=9$,
-$N_\text{orient,LSST10}=3$, and $N_\text{orient,LSST1}=5$.
+$N_\text{orient,LSST10}=3$, and $N_\text{orient,LSST-best}=5$.
 
 % Impact on image performance
 The image resolution affects the length of the HOG feature vector,
@@ -860,7 +860,7 @@ Figure~\ref{fig:ROCcompilation} shows the ROC curves for models
 trained using the entire 10,000 training sample, with best-case HOG
 and regularization parameters.  The models have been evaluated on a
 hold-out set of 1,000 images that were not used in the parameter
-search.  We show the mock HST, LSST1, and LSST10 results respectively
+search.  We show the mock HST, LSST-best, and LSST10 results respectively
 in red, blue, and green.  Solid lines correspond to a model trained
 and tested on images with the lensing galaxy.  Dashed lines correspond
 to a model trained and tested on images where the lensing galaxy is
@@ -932,7 +932,7 @@ optimal value for $C_\text{LogReg}$.
 
 %  Our running over C - score and AUC as characterizations
 Figure~\ref{fig:regularization} shows the model performance as a
-function of regularization parameter for each data set HST, LSST, and
+function of regularization parameter for each data set HST, LSST-best, and
 LSST10.  The solid and dotted blue lines respectively correspond to
 the model performance on the test and training set, with the AUC as a
 metric for performance.  In red, we show the train time as a function
@@ -1004,8 +1004,8 @@ with no lens galaxy.
 
 % LSST10 and nLSST10 behavior
 Figure~\ref{fig:trainsizeLSST} shows how the AUC depends on the log of
-the size of the training set for both the LSST10 (LSST1) data in the
-solid blue (red) line, and the nLSST10 (nLSST1) data in dashed blue
+the size of the training set for both the LSST10 (LSST-best) data in the
+solid blue (red) line, and the nLSST10 (nLSST-best) data in dashed blue
 (red) line.  The AUC for models trained on the LSST10 data improves
 almost linearly with the log of the training set size, increasing from
 AUC=0.705 to AUC=0.788 when the train size is increased from
@@ -1030,9 +1030,10 @@ $N_\text{train}\gsim 5,000$, the models trained on LSST10 outperform
 those trained on nLSST10.
 
 % LSST1 and nLSST1 behavior
-In red, we see an analogous improvement for LSST1 and nLSST1.  Here,
-the crossover happens at train size of $2x1000$, where an increase in
-larger training data set size does not help improve the AUC for nLSST1.
+In red, we see an analogous improvement for LSST-best and nLSST-best.
+Here, the crossover happens at train size of $2x1000$, where an
+increase in larger training data set size does not help improve the
+AUC for nLSST-best.
 
 %M Model complexity, train time, and performance
 Since the models that contain information from the lens galaxy edges
@@ -1084,12 +1085,12 @@ regression, leading to a steady and slow increase of train time with
 number of training images with log-log slope of approximately 1.
 
 % Train time behavior for LSST1 and nLSST1
-For LSST1, Figure~\ref{fig:traintimeLSST1} shows the same
+For LSST-best, Figure~\ref{fig:traintimeLSST1} shows the same
 relationships between train time and train size in blue, and the
 optimal regulariztion parameter (or model complexity) in red.
-Contrary to what we found when comparing LSST10 to nLSST10, nLSST1
-requires more model complexity than LSST1.  Recall that LSST1 and
-nLSST1 correspond to single epoch simulated exposures with the best
+Contrary to what we found when comparing LSST10 to nLSST10, nLSST-best
+requires more model complexity than LSST-best.  Recall that LSST-best and
+nLSST-best correspond to single epoch simulated exposures with the best
 seeing; these images exhibit better resolution but worse signal to
 noise.  The switch in required model complexity corresponds to a
 trade-off between features from the lens galaxy providing additional
@@ -1103,12 +1104,12 @@ information or swamping the signal from a strong lensing arc.
 \includegraphics[width=\columnwidth]{figures/trainsize/combined_LSST10_with_nLSST10.pdf}
 \caption{Solid (dotted) blue line: AUC for models with varying size of
   the training set for LSST10 (nLSST10).  Solid (dotted) red line:
-  Same for LSST1. The improvement of AUC scales roughly linearly with
-  the log of the training set size.  However, LSST10 and LSST1 have a
+  Same for LSST-best. The improvement of AUC scales roughly linearly with
+  the log of the training set size.  However, LSST10 and LSST-best have a
   steeper improvement with data training size.  The performance of
-  nLSST10 and nLSST1 models trained on smaller training data sets is
-  better than the respective LSST10 and LSST1 models trained on the
-  same size data, but the LSST10 and LSST1 models outperform with
+  nLSST10 and nLSST-best models trained on smaller training data sets is
+  better than the respective LSST10 and LSST-best models trained on the
+  same size data, but the LSST10 and LSST-best models outperform with
   larger size training data set.}\label{fig:trainsizeLSST}
 \end{center}
 \end{figure}
@@ -1135,9 +1136,9 @@ information or swamping the signal from a strong lensing arc.
 \begin{figure}[t]
 \begin{center}
   \includegraphics[width=\columnwidth]{figures/traintime/LSST1.pdf}}
-\caption{Same as Figure~\ref{fig:traintimeLSST10}, but for LSST1.
-  Here, nLSST1 requires more model complexity than LSST1.  Note, that
-  LSST1 and nLSST1 have better seeing but reduced overall signal to
+\caption{Same as Figure~\ref{fig:traintimeLSST10}, but for LSST-best.
+  Here, nLSST-best requires more model complexity than LSST-best.  Note, that
+  LSST-best and nLSST-best have better seeing but reduced overall signal to
   noise than LSST10 and nLSST10.  This corresponds to better
   resolution, and therefore sharper edge features that prominently
   corespond to arcs.}\label{fig:traintimeLSST1}
@@ -1351,7 +1352,7 @@ method to correct for this.
         clip]{figures/lens_parameter_dependence/LSST1_Magnification_z.pdf}\hfill}
   }\\ 
 \caption{Left to right: Image classification score on HST, LSST10,
-  LSST1 mock observed lensing images as a function of lensed image
+  LSST-best mock observed lensing images as a function of lensed image
   magnification.  Top row: Each panel is color coded by the lens
   velocity dispersion in km/s.  High velocity dispersion lens galaxies
   are likely to produce high magnification images of the source
@@ -1458,9 +1459,10 @@ is $50\%$ pure requires a classifier with a false positive rate of
 0.001.  Looking at the green line in Figure~\ref{fig:PRcompilation}, a
 classification threshold for a pure sample only encapsulates
 $\sim10\%$ (in recall) of all of our lenses before contamination from
-non-lenses leaks into the selection.  A maximally large and pure
-sample from our method would require further filtering, e.g. by
-citizen science.
+non-lenses leaks into the selection.  While information from other
+bands will certainly improve the model performance, a maximally large
+and pure sample from our method would likely require further
+filtering, e.g. by citizen science.
 
 % ROC curve metric
 The ROC curve metric is insensitive to the ratio, but is sensitive to
