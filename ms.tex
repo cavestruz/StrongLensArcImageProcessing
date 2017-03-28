@@ -71,7 +71,7 @@ ideal classifier, and $AUC=0.5$ is no better than randomly guessing.
 Our best performing models on a training
 set of 10,000 lens containing images and 10,000 non-lens containing
 images exhibit an AUC of 0.975 for an HST-like sample.  However, for
-one orbit of LSST, our model only reaches an AUC of 0.625.  For
+one exposure of LSST, our model only reaches an AUC of 0.625.  For
 10-year mock LSST observations, the AUC improves to 0.809.  Model
 performance appears to continually improve with the size of the
 training set.  Models trained on fewer images perform better in
@@ -105,9 +105,11 @@ signatures probe the underlying dark matter distribution of the lens
 \citep{warrenanddye_03}, and high redshift galaxy formation
 \citep{allam_etal07}. Strong lenses also provide a geometric test of
 cosmology via comparison of predicted arc abundances with observed
-abundances \citep{kochanek_96,chae_03,linder_04}, and via time-delay
+abundances \citep{kochanek_96,chae_03,linder_04}, via time-delay
 between signals from multiply imaged quasars
-\citep{xli_etal12,suyu_etal14,suyu_etal16}.
+\citep{xli_etal12,suyu_etal14,suyu_etal16,bonvin_etal17}, and via
+distance ratios in lenses with sources at multiple redshifts
+\citep{jullo_etal10,collett_etal12,collettandauger_14}.
 
 % Application of constraining mass profiles - large numbers needed.
 The application of strong gravitational lensing to constrain the mass
@@ -139,8 +141,8 @@ Telescope Science (CFHTLS) telescope observations
 successful for a dataset like CFHTLS; here, 3,000 candidate images
 were identified in eight months, resulting in 89 final candidates.
 However, future datasets like Euclid \citep{oguriandmarshall_10} and
-LSST expect to find tens of thousands galaxy-scale strong lenses
-\citep{pawase_etal12}.  The volume of upcoming data challenges the
+LSST expect to find hundreds of thousands galaxy-scale strong lenses
+\citep{collett_15}.  The volume of upcoming data challenges the
 scalability of a pure citizen science approach.
 
 % Transition to automated identification
@@ -1447,15 +1449,29 @@ non-lens systems, into account when assessing a metric.  The
 Purity-Recall (purity-completeness) metric is sensitive to the ratio
 of lens and non-lens systems in the data.  Both of our training and
 test data sets have $50\%$ lensed and $50\%$ unlensed images, which is
-not expected in observations.  The ROC curve metric is insensitive to
-the ratio, but is sensitive to the sampling.  Given alternative lens
-and non-lens sample splittings, our true positive and false positive
-rates in the ROC curves would stay the same, making the ROC curve a
-more standard metric in the literature.  On the other hand, the ROC
-curves show a representative rate for lens and source distributions
-that are evenly sampled.  We do {\it not} expect this sampling to be
-representative of what we might expect from a an observational survey.
-We leave these additional challenges to future work.
+not expected in observations.  
+
+% Realistic ratios
+For images selected for a massive elliptical, the number of non-lenses
+will outnumber lenses by at least 1000 to 1.  Therefore, a sample that
+is $50\%$ pure requires a classifier with a false positive rate of
+0.001.  Looking at the green line in Figure~\ref{fig:PRcompilation}, a
+classification threshold for a pure sample only encapsulates
+$\sim10\%$ (in recall) of all of our lenses before contamination from
+non-lenses leaks into the selection.  A maximally large and pure
+sample from our method would require further filtering, e.g. by
+citizen science.
+
+% ROC curve metric
+The ROC curve metric is insensitive to the ratio, but is sensitive to
+the sampling.  Given alternative lens and non-lens sample splittings,
+our true positive and false positive rates in the ROC curves would
+stay the same, making the ROC curve a more standard metric in the
+literature.  On the other hand, the ROC curves show a representative
+rate for lens and source distributions that are evenly sampled.  We do
+{\it not} expect this sampling to be representative of what we might
+expect from a an observational survey.  We leave these additional
+challenges to future work.
 
 \acknowledgments CA acknowledges support from the Enrico Fermi
 Institute at the University of Chicago, and the University of Chicago
