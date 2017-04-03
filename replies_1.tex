@@ -1,0 +1,312 @@
+\documentclass{article}
+%\usepackage{pdftex}
+%\usepackage{epsf}
+\usepackage{graphicx}
+%\input epsf
+
+% less/greater or approximately equal definitions
+%\def\lesssim{\mathrel{\mathpalette\fun <}}
+%\def\gtrsim{\mathrel{\mathpalette\fun >}}
+%\def\lesssim{ _<\atop{^\sim}}
+%\def\gtrsim{ _>\atop{^\sim}}
+%\def\Msun{M$_{\odot}${\ }}
+%\def\Mvir{M$_{vir}${\ }}
+%\def\rvir{$r_{vir}${\ }}
+
+\oddsidemargin 30pt
+\evensidemargin 30pt
+\marginparwidth 29pt
+\textwidth 427pt
+\headsep 0pt
+\headheight 0pt
+\textheight 680pt
+\topmargin 0pt
+\parskip 5pt
+\parindent 0pt
+
+\begin{document}
+
+\vspace{0.5cm}
+
+{\bf 1) Simulated sources, 2.1.3. Why are your sources all at redshift 0.2?!? that's
+in front of all your lenses - so what's going on? Is that a typo for zs=2
+(which would be a fair enough starting point) Otherwise sources at zs=0.2
+will be much too large.}
+
+Yes, thank you for pointing this out - it is a typo for zs=2.0.
+Highlighted changes in bold.
+
+
+{\bf 
+2) Do you k-correct the magnitude and colours of the sources when you
+change their redshifts?
+}
+
+Nan had corrected the size a magnitude of the sources corresponding to
+the change in cosmological distance, Ds, as their redshifts were
+adjusted to zs.  However, all simulated images are monochromatic, and
+colors were not shifted.  While the distribution of lens properties
+are already not realistic (e.g. constant source redshift), they
+provide a sufficient start in covering feature space (los+lens+source
+image galaxies) to test supervised machine learning methods and
+particularly methods that use edge features.  We have altered the
+first paragraph of 2.1.4 for clarity, and changes are in bold.
+
+
+{\bf 
+a) 'positions near the caustics' is too vague - what range of source positions
+do you allow? are you focussing solely on lenses with fairly high
+magnification?
+}
+
+Thank you for pointing this out.  The sources are located within a
+square box centering at the center of the images (mass center as
+well). The size of the box is $(-1'', 1'')\times(-1'', 1'')$ (a
+$2''\times2''$ box).  This information is added in bold in 2.1.3.
+
+We use the same auxiliary response file (ARF) and redistribution matrix file
+(RMF) for both generating photon maps and in generating best fit
+spectra, and have included this information in our description of both
+photon map generation and spectral fitting.
+
+{\bf 4) You should point out that the CADNELS sources are observed
+  under the HST seeing, but lensing magnifies small regions. You
+  therefore can't simulate the clumpiness that HST imaging of lensed
+  arcs tends to show.  }
+
+You are right on the seeing of CANDELS sources, clumpiness will not be
+presented in the lensed images. and this is one shortage in the
+simulation.  This has been added in bold in the discussion of caveats
+in section 4.
+
+{\bf 5) For the same reason, you do need to convolve the simulated HST
+  lensed images with a HST psf, and you need to sort out the noise
+  properties. The first paragraph of 2.1.4 has me very confused as to
+  what you're actually doing, and if it's right or not.}
+
+To clarify the first paragraph of 2.1.4 first, the mock images combine
+four components from the field of view: lensed arcs, the lens galaxy,
+galaxies along the line of sight, and noise.
+
+Regarding the noise and PSF for the mock HST images, we extracted the
+images on the line sight from Hubble Ultra Deep Field, so PSF and
+noise are incorporated in the field of view of the mock HST images.
+
+{\bf 
+Note that I agree with the further analysis and conclusions that measuring
+the wrong abundance will bias the temperature and density profiles in such
+a way as to produce systematically wrong results in the mass and gas
+fraction in the outskirts. However I am not convinced that this
+mis-measurement is always present in CCD spectral analysis of the typical
+cluster outskirts ICM, or that it is always mis-measured in the same sense
+(i.e. abundance is always underestimated for moderate metal abundance at $\sim
+1$~keV).
+}
+
+We have explained the systematic mis-measurement of the abundance as a
+result of a higher-temperature component in the multi-temperature gas in
+the outskirts.  We agree that the abundance will not necessarily be
+biased in the same direction for a given low temperature and moderate
+metal abudnace, but in our cluster's outskirts, it is the presence of
+a higher temperature phase that results in a systematic
+under-measurement.  This point is now reflected in the text. 
+
+{\bf 
+Section 2.2.1, paragraph 1
+``$3\times  R_{\rm vir}$'' $\rightarrow R_{200c}$ is used elsewhere in the manuscript so should be used
+here since it is a quantitative value.
+}
+The projection depth is now also given in terms of ${R}_{200c}$
+
+{\bf 
+Section 2.2.2, paragraph 3
+``limited flux of $\sim 3 \times 10^{-15}$~erg s$^{-1}$ cm$^{-3}$'' should be ``cm$^{-2}$'' if this
+is indeed flux.
+}
+This is indeed flux - the units are now corrected.
+
+{\bf 
+``where we put our clusters at'' $\rightarrow$ delete ``at''
+}
+The clause has been reworded.
+{\bf 
+Section 2.2.2 (general)
+please specify the abundance table used (e.g. Anders and Grevesse)
+}
+Yes, for both generating the flux maps and in spectral fitting. This
+information has also been added.
+
+{\bf 
+Figure 1
+What do the green annular sections correspond to? If nothing, they should
+be removed. Also, The very small green circles projected over the bright
+cluster are a bit hard to see. Finally, please comment on why there are
+some blobs not rejected (e.g. just above CL6 in the x and y views, and the
+extended filament). Are they just below the threshold for removal?
+}
+
+I have added information in the caption, and also the discussion of
+Figure 1.  The green annular sections correspond to identified
+filamentary regions with X-ray surface brightness above the average in
+the whole annular bin (as described in 2.2.2, also reworded for clarity).
+
+
+{\bf 
+Figure 2
+This figure is not reference in the text and should be somewhere in Section
+2.2.3. Also, since this is a quantity calculated in bins, it would be
+helpful to show uncertainties so that the importance of removing these
+substructures can be judged. In the caption please specify which cluster
+this corresponds to.
+}
+
+Figure has been redone with uncertainties in the ratio, and is
+discussed in 2.2.3.
+
+{\bf 
+Figure 3
+Caption is confusing; suggest changing the first line to ``(Left) The
+projected X-ray temperature from spectral fitting and (right) the
+corresponding projected 3-D density profile for CL7.'' Then lower down delete
+``Right: The recovered gas density profile.''
+}
+
+Modified.
+
+{\bf 
+Figure 4
+This figure has a number of issues:
+1) x error bars are overlapping, so they are either drawn twice as large as
+they should be or for some reason the spectral bins are not independent.
+If the latter, please explain why.
+2) The residual panel should be plotted as datapoints with error bars, not
+solid lines. As shown, it is impossible to judge whether the residuals are
+statistically significant.
+3) Fitted $T_X$ values need uncertainties quoted, also to show whether the
+difference is statistically significant.
+4) The y-axis values are hard to believe given the units; this would imply
+that there are ~ 10 billion counts in the full 2.4 Msec spectrum in just this
+annulus beyond $R_{200c}$, far more than a typical (real) observation. This
+is symptomatic of my concern in major issue 2(c) above, so further
+clarification of how this mock observation is performed is needed.
+}
+
+I've corrected the x-errorbars, added uncertainties to the best fit
+X-ray temperature, and modified the axes from $\mathrm{s^{-1}keV^{-1}}$ to
+$\mathrm{keV^{-1}}$.  
+
+{\bf 
+It would be illuminating to non-expert readers to show a high-resolution
+spectrum of a mekal emission model at 1~keV and (e.g.) 6~keV, to show (a)
+the complications in the lines in this energy range that are smeared out by
+the CCD resolution, and (b) how this really matters for cluster outskirts
+where kT is fairly low. This is mentioned elsewhere in the manuscript, but
+a picture is worth a thousand words.
+}
+
+We have referred the reader to both Bohringer and Werner 2010 and
+Mazzotta et al, 2004 for figures with spectral models.  
+
+{\bf 
+Figure 5
+Upper right panel: is the ``$f_{T_{X,{\rm proj}}}$'' the same sort of ``fit/fix'' mentioned
+in the caption? The text in Section 3.2, paragraph 5 suggests this (also
+`note the runaway parenthesis there). This needs to be clarified, perhaps
+with a different label including ``fit/fix'' explicitly or some of the text
+from that paragraph placed in the caption.
+Lower left panel: Error bars would be very useful to judge whether the
+differences are significant.
+}
+
+Errorbars have been added and the caption is clarified.
+
+{\bf 
+Section 3.2, paragraph 7 and bullet point 3 in the summary
+``temperature profile...does not accurately describe the thermal
+behavior at larger radii.''
+I disagree; as shown in Fig 5 upper right, the data points are almost fully
+consistent with the model profiles within the error bars. Again, error
+bars in the lower plot would qualitatively show this.
+}
+
+While consistent with the errorbars, the shape of the best-fit
+projected X-ray temperature profile does not capture the emerging
+trend of the decreasing slope in the projected X-ray data.  We
+interpret this as another indication of the complicated temperature
+structure in cluster outskirts and have commented on this in the
+section.
+
+{\bf 
+Section 3.2, paragraph 8
+``... to have the statistical uncertainty...''
+$\rightarrow$ ``...to have the same statistical uncertainty...''
+}
+
+Modified.
+
+{\bf 
+Section 3.2, paragraphs 9 and 11 (last)
+Variations in a number of profiles are quoted, but how do these values
+compare to the propagated statistical error of the measurements or inferred
+values? i.e., are they significant variations?
+}
+
+I have added errorbars to the variations in X-ray temperature and
+binned EMM.
+
+{\bf 
+Figure 6
+This figure has the same issues as Figure 4, and they should be addressed.
+}
+
+I have made similar changes as figure 4, but adding errorbars to the
+residuals for the data makes the plot rather overloaded.  As the residuals
+are the difference between the mock photon spectrum and each of the
+model spectra, the errors in the upper panel directly translate to
+what would be in the lower panel.  
+
+{\bf 
+Section 3.3, last paragraph
+The effects of extrapolating the abundance to radii where it can't be
+measured is a key point, because (1) essentially all Suzaku observational
+studies do this, and (2) it *will* cause a bias notwithstanding my concerns
+in major issue 1. I think this should be stressed more in the summary,
+perhaps as a bullet point.
+}
+
+This effect has now been emphasized in the abstract, section 3.3, and
+in the summary bullet points.
+
+{\bf 
+Section 3.4, paragraph 4
+Should this be an abundance ``5 times lower", not "higher''? That is what
+Figure 9 right suggests.
+}
+
+Yes, modified.
+
+{\bf 
+Section 3.4, paragraph 5
+``...where photon statistics are poor.''Also at small radii the temperature
+is quite a bit hotter, and the metal abundance becomes more separated from
+temperature in the spectral fit. This should be mentioned.
+}
+
+Added.
+
+{\bf 
+Section 3.5, paragraph 3
+``...but different...'' $\rightarrow$ ``...but differ...''
+}
+
+Modified.
+
+{\bf 
+Section 4, last paragraph
+Footnotes for SMART-X and Athena don't appear.
+}
+
+These appear in our compilations of the manuscript, but we will ask
+the journal editor to help make sure these appear in the ApJ compiled version.
+
+\end{document}

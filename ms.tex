@@ -412,11 +412,21 @@ that produce ideal lensed images with the appropriate resolution.
 The final part is to perform the mock observation from the ideal
 images produced in the previous step.  \edit{Both our HST- and
   LSST-like observations are monochromatic, respectively using the
-  F606W and the g-band.} For HST-like observations, galaxies along the
-line of sight already include noise and a point spread function (PSF).
-We therefore stack and magnitude calibrate all components to produce
-the final HST-like images, which are $300\times300~{\rm pix}^2$ with
-$0.03$~arcsec per pixel.
+  F606W and the g-band.  We stack the lens galaxy, source image, and
+  galaxies along the line of sight.  While we adjust the source size
+  and magnitude to correspond to the change $D_s$ when placed at
+  $z_s$, we do not adjust colors.  The distribution of lens properties
+  is not realistic with a constant $z_s$, but provides a sufficient
+  start in covering the feature space to test supervised
+  classification methods.  Incorporating the lens, source image, line
+  of sight galaxies, and noise are particularly crucial in methods
+  that use edge features.}
+
+For HST-like observations, \edit{the stacked component for galaxies
+  along the line of sight already includes noise} and a point spread
+function (PSF).  We therefore stack and magnitude calibrate all
+components to produce the final HST-like images, which are
+$300\times300~{\rm pix}^2$ with $0.03$~arcsec per pixel.
 
 For LSST-like observations, we use the {\em LensPop} software
 \citep{collett_15}.  We resample images to match the detector pixel
@@ -1448,9 +1458,11 @@ does not describe the full range of lens and non-lens images that will
 be observed.  For example, the along the line of sight galaxies in our
 training and test images all come from the Hubble Ultra Deep field,
 sampling a smaller range of potential contaminants that are not
-associated with a lensed image.  Also, the redshift of the source
-galaxies have been fixed to $z_s=2$.  We will address these
-shortcomings in subsequent work.
+associated with a lensed image.  \edit{A limitation of the
+  CANDELS sources is that the sources are observed with HST seeing,
+  and would not resolve the clumpiness within a true HST arc.}  Also,
+the redshift of the source galaxies have been fixed to $z_s=2$.  We
+will address these shortcomings in subsequent work.
 
 % Interpreting TP and FP rates
 Finally, we must take the class balance, or relative number of lens to
